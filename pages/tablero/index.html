@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tablero</title>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../../index.html">Inicio</a>
+      <a href="../about/index.html">About</a>
+      <a href="../estadisticasymejoras/index.html">Estadísticas y mejoras</a>
+      <a href="../compartir/index.html">Compartir</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="board-intro">
+      <h1>Tablero</h1>
+      <p>En el tablero se muestran tus tres columnas principales y los ámbitos desplegables.</p>
+    </section>
+
+    <section class="columns">
+      <article class="column">
+        <h2>Done</h2>
+        <ul>
+          <li>Task 1</li>
+          <li>Task 2</li>
+          <li>Task 3</li>
+        </ul>
+      </article>
+      <article class="column">
+        <h2>Not Done</h2>
+        <ul>
+          <li>Task 4</li>
+          <li>Task 5</li>
+          <li>Task 6</li>
+        </ul>
+      </article>
+      <article class="column">
+        <h2>In Progress</h2>
+        <ul>
+          <li>Task 7</li>
+          <li>Task 8</li>
+          <li>Task 9</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="ambitos">
+      <h2>Ámbitos</h2>
+      <p>Esta opción de Ámbitos queda reservada y sin desarrollar por ahora.</p>
+      <div class="ambitos-buttons">
+        <button type="button" data-ambito="familia">Familia</button>
+        <button type="button" data-ambito="personal">Personal</button>
+        <button type="button" data-ambito="social">Social</button>
+        <button type="button" data-ambito="laboral">Laboral</button>
+        <button type="button" data-ambito="ocio">Ocio</button>
+        <button type="button" data-ambito="salud">Salud</button>
+        <button type="button" data-ambito="hogar">Hogar</button>
+        <button type="button" data-ambito="finanzas">Finanzas</button>
+      </div>
+    </section>
+
+    <section class="detalles">
+      <h2>Otros criterios</h2>
+      <details>
+        <summary>Urgencia</summary>
+        <ul>
+          <li>Alta urgencia</li>
+          <li>Media urgencia</li>
+          <li>Baja urgencia</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Importancia</summary>
+        <ul>
+          <li>Muy importante</li>
+          <li>Importante</li>
+          <li>Menos importante</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Dificultad</summary>
+        <ul>
+          <li>Alta dificultad</li>
+          <li>Media dificultad</li>
+          <li>Baja dificultad</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Tiempo</summary>
+        <ul>
+          <li>Poco: 2 días</li>
+          <li>Medio: 4 días</li>
+          <li>Largo: más de una semana</li>
+        </ul>
+      </details>
+    </section>
+
+    <p><a href="../../index.html">Volver al inicio</a></p>
+    <script src="../../js/ambitos.js" defer></script>
+  </main>
+</body>
+</html>

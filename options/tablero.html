@@ -3,55 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi App To Do</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Tablero</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <nav>
-        <div class="nav-brand">
-            <img src="img/logo.jpeg" alt="App logo" class="logo">
-            <span class="brand-name">MiiActToDo</span>
-        </div>
-        <div class="nav-actions">
-            <a href="pages/about/index.html">About</a>
-            <a href="pages/tablero/index.html">Tablero</a>
-            <a href="pages/estadisticasymejoras/index.html">Estadísticas y mejoras</a>
-            <a href="pages/compartir/index.html">Compartir</a>
-            <button type="button" data-action="download-board">Download</button>
-        </div>
-    </nav>
-
-    <main>
-        <section class="board-intro">
-            <h1>Tablero de tareas</h1>
-            <p>En el cuerpo principal tienes ahora tu tablero con tres columnas: <strong>Done</strong>, <strong>Not Done</strong> e <strong>In Progress</strong>. Más abajo verás los ámbitos desplegables.</p>
-        </section>
+    <div class="container">
+        <h1>Tablero</h1>
+        <p>Organize your tasks in three columns and expand the Ámbitos section to see the rest of your categories.</p>
 
         <section class="columns">
-            <article class="column">
+            <div class="column">
                 <h2>Done</h2>
                 <ul>
                     <li>Task 1</li>
                     <li>Task 2</li>
                     <li>Task 3</li>
                 </ul>
-            </article>
-            <article class="column">
+            </div>
+            <div class="column">
                 <h2>Not Done</h2>
                 <ul>
                     <li>Task 4</li>
                     <li>Task 5</li>
                     <li>Task 6</li>
                 </ul>
-            </article>
-            <article class="column">
+            </div>
+            <div class="column">
                 <h2>In Progress</h2>
                 <ul>
                     <li>Task 7</li>
                     <li>Task 8</li>
                     <li>Task 9</li>
                 </ul>
-            </article>
+            </div>
         </section>
 
         <section class="ambitos">
@@ -104,9 +88,18 @@
                 </ul>
             </details>
         </section>
-    </main>
 
-    <script src="js/nav.js" defer></script>
-    <script src="js/ambitos.js" defer></script>
+        <p class="print-note">Open this page in download mode to print or save as PDF.</p>
+    </div>
+
+    <script src="../js/ambitos.js" defer></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('print') === 'true') {
+          window.print();
+        }
+      });
+    </script>
 </body>
 </html>

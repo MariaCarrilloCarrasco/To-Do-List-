@@ -1,0 +1,306 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #f2f6fb;
+  color: #1f2937;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: #f59e0b;
+  padding: 6px;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+nav a {
+  display: inline-block;
+  color: #1f2937;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+nav a:hover,
+nav a:focus,
+nav button:hover,
+nav button:focus {
+  background: #4caf50;
+  color: #ffffff;
+}
+
+nav button {
+  display: inline-block;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+nav button:nth-child(1) {
+  background: #3b82f6;
+}
+
+nav button:nth-child(2) {
+  background: #10b981;
+}
+
+nav button:nth-child(3) {
+  background: #f59e0b;
+}
+
+nav button:nth-child(4) {
+  background: #ef4444;
+}
+
+nav button[data-action="download-board"] {
+  background: #000000;
+}
+
+nav button:hover,
+nav button:focus {
+  color: #ffffff;
+  font-size: 1.03rem;
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+nav button:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.45);
+}
+
+nav button:nth-child(1):active {
+  color: #3b82f6;
+}
+
+nav button:nth-child(2):active {
+  color: #10b981;
+}
+
+nav button:nth-child(3):active {
+  color: #f59e0b;
+}
+
+nav button:nth-child(4):active {
+  color: #ef4444;
+}
+
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.board-intro {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.column {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.column h2 {
+  margin-top: 0;
+  font-size: 1.15rem;
+  color: #111827;
+}
+
+.column ul {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.column li {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.column li:last-child {
+  border-bottom: none;
+}
+
+.ambitos {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.ambitos h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.ambitos buttons,
+.ambitos-details {
+  margin-top: 1rem;
+}
+
+.ambitos-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+
+.ambitos-buttons button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.ambitos-buttons button:hover,
+.ambitos-buttons button.active {
+  background: #111827;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.ambitos details {
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  background: #fafbff;
+}
+
+.ambitos summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #111827;
+  outline: none;
+}
+
+.ambitos details[open] {
+  background: #ffffff;
+}
+
+.ambitos ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.ambitos li {
+  margin-bottom: 0.5rem;
+}
+
+.detalles {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  margin-top: 1.5rem;
+}
+
+.detalles h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.detalles details {
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  background: #fafbff;
+}
+
+.detalles ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.detalles li {
+  margin-bottom: 0.5rem;
+}
+
+.detalles {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  margin-top: 1.5rem;
+}
+
+.detalles h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.detalles details {
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  background: #fafbff;
+}
+
+.detalles ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.detalles li {
+  margin-bottom: 0.5rem;
+}
+
