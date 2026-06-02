@@ -1,5 +1,7 @@
 # 📋 Ficha de Proyecto: MiiActToDo
 
+Herramienta de gestión del tiempo y organización personal que recopila, de forma estructurada, todas las actividades, pendientes o compromisos que una persona necesita realizar en un periodo determinado. Su propósito principal es liberar carga cognitiva —sacar los pensamientos de la cabeza y plasmarlos en un soporte físico o digital— para reducir la ansiedad, mejorar el enfoque y asegurar que nada importante se quede en el olvido.
+
 ## 1. Stack Tecnológico y Arquitectura
 *   **Frontend:** SPA (Single Page Application) desarrollada con **React** (o HTML5, CSS3, JS Vanilla con ES Modules y Template Strings, según fase de desarrollo). Diseño *Responsive* (móvil, tablet, desktop y smartwatch) compatible con Chrome, Firefox, Safari y Edge.
 *   **Backend y Datos:** Autenticación y base de datos con **Firebase** (gestión de usuarios, ámbitos y prioridades), **JSON Server** y persistencia local mediante **LocalStorage**.
