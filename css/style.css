@@ -340,3 +340,537 @@ main {
   margin-bottom: 0.5rem;
 }
 
+/* --- Task Card and Interactive Board Styling --- */
+
+/* Reset default list padding and layout */
+.column ul.task-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  min-height: 100px; /* Ensures drop area is always accessible even if column is empty */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: background-color 0.2s ease, border 0.2s ease;
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.column ul.task-list.drag-over {
+  background: rgba(99, 102, 241, 0.05);
+  outline: 2px dashed rgba(99, 102, 241, 0.4);
+  outline-offset: 2px;
+}
+
+/* Base Card Style */
+.task-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; /* Override theme border-bottom */
+  border-radius: 12px;
+  padding: 0.95rem 1rem !important;
+  cursor: grab;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.2s ease,
+              background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 2px 4px -2px rgba(15, 23, 42, 0.02);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.task-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+  box-shadow: none;
+  border: 2px dashed rgba(99, 102, 241, 0.5) !important;
+}
+
+/* Card Content */
+.task-content {
+  flex-grow: 1;
+  word-break: break-word;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: inherit;
+}
+
+.task-text {
+  cursor: text;
+}
+
+/* Card Actions */
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Task Buttons style */
+.task-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.task-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
+}
+
+.task-btn:active {
+  transform: scale(0.9);
+}
+
+/* Dropdown column select style */
+.task-move-select {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-right: 0.25rem;
+}
+
+.task-move-select:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Dark theme specific adjustments if theme panel color active */
+.dark-theme-panel .task-card {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9;
+}
+
+.dark-theme-panel .task-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark-theme-panel .task-move-select {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Add Task Form Styling */
+.add-task-container {
+  margin-top: 1rem;
+}
+
+.add-task-btn {
+  width: 100%;
+  background: transparent;
+  border: 2px dashed rgba(99, 102, 241, 0.3);
+  color: inherit;
+  padding: 0.65rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+}
+
+.add-task-btn:hover {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.6);
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.add-task-form, .task-edit-form {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.dark-theme-panel .add-task-form, 
+.dark-theme-panel .task-edit-form {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.add-task-input, .edit-task-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark-theme-panel .add-task-input, 
+.dark-theme-panel .edit-task-input {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+
+.add-task-input:focus, .edit-task-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.add-actions, .edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.save-add-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.15);
+}
+
+.save-add-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  transform: translateY(-1px);
+}
+
+.cancel-add-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: inherit;
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.cancel-add-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme-panel .cancel-add-btn {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme-panel .cancel-add-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.task-edit-form {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.task-edit-form .edit-actions {
+  margin-top: 0.25rem;
+}
+
+/* Completed task styling */
+.task-card.completed .task-text {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+.task-card.completed {
+  background: rgba(240, 253, 244, 0.85); /* Soft green background */
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.dark-theme-panel .task-card.completed {
+  background: rgba(6, 78, 59, 0.25); /* Dark theme green background */
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Metadata badges and tags styling */
+.task-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.04);
+  color: #334155;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  line-height: 1;
+}
+
+.dark-theme-panel .tag {
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Badges for Ambitos using the exact gradients */
+.tag-ambito-familia {
+  background: linear-gradient(135deg, #ec4899, #db2777) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-personal {
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-social {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-laboral {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-ocio {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-salud {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-hogar {
+  background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.tag-ambito-finanzas {
+  background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Other categories styling */
+.tag-urgencia-alta {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+.tag-urgencia-media {
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #d97706 !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+.tag-urgencia-baja {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.tag-importancia-muy {
+  background: rgba(249, 115, 22, 0.1) !important;
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.2) !important;
+}
+.tag-importancia-importante {
+  background: rgba(99, 102, 241, 0.1) !important;
+  color: #6366f1 !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+.tag-importancia-menos {
+  background: rgba(100, 116, 139, 0.1) !important;
+  color: #64748b !important;
+  border-color: rgba(100, 116, 139, 0.2) !important;
+}
+
+.tag-dificultad-alta {
+  background: rgba(139, 92, 246, 0.1) !important;
+  color: #8b5cf6 !important;
+  border-color: rgba(139, 92, 246, 0.2) !important;
+}
+.tag-dificultad-media {
+  background: rgba(6, 182, 212, 0.1) !important;
+  color: #06b6d4 !important;
+  border-color: rgba(6, 182, 212, 0.2) !important;
+}
+.tag-dificultad-baja {
+  background: rgba(20, 184, 166, 0.1) !important;
+  color: #14b8a6 !important;
+  border-color: rgba(20, 184, 166, 0.2) !important;
+}
+
+.tag-tiempo-poco, .tag-tiempo-medio, .tag-tiempo-largo {
+  background: rgba(148, 163, 184, 0.15) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  color: inherit !important;
+}
+
+/* Edit and add selectors grid layout */
+.edit-selectors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.dark-theme-panel .edit-selectors-grid {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.selector-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.selector-item label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.selector-item select {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+  color: #1e293b;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dark-theme-panel .selector-item select {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+
+/* Dynamic Criteria Breakdown sections */
+.criteria-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.criteria-group h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: inherit;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  padding-bottom: 4px;
+}
+
+.dark-theme-panel .criteria-group h4 {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.criteria-task-list {
+  list-style: disc;
+  padding-left: 1.1rem !important;
+  margin: 0;
+}
+
+.criteria-task-list li {
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+  padding: 0 !important;
+  border: none !important;
+  color: inherit;
+}
+
+.ambitos-details details {
+  margin-bottom: 0.5rem;
+}
+
+/* Inherit card typography on actions */
+.task-card button.task-btn {
+  color: inherit !important;
+}
+
+.task-card select.task-move-select {
+  color: inherit !important;
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.dark-theme-panel .task-card select.task-move-select {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.task-description {
+  margin-top: 4px;
+}
+
+.task-schedule-info {
+  margin-top: 4px;
+}
+
+.lang-selector-nav button:hover {
+  background: rgba(37, 99, 235, 0.15) !important;
+}
+
+.lang-selector-nav button:active {
+  transform: scale(0.95);
+}
+
+
+
+
+

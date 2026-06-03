@@ -8,12 +8,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  const downloadButton = document.querySelector('nav button[data-action="download-board"]');
-  if (downloadButton) {
-    downloadButton.addEventListener('click', () => {
-      const downloadUrl = 'options/tablero.html?print=true';
-      window.open(downloadUrl, '_blank');
-    });
-  }
 });

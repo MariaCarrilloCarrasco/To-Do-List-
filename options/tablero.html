@@ -1,103 +1,337 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablero</title>
+    <title data-translate="print_header_title">Tablero de Tareas - Impresión</title>
     <link rel="stylesheet" href="./style.css">
+    <script src="../js/language.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>Tablero</h1>
-        <p>Organize your tasks in three columns and expand the Ámbitos section to see the rest of your categories.</p>
+        <h1 data-translate="intro_title">Tablero de tareas</h1>
+        <p data-translate="print_header_desc">Organización actual de tus tareas por columnas.</p>
 
         <section class="columns">
-            <div class="column">
-                <h2>Done</h2>
-                <ul>
-                    <li>Task 1</li>
-                    <li>Task 2</li>
-                    <li>Task 3</li>
-                </ul>
+            <div class="column" data-column="done">
+                <h2 data-translate="col_done">Hecho</h2>
+                <ul class="task-list"></ul>
             </div>
-            <div class="column">
-                <h2>Not Done</h2>
-                <ul>
-                    <li>Task 4</li>
-                    <li>Task 5</li>
-                    <li>Task 6</li>
-                </ul>
+            <div class="column" data-column="not-done">
+                <h2 data-translate="col_not_done">Pendiente</h2>
+                <ul class="task-list"></ul>
             </div>
-            <div class="column">
-                <h2>In Progress</h2>
-                <ul>
-                    <li>Task 7</li>
-                    <li>Task 8</li>
-                    <li>Task 9</li>
-                </ul>
+            <div class="column" data-column="in-progress">
+                <h2 data-translate="col_in_progress">En progreso</h2>
+                <ul class="task-list"></ul>
             </div>
         </section>
 
         <section class="ambitos">
-            <h2>Ámbitos</h2>
-            <p>Esta opción de Ámbitos queda reservada y sin desarrollar por ahora.</p>
+            <h2 data-translate="ambitos_section_title">Ámbitos</h2>
             <div class="ambitos-buttons">
-                <button type="button" data-ambito="familia">Familia</button>
-                <button type="button" data-ambito="personal">Personal</button>
-                <button type="button" data-ambito="social">Social</button>
-                <button type="button" data-ambito="laboral">Laboral</button>
-                <button type="button" data-ambito="ocio">Ocio</button>
-                <button type="button" data-ambito="salud">Salud</button>
-                <button type="button" data-ambito="hogar">Hogar</button>
-                <button type="button" data-ambito="finanzas">Finanzas</button>
+                <button type="button" data-ambito="familia" data-translate="ambitos_familia">👪 Familia</button>
+                <button type="button" data-ambito="personal" data-translate="ambitos_personal">👤 Personal</button>
+                <button type="button" data-ambito="social" data-translate="ambitos_social">👥 Social</button>
+                <button type="button" data-ambito="laboral" data-translate="ambitos_laboral">💼 Laboral</button>
+                <button type="button" data-ambito="ocio" data-translate="ambitos_ocio">🎭 Ocio</button>
+                <button type="button" data-ambito="salud" data-translate="ambitos_salud">❤️ Salud</button>
+                <button type="button" data-ambito="hogar" data-translate="ambitos_hogar">🏠 Hogar</button>
+                <button type="button" data-ambito="finanzas" data-translate="ambitos_finanzas">💰 Finanzas</button>
             </div>
         </section>
 
         <section class="detalles">
-            <h2>Otros criterios</h2>
+            <h2 data-translate="otros_criterios_title">Otros criterios</h2>
             <details>
-                <summary>Urgencia</summary>
+                <summary data-translate="criterio_urgencia">Urgencia</summary>
                 <ul>
-                    <li>Alta urgencia</li>
-                    <li>Media urgencia</li>
-                    <li>Baja urgencia</li>
+                    <li data-translate="urgencia_alta">Alta urgencia</li>
+                    <li data-translate="urgencia_media">Media urgencia</li>
+                    <li data-translate="urgencia_baja">Baja urgencia</li>
                 </ul>
             </details>
             <details>
-                <summary>Importancia</summary>
+                <summary data-translate="criterio_importancia">Importancia</summary>
                 <ul>
-                    <li>Muy importante</li>
-                    <li>Importante</li>
-                    <li>Menos importante</li>
+                    <li data-translate="importancia_muy">Muy importante</li>
+                    <li data-translate="importancia_imp">Importante</li>
+                    <li data-translate="importancia_menos">Menos importante</li>
                 </ul>
             </details>
             <details>
-                <summary>Dificultad</summary>
+                <summary data-translate="criterio_dificultad">Dificultad</summary>
                 <ul>
-                    <li>Alta dificultad</li>
-                    <li>Media dificultad</li>
-                    <li>Baja dificultad</li>
+                    <li data-translate="dificultad_alta">Alta dificultad</li>
+                    <li data-translate="dificultad_media">Media dificultad</li>
+                    <li data-translate="dificultad_baja">Baja dificultad</li>
                 </ul>
             </details>
             <details>
-                <summary>Tiempo</summary>
+                <summary data-translate="criterio_tiempo">Tiempo</summary>
                 <ul>
-                    <li>Poco: 2 días</li>
-                    <li>Medio: 4 días</li>
-                    <li>Largo: más de una semana</li>
+                    <li data-translate="tiempo_poco">Poco: 2 días</li>
+                    <li data-translate="tiempo_medio">Medio: 4 días</li>
+                    <li data-translate="tiempo_largo">Largo: más de una semana</li>
                 </ul>
             </details>
         </section>
 
-        <p class="print-note">Open this page in download mode to print or save as PDF.</p>
+        <p class="print-note" data-translate="print_note">Abre esta página en modo descarga para imprimir o guardar como PDF.</p>
     </div>
 
     <script src="../js/ambitos.js" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
+        const getLuminance = (hex) => {
+          if (!hex) return 1;
+          let color = hex.replace('#', '');
+          if (color.length === 3) {
+            color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
+          }
+          const r = parseInt(color.substr(0, 2), 16) / 255;
+          const g = parseInt(color.substr(2, 2), 16) / 255;
+          const b = parseInt(color.substr(4, 2), 16) / 255;
+          
+          const a = [r, g, b].map(v => {
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+          });
+          return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+        };
+
+        const formatDate = (dateStr) => {
+          if (!dateStr) return '';
+          const parts = dateStr.split('-');
+          if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+          }
+          return dateStr;
+        };
+
+        // Load tasks from localStorage
+        let tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+
+        // Sort tasks chronologically helper function
+        const sortTasksChronologically = (taskList) => {
+          return [...taskList].sort((a, b) => {
+            const dateA = a.dateStart || '';
+            const dateB = b.dateStart || '';
+            
+            // Scheduled dates go first
+            if (dateA && !dateB) return -1;
+            if (!dateA && dateB) return 1;
+            
+            if (dateA && dateB) {
+              if (dateA < dateB) return -1;
+              if (dateA > dateB) return 1;
+            }
+            
+            // If dates are equal or both missing, compare times
+            const timeA = a.timeStart || '';
+            const timeB = b.timeStart || '';
+            
+            if (timeA && !timeB) return -1;
+            if (!timeA && timeB) return 1;
+            
+            if (timeA && timeB) {
+              if (timeA < timeB) return -1;
+              if (timeA > timeB) return 1;
+            }
+            
+            // Secondary fallback: compare IDs to keep order stable
+            return a.id.localeCompare(b.id);
+          });
+        };
+
+        // Global render function that is called dynamically on load and lang change
+        window.renderTasks = () => {
+          const lang = localStorage.getItem('app-language') || 'es';
+          const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
+          const connectWord = dict.form_connect_word || (lang === 'en' ? 'to' : 'al');
+          const connectTime = dict.form_connect_time || (lang === 'en' ? 'to' : 'a');
+          
+          // Clear current lists
+          document.querySelectorAll('.column ul').forEach(el => el.innerHTML = '');
+
+          const sortedTasks = sortTasksChronologically(tasks);
+          sortedTasks.forEach(task => {
+            const colList = document.querySelector(`.column[data-column="${task.column}"] ul`);
+            if (colList) {
+              const li = document.createElement('li');
+              const prefix = task.column === 'done' ? '✅ ' : '❌ ';
+              
+              // Build dynamic emojis prefix (using taskEmoji if chosen, else fallbacks)
+              let emojiPrefix = '';
+              if (task.taskEmoji) {
+                emojiPrefix = task.taskEmoji + ' ';
+              } else {
+                let fallbacks = '';
+                if (task.ambito) {
+                  const emojis = {
+                    familia: '👪', personal: '👤', social: '👥',
+                    laboral: '💼', ocio: '🎭', salud: '❤️',
+                    hogar: '🏠', finanzas: '💰'
+                  };
+                  fallbacks += (emojis[task.ambito] || '') + ' ';
+                }
+                if (task.urgencia) {
+                  const emojis = { alta: '🔴', media: '🟡', baja: '🟢' };
+                  fallbacks += (emojis[task.urgencia] || '') + ' ';
+                }
+                if (task.importancia) {
+                  const emojis = { muy: '🔥', importante: '⭐', menos: '💤' };
+                  fallbacks += (emojis[task.importancia] || '') + ' ';
+                }
+                if (task.dificultad) {
+                  const emojis = { alta: '🧗', media: '⚙️', baja: '🌱' };
+                  fallbacks += (emojis[task.dificultad] || '') + ' ';
+                }
+                if (task.tiempo) {
+                  const emojis = { poco: '⏱️', medio: '⏳', largo: '📅' };
+                  fallbacks += (emojis[task.tiempo] || '') + ' ';
+                }
+                if (fallbacks) {
+                  emojiPrefix = fallbacks.trim() + ' ';
+                }
+              }
+              
+              // Build metadata suffix
+              const metas = [];
+              if (task.ambito) {
+                const labels = {
+                  familia: lang === 'en' ? 'Family' : 'Familia',
+                  personal: lang === 'en' ? 'Personal' : 'Personal',
+                  social: lang === 'en' ? 'Social' : 'Social',
+                  laboral: lang === 'en' ? 'Work' : 'Laboral',
+                  ocio: lang === 'en' ? 'Leisure' : 'Ocio',
+                  salud: lang === 'en' ? 'Health' : 'Salud',
+                  hogar: lang === 'en' ? 'Home' : 'Hogar',
+                  finanzas: lang === 'en' ? 'Finance' : 'Finanzas'
+                };
+                metas.push(labels[task.ambito] || task.ambito);
+              }
+              if (task.urgencia) {
+                const labels = {
+                  alta: lang === 'en' ? '🔴 High' : '🔴 Alta',
+                  media: lang === 'en' ? '🟡 Medium' : '🟡 Media',
+                  baja: lang === 'en' ? '🟢 Low' : '🟢 Baja'
+                };
+                metas.push(`${lang === 'en' ? 'Urgency' : 'Urgencia'}: ${labels[task.urgencia] || task.urgencia}`);
+              }
+              if (task.importancia) {
+                const labels = {
+                  muy: lang === 'en' ? '🔥 Very' : '🔥 Muy',
+                  importante: lang === 'en' ? '⭐ Imp.' : '⭐ Imp.',
+                  menos: lang === 'en' ? '💤 Less' : '💤 Menos'
+                };
+                metas.push(`Imp: ${labels[task.importancia] || task.importancia}`);
+              }
+              
+              // Description and Scheduling display
+              let detailedInfo = '';
+              if (task.description) {
+                detailedInfo += `\n   ↳ ${lang === 'en' ? 'Desc' : 'Descr'}: ${task.description}`;
+              }
+
+              let datePart = '';
+              let timePart = '';
+              if (task.dateType === 'single' && task.dateStart) {
+                datePart = `${formatDate(task.dateStart)}`;
+              } else if (task.dateType === 'range' && task.dateStart && task.dateEnd) {
+                datePart = `${formatDate(task.dateStart)} ${connectWord} ${formatDate(task.dateEnd)}`;
+              }
+
+              if (task.timeType === 'single' && task.timeStart) {
+                timePart = `${task.timeStart}`;
+              } else if (task.timeType === 'range' && task.timeStart && task.timeEnd) {
+                timePart = `${task.timeStart} ${connectTime} ${task.timeEnd}`;
+              }
+
+              if (datePart || timePart) {
+                detailedInfo += `\n   ↳ 📅 ${datePart || ''} ${timePart ? ' 🕒 ' + timePart : ''}`;
+              }
+
+              const metaSuffix = metas.length > 0 ? ` [${metas.join(' | ')}]` : '';
+              
+              // We create text nodes and line breaks inside card list
+              li.style.whiteSpace = 'pre-wrap';
+              li.textContent = prefix + emojiPrefix + task.text + metaSuffix + detailedInfo;
+              
+              // Apply custom styles matching print view
+              if (task.cardColor) {
+                li.style.backgroundColor = task.cardColor;
+                const lum = getLuminance(task.cardColor);
+                li.style.color = lum < 0.5 ? '#ffffff' : '#1f2937';
+                li.style.borderColor = lum < 0.5 ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+                li.style.border = '1px solid';
+                li.style.padding = '0.6rem';
+                li.style.borderRadius = '8px';
+                li.style.marginBottom = '0.5rem';
+                li.style.listStyle = 'none';
+              }
+              if (task.fontSize) {
+                const fontSizes = { small: '0.75rem', medium: '0.9rem', large: '1.1rem' };
+                li.style.fontSize = fontSizes[task.fontSize] || fontSizes.medium;
+              }
+
+              if (task.column === 'done') {
+                li.style.textDecoration = 'line-through';
+                li.style.opacity = '0.6';
+              }
+              colList.appendChild(li);
+            }
+          });
+        };
+
+        // Render first load
+        renderTasks();
+
+        // Listen for language dynamic events
+        window.addEventListener('languagechanged', () => {
+          renderTasks();
+        });
+
+        // Trigger print or PNG download based on URL params
         const params = new URLSearchParams(window.location.search);
         if (params.get('print') === 'true') {
-          window.print();
+          const note = document.querySelector('.print-note');
+          if (note) note.style.display = 'none';
+          setTimeout(() => {
+            window.print();
+          }, 600);
+        } else if (params.get('png') === 'true') {
+          const note = document.querySelector('.print-note');
+          if (note) note.style.display = 'none';
+          // Load html2canvas dynamically
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+          script.onload = () => {
+            setTimeout(() => {
+              // Capture the main container
+              const mainElement = document.querySelector('.container') || document.body;
+              if (mainElement) {
+                html2canvas(mainElement, {
+                  useCORS: true,
+                  scale: 2, // Double scale for high-definition PNG
+                  backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff'
+                }).then(canvas => {
+                  const link = document.createElement('a');
+                  link.download = 'tablero_tareas.png';
+                  link.href = canvas.toDataURL('image/png');
+                  link.click();
+                  
+                  // Close tab after download
+                  setTimeout(() => {
+                    window.close();
+                  }, 1000);
+                });
+              }
+            }, 800);
+          };
+          script.onerror = () => {
+            alert('No se pudo cargar la librería para exportar imágenes. Por favor, asegúrate de estar conectado a internet.');
+          };
+          document.head.appendChild(script);
         }
       });
     </script>

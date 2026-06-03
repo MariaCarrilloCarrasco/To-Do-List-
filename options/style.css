@@ -103,3 +103,9 @@ details li:last-child {
   color: #475569;
   font-size: 0.95rem;
 }
+
+@media print {
+  .print-note {
+    display: none !important;
+  }
+}

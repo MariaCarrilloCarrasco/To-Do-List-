@@ -1,17 +1,502 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="../../js/theme.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="about_title">Acerca de... - Accesibilidad</title>
+  <link rel="stylesheet" href="../../css/style.css?v=3">
+  <link rel="stylesheet" href="./style.css">
+  <script src="../../js/theme.js?v=3"></script>
+  <script src="../../js/language.js" defer></script>
 </head>
 <body>
-    <h1>About Me</h1>
-    <p>Hello! I'm María Carrillo Carrasco. I´m a social developer.</p>
-    <p> This is an accesibility application web in witch you can plan your proyects and organized your action </p>
-    <p> This web is disponibility in </p>
-    <p><a href="../../index.html">Volver al inicio</a></p>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_home">Inicio</a>
+      <a href="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+      <a href="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+      <a href="../compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+      <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+    </div>
+  </nav>
+
+  <main>
+    <h1 data-translate="about_title">Manual de Uso y Accesibilidad</h1>
+    <p data-translate="about_subtitle">Esta página está diseñada para que todas las personas, sin importar sus capacidades, puedan aprender a utilizar nuestra aplicación.</p>
+
+    <!-- Narrator Control Panel -->
+    <div class="narrator-section">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span>🔊</span>
+        <strong data-translate="narrator_title">Lector por Voz Integrado: Puedes escuchar el manual en audio.</strong>
+      </div>
+      <div>
+        <button id="audio-speak-btn" class="narrate-btn" data-translate="narrator_btn_speak">🔊 Escuchar Manual</button>
+        <button id="audio-stop-btn" class="narrate-btn active" style="display:none; background:#ef4444;" data-translate="narrator_btn_stop">⏹️ Detener</button>
+      </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="accessibility-container">
+      
+      <!-- Left Column: Lectura Facil Instructions -->
+      <section class="accessibility-card">
+        <h2 data-translate="easy_title">📖 Instrucciones Sencillas (Lectura Fácil)</h2>
+        <p style="opacity:0.8; font-size:0.9rem;" data-translate="easy_subtitle">(Haz clic en cada paso para reproducir la voz y ver la interpretación en Lengua de Signos LSE)</p>
+        
+        <ul class="easy-instructions" id="steps-list">
+          <li class="easy-step active" data-step="1" data-text="">
+            <span class="step-number">➕</span>
+            <div class="step-details">
+              <h3>Añadir Tarea (Crear)</h3>
+              <p>Pulsa el botón <strong>"+ Añadir tarea"</strong> en cualquier columna. Escribe lo que quieres hacer y haz clic en <strong>Añadir</strong>.</p>
+            </div>
+          </li>
+          
+          <li class="easy-step" data-step="2" data-text="">
+            <span class="step-number">🔄</span>
+            <div class="step-details">
+              <h3>Mover Tarea (Organizar)</h3>
+              <p>Arrastra la tarea a otra columna con el ratón. O abre el <strong>desplegable</strong> en la tarjeta y selecciona otra columna.</p>
+            </div>
+          </li>
+          
+          <li class="easy-step" data-step="3" data-text="">
+            <span class="step-number">✏️</span>
+            <div class="step-details">
+              <h3>Modificar Tarea (Editar)</h3>
+              <p>Haz clic en el lápiz <strong>✏️</strong> o doble clic en el texto. Cambia el texto o categorías y haz clic en el disquete <strong>💾</strong>.</p>
+            </div>
+          </li>
+ 
+          <li class="easy-step" data-step="4" data-text="">
+            <span class="step-number">✅</span>
+            <div class="step-details">
+              <h3>Marcar Tarea (Tick y Cruz)</h3>
+              <p>Haz clic en la cruz <strong>❌</strong> para completarla (se moverá a Hecho). Pulsa el tick verde <strong>✅</strong> para volver a activarla.</p>
+            </div>
+          </li>
+ 
+          <li class="easy-step" data-step="5" data-text="">
+            <span class="step-number">🗑️</span>
+            <div class="step-details">
+              <h3>Eliminar Tarea (Borrar)</h3>
+              <p>Haz clic en la papelera <strong>🗑️</strong> para borrar la tarea si ya no la necesitas.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Right Column: Interactive Accessibility widgets -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Sign Language Player simulation -->
+        <section class="accessibility-card">
+          <h2 data-translate="lse_title">🧏 Lengua de Signos (LSE)</h2>
+          <div class="lse-widget">
+            <div class="lse-video-box">
+              <div class="lse-avatar-container">
+                <span class="lse-avatar" id="lse-avatar-emoji">👋</span>
+                <span class="lse-status" id="lse-status-text" data-translate="lse_status_init">¡Hola! Selecciona un paso</span>
+              </div>
+              <div class="lse-video-controls">
+                <span data-translate="lse_interpreter">Intérprete LSE</span>
+                <span class="lse-badge" id="lse-chapter-badge" data-translate="lse_chapter_init">Capítulo: Inicio</span>
+              </div>
+            </div>
+            <p style="font-size:0.8rem; margin:0; opacity:0.8; line-height:1.4;" data-translate="lse_desc">El asistente virtual LSE muestra los movimientos corporales para cada paso de las instrucciones seleccionadas.</p>
+          </div>
+        </section>
+
+        <!-- Braille Transliterator widget -->
+        <section class="accessibility-card">
+          <h2 data-translate="braille_title">⠃ Braille (Visualizador táctil)</h2>
+          <div class="braille-widget">
+            <p style="font-size:0.88rem; margin:0 0 0.5rem 0;" data-translate="braille_desc">Escribe texto aquí abajo para verlo traducido al sistema Braille:</p>
+            <input type="text" class="braille-input" id="braille-input-field" placeholder="Escribe aquí... (ej: hola)" data-translate="braille_placeholder" value="hola">
+            <div class="braille-output-box">
+              <span class="braille-text" id="braille-output-text">⠓⠕⠇⠁</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pictograms widget -->
+        <section class="accessibility-card">
+          <h2 data-translate="picto_title">🖼️ Pictogramas (Buscador cognitivo)</h2>
+          <div class="pictograms-widget">
+            <p style="font-size:0.88rem; margin:0 0 0.5rem 0;" data-translate="picto_desc">Pictogramas clave. Escribe palabras para buscar más (ej: casa, familia, dinero, trabajo):</p>
+            <div class="picto-search-container">
+              <input type="text" class="picto-search-input" id="picto-search-field" placeholder="Buscar pictograma..." data-translate="picto_placeholder">
+            </div>
+            <div class="picto-grid" id="picto-results-grid">
+              <!-- Dynamically populated from ARASAAC API / fallback -->
+            </div>
+            <div class="picto-attribution" style="font-size:0.68rem; opacity:0.6; text-align:right; margin-top:0.4rem;" data-translate="picto_attribution">
+              Pictogramas de ARASAAC (BY-NC-SA) de Sergio Palao, Gobierno de Aragón.
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <p style="margin-top: 2rem;"><a href="../../index.html" data-translate="back_to_board">← Volver al Tablero Principal</a></p>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Text to Speech Narrator using HTML5 Web Speech API
+      const speakBtn = document.getElementById('audio-speak-btn');
+      const stopBtn = document.getElementById('audio-stop-btn');
+      let synth = window.speechSynthesis;
+      let utterance = null;
+      let isNarrating = false;
+
+      const stopSpeech = () => {
+        if (synth && synth.speaking) {
+          synth.cancel();
+        }
+        isNarrating = false;
+        const currentLang = localStorage.getItem('app-language') || 'es';
+        speakBtn.innerHTML = currentLang === 'en' ? '🔊 Listen to Manual' : '🔊 Escuchar Manual';
+        speakBtn.classList.remove('active');
+        stopBtn.style.display = 'none';
+      };
+
+      const speakText = (text) => {
+        if (!synth) return;
+        stopSpeech();
+
+        const currentLang = localStorage.getItem('app-language') || 'es';
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLang === 'en' ? 'en-US' : 'es-ES';
+        utterance.rate = 0.95; // Slightly slower for readability
+        
+        utterance.onend = () => {
+          stopSpeech();
+        };
+
+        utterance.onerror = () => {
+          stopSpeech();
+        };
+
+        isNarrating = true;
+        speakBtn.innerHTML = currentLang === 'en' ? '⏸️ Narrating...' : '⏸️ Narrando...';
+        speakBtn.classList.add('active');
+        stopBtn.style.display = 'inline-block';
+        synth.speak(utterance);
+      };
+
+      speakBtn.addEventListener('click', () => {
+        if (isNarrating) {
+          stopSpeech();
+        } else {
+          let allText = "";
+          const currentLang = localStorage.getItem('app-language') || 'es';
+          allText += (currentLang === 'en' ? "User Manual. " : "Manual de Uso. ");
+          
+          const steps = document.querySelectorAll('.easy-step');
+          steps.forEach(step => {
+            allText += step.getAttribute('data-text') + " ";
+          });
+          speakText(allText);
+        }
+      });
+
+      stopBtn.addEventListener('click', stopSpeech);
+
+      // 2. Clickable steps LSE interaction
+      const steps = document.querySelectorAll('.easy-step');
+      const lseEmoji = document.getElementById('lse-avatar-emoji');
+      const lseStatus = document.getElementById('lse-status-text');
+      const lseChapter = document.getElementById('lse-chapter-badge');
+
+      const lseActions = {
+        '1': { emoji: '🙌' },
+        '2': { emoji: '🤝' },
+        '3': { emoji: '✍️' },
+        '4': { emoji: '👍' },
+        '5': { emoji: '👎' }
+      };
+
+      steps.forEach(step => {
+        step.addEventListener('click', () => {
+          steps.forEach(s => s.classList.remove('active'));
+          step.classList.add('active');
+
+          const stepId = step.getAttribute('data-step');
+          const stepText = step.getAttribute('data-text');
+
+          // Read individual step
+          speakText(stepText);
+
+          // Update LSE visual interpreter simulation (text updates via language.js updateUIForLanguage)
+          const currentLang = localStorage.getItem('app-language') || 'es';
+          const action = lseActions[stepId];
+          if (action) {
+            lseEmoji.innerHTML = action.emoji;
+            
+            // Trigger language-based LSE text
+            if (window.updateUIForLanguage) {
+              window.updateUIForLanguage(currentLang);
+            }
+            
+            // Trigger quick animation pop
+            lseEmoji.style.animation = 'none';
+            setTimeout(() => {
+              lseEmoji.style.animation = 'lse-wave 1.5s ease-in-out infinite';
+            }, 10);
+          }
+        });
+      });
+
+      // 3. Braille Transliterator
+      const brailleInput = document.getElementById('braille-input-field');
+      const brailleOutput = document.getElementById('braille-output-text');
+      
+      const brailleMap = {
+        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+        'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+        'á': '⠷', 'é': '⠮', 'í': '⠊', 'ó': '⠬', 'ú': '⠾', 'ñ': '⠻',
+        '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔', '0': '⠴',
+        ' ': '⠠', '.': '⠤', ',': '⠠', '?': '⠦', '!': '⠮', '-': '⠤'
+      };
+
+      const transliterateToBraille = (text) => {
+        return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
+      };
+
+      brailleInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        brailleOutput.innerHTML = transliterateToBraille(val) || '⠠';
+      });
+
+      // 4. Pictograms Search connecting to official ARASAAC API
+      const pictoSearch = document.getElementById('picto-search-field');
+      const pictoGrid = document.getElementById('picto-results-grid');
+
+      const defaultSearchTerms = {
+        es: [
+          { query: 'añadir', label: 'Crear' },
+          { query: 'editar', label: 'Editar' },
+          { query: 'mover', label: 'Mover' },
+          { query: 'completado', label: 'Hecho' },
+          { query: 'borrar', label: 'Borrar' }
+        ],
+        en: [
+          { query: 'add', label: 'Create' },
+          { query: 'edit', label: 'Edit' },
+          { query: 'move', label: 'Move' },
+          { query: 'completed', label: 'Done' },
+          { query: 'delete', label: 'Delete' }
+        ]
+      };
+
+      const pictoVocabulary = {
+        es: {
+          'casa': { symbol: '🏠', name: 'Casa' },
+          'hogar': { symbol: '🏠', name: 'Hogar' },
+          'familia': { symbol: '👪', name: 'Familia' },
+          'personal': { symbol: '👤', name: 'Personal' },
+          'social': { symbol: '👥', name: 'Social' },
+          'amigos': { symbol: '🎉', name: 'Amigos' },
+          'trabajo': { symbol: '💼', name: 'Trabajo' },
+          'laboral': { symbol: '💼', name: 'Laboral' },
+          'ocio': { symbol: '🎭', name: 'Ocio' },
+          'juego': { symbol: '🎮', name: 'Juego' },
+          'salud': { symbol: '❤️', name: 'Salud' },
+          'medico': { symbol: '🏥', name: 'Médico' },
+          'dinero': { symbol: '💰', name: 'Dinero' },
+          'finanzas': { symbol: '💰', name: 'Finanzas' },
+          'comida': { symbol: '🍏', name: 'Comida' },
+          'fruta': { symbol: '🍎', name: 'Fruta' },
+          'tiempo': { symbol: '⏱️', name: 'Tiempo' },
+          'reloj': { symbol: '⏳', name: 'Reloj' },
+          'calendario': { symbol: '📅', name: 'Fecha' },
+          'correcto': { symbol: '✅', name: 'Hecho' },
+          'incorrecto': { symbol: '❌', name: 'Pendiente' },
+          'escribir': { symbol: '✏️', name: 'Escribir' },
+          'papelera': { symbol: '🗑️', name: 'Borrar' },
+          'persona': { symbol: '👤', name: 'Persona' },
+          'escuchar': { symbol: '🔊', name: 'Escuchar' },
+          'hablar': { symbol: '🗣️', name: 'Hablar' },
+          'signos': { symbol: '🧏', name: 'Signos' }
+        },
+        en: {
+          'house': { symbol: '🏠', name: 'House' },
+          'home': { symbol: '🏠', name: 'Home' },
+          'family': { symbol: '👪', name: 'Family' },
+          'personal': { symbol: '👤', name: 'Personal' },
+          'social': { symbol: '👥', name: 'Social' },
+          'friends': { symbol: '🎉', name: 'Friends' },
+          'work': { symbol: '💼', name: 'Work' },
+          'job': { symbol: '💼', name: 'Job' },
+          'leisure': { symbol: '🎭', name: 'Leisure' },
+          'game': { symbol: '🎮', name: 'Game' },
+          'health': { symbol: '❤️', name: 'Health' },
+          'doctor': { symbol: '🏥', name: 'Doctor' },
+          'money': { symbol: '💰', name: 'Money' },
+          'finance': { symbol: '💰', name: 'Finance' },
+          'food': { symbol: '🍏', name: 'Food' },
+          'fruit': { symbol: '🍎', name: 'Fruit' },
+          'time': { symbol: '⏱️', name: 'Time' },
+          'clock': { symbol: '⏳', name: 'Clock' },
+          'calendar': { symbol: '📅', name: 'Calendar' },
+          'correct': { symbol: '✅', name: 'Done' },
+          'incorrect': { symbol: '❌', name: 'Pending' },
+          'write': { symbol: '✏️', name: 'Write' },
+          'trash': { symbol: '🗑️', name: 'Delete' },
+          'person': { symbol: '👤', name: 'Person' },
+          'listen': { symbol: '🔊', name: 'Listen' },
+          'speak': { symbol: '🗣️', name: 'Speak' },
+          'signs': { symbol: '🧏', name: 'Signs' }
+        }
+      };
+
+      const renderFallbackPictos = (filterText, lang) => {
+        pictoGrid.innerHTML = '';
+        const dict = pictoVocabulary[lang] || pictoVocabulary.es;
+        let found = false;
+        
+        for (const [key, value] of Object.entries(dict)) {
+          if (key.includes(filterText) || value.name.toLowerCase().includes(filterText)) {
+            const card = document.createElement('div');
+            card.className = 'picto-card';
+            card.title = value.name;
+            card.innerHTML = `<span class="picto-symbol">${value.symbol}</span><span class="picto-name">${value.name}</span>`;
+            pictoGrid.appendChild(card);
+            found = true;
+          }
+        }
+        
+        if (!found) {
+          const empty = document.createElement('div');
+          empty.style.cssText = 'grid-column: 1 / -1; text-align: center; font-size: 0.85rem; opacity: 0.6; padding: 1rem;';
+          empty.innerHTML = lang === 'en' 
+            ? `No pictograms found for "${filterText}"`
+            : `No se encontraron pictogramas para "${filterText}"`;
+          pictoGrid.appendChild(empty);
+        }
+      };
+
+      const loadDefaultPictograms = (lang) => {
+        const terms = defaultSearchTerms[lang] || defaultSearchTerms.es;
+        pictoGrid.innerHTML = '';
+        
+        // Emojis mapping for fallback
+        const emojis = {
+          'Crear': '➕', 'Create': '➕',
+          'Editar': '✏️', 'Edit': '✏️',
+          'Mover': '🔄', 'Move': '🔄',
+          'Hecho': '✅', 'Done': '✅',
+          'Borrar': '🗑️', 'Delete': '🗑️'
+        };
+
+        terms.forEach(t => {
+          const card = document.createElement('div');
+          card.className = 'picto-card';
+          card.title = t.label;
+          const fallbackEmoji = emojis[t.label] || '❓';
+          
+          card.innerHTML = `<span class="picto-symbol">${fallbackEmoji}</span><span class="picto-name">${t.label}</span>`;
+          pictoGrid.appendChild(card);
+          
+          // Asynchronously fetch from ARASAAC API
+          const apiLang = lang === 'en' ? 'en' : 'es';
+          fetch(`https://api.arasaac.org/api/pictograms/${apiLang}/search/${encodeURIComponent(t.query)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (Array.isArray(data) && data.length > 0) {
+                const id = data[0]._id || data[0].idPictogram;
+                if (id) {
+                  const imgUrl = `https://api.arasaac.org/api/pictograms/${id}`;
+                  const symbolSpan = card.querySelector('.picto-symbol');
+                  if (symbolSpan) {
+                    symbolSpan.innerHTML = `<img src="${imgUrl}" class="picto-img" alt="${t.label}">`;
+                  }
+                }
+              }
+            })
+            .catch(err => {
+              console.warn('ARASAAC API error for term: ' + t.query, err);
+            });
+        });
+      };
+
+      let searchTimeout = null;
+      const performSearch = (query) => {
+        const lang = localStorage.getItem('app-language') || 'es';
+        const searchVal = query.toLowerCase().trim();
+        
+        if (!searchVal) {
+          loadDefaultPictograms(lang);
+          return;
+        }
+        
+        pictoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; font-size: 0.85rem; opacity: 0.6; padding: 1rem;">${lang === 'en' ? 'Loading...' : 'Cargando...'}</div>`;
+        
+        const apiLang = lang === 'en' ? 'en' : 'es';
+        fetch(`https://api.arasaac.org/api/pictograms/${apiLang}/search/${encodeURIComponent(searchVal)}`)
+          .then(res => res.json())
+          .then(data => {
+            pictoGrid.innerHTML = '';
+            if (Array.isArray(data) && data.length > 0) {
+              const items = data.slice(0, 12); // Limit to top 12 results
+              items.forEach(item => {
+                const id = item._id || item.idPictogram;
+                const keyword = item.keywords && item.keywords[0] ? item.keywords[0].keyword : item.keyword || searchVal;
+                
+                const card = document.createElement('div');
+                card.className = 'picto-card';
+                card.title = keyword;
+                
+                const imgUrl = `https://api.arasaac.org/api/pictograms/${id}`;
+                card.innerHTML = `
+                  <span class="picto-symbol">
+                    <img src="${imgUrl}" class="picto-img" alt="${keyword}">
+                  </span>
+                  <span class="picto-name">${keyword}</span>
+                `;
+                pictoGrid.appendChild(card);
+              });
+            } else {
+              renderFallbackPictos(searchVal, lang);
+            }
+          })
+          .catch(err => {
+            console.warn('ARASAAC search API failed, falling back to local emojis:', err);
+            renderFallbackPictos(searchVal, lang);
+          });
+      };
+
+      pictoSearch.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          performSearch(e.target.value);
+        }, 400);
+      });
+
+      // Load initial pictograms based on active language
+      const activeLang = localStorage.getItem('app-language') || 'es';
+      loadDefaultPictograms(activeLang);
+
+      // Listen for language changes to reload
+      window.addEventListener('languagechanged', (e) => {
+        loadDefaultPictograms(e.detail.language);
+        // Clear input
+        pictoSearch.value = '';
+      });
+
+      // Stop speech on page unload/navigate
+      window.addEventListener('beforeunload', () => {
+        if (synth) synth.cancel();
+      });
+    });
+  </script>
 </body>
 </html>

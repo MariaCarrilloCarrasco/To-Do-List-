@@ -1,15 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share</title>
-  <link rel="stylesheet" href="./style.css">
-  <script src="../../js/theme.js"></script>
+  <title data-translate="share_title">Compartir</title>
+  <link rel="stylesheet" href="../../css/style.css?v=3">
+  <link rel="stylesheet" href="./style.css?v=3">
+  <script src="../../js/theme.js?v=3"></script>
+  <script src="../../js/language.js" defer></script>
 </head>
 <body>
-  <h1>Share</h1>
-  <p>This is the view where you can share your task list with others.</p>
-  <p><a href="../../index.html">Back to home</a></p>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_home">Inicio</a>
+      <a href="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+      <a href="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+      <a href="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+      <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+    </div>
+  </nav>
+
+  <main>
+    <h1 data-translate="share_title" style="text-align: center;">Compartir</h1>
+    <p data-translate="share_desc" style="text-align: center; max-width: 600px; margin: 0.5rem auto 1.5rem auto;">Esta es la vista para compartir tu lista de tareas con otras personas.</p>
+    
+    <div class="share-card">
+      <label for="sharePreview" class="preview-title" data-translate="share_preview_title">Vista previa del mensaje a compartir:</label>
+      <textarea id="sharePreview" class="share-textarea" readonly></textarea>
+      
+      <button type="button" id="copyBtn" class="copy-btn" data-translate="share_copy_btn">📋 Copiar al Portapapeles</button>
+      
+      <div class="social-grid">
+        <a id="shareWA" href="#" target="_blank" class="social-btn btn-whatsapp">
+          <span>💬</span> <span data-translate="share_whatsapp">Compartir por WhatsApp</span>
+        </a>
+        <a id="shareTW" href="#" target="_blank" class="social-btn btn-twitter">
+          <span>🐦</span> <span data-translate="share_twitter">Compartir en X / Twitter</span>
+        </a>
+        <a id="shareTG" href="#" target="_blank" class="social-btn btn-telegram">
+          <span>✈️</span> <span data-translate="share_telegram">Compartir por Telegram</span>
+        </a>
+        <a id="shareFB" href="#" target="_blank" class="social-btn btn-facebook">
+          <span>👥</span> <span data-translate="share_facebook">Compartir en Facebook</span>
+        </a>
+        <a id="shareEmail" href="#" class="social-btn btn-email">
+          <span>✉️</span> <span data-translate="share_email">Compartir por Correo</span>
+        </a>
+      </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 2rem;">
+      <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="back_to_home" style="display: inline-block;">Volver al inicio</a>
+    </p>
+  </main>
+  
+  <script src="./compartir.js" defer></script>
 </body>
 </html>

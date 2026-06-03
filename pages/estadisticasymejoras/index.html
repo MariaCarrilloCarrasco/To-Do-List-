@@ -1,22 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas y Mejoras</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="../../js/theme.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="stats_title">Estadísticas y Mejoras</title>
+  <link rel="stylesheet" href="../../css/style.css?v=3">
+  <link rel="stylesheet" href="./style.css">
+  <script src="../../js/theme.js?v=3"></script>
+  <script src="../../js/language.js" defer></script>
 </head>
 <body>
-    <h1>Estadísticas y Mejoras</h1>
-    <p>Here you can find the statistics and improvements for your projects.</p>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_home">Inicio</a>
+      <a href="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+      <a href="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+      <a href="../compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+      <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+    </div>
+  </nav>
 
-    <div class="progress-circle" id="progress">
-        <span id="progressValue">0%</span>
+  <main>
+    <h1 data-translate="stats_title">Estadísticas y Mejoras</h1>
+    <p data-translate="stats_desc">Aquí puedes encontrar el resumen y métricas de tus tareas.</p>
+
+    <div class="stats-container">
+      
+      <!-- Left: Circular Progress Glass Card -->
+      <section class="accessibility-card circle-chart-card">
+        <h2 data-translate="kpi_desc_circle">Porcentaje de progreso</h2>
+        <div class="circle-container">
+          <div class="progress-circle" id="progress">
+            <span id="progressValue">0%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: KPI cards grid -->
+      <section class="kpi-grid">
+        <!-- Card 1: Registered -->
+        <div class="kpi-card total-tasks-card">
+          <div class="kpi-icon">📋</div>
+          <div class="kpi-details">
+            <h3 data-translate="kpi_total">Total Registradas</h3>
+            <span class="kpi-value" id="count-total">0</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Completed -->
+        <div class="kpi-card done-tasks-card">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-details">
+            <h3 data-translate="kpi_done">Total Realizadas</h3>
+            <span class="kpi-value" id="count-done">0</span>
+          </div>
+        </div>
+
+        <!-- Card 3: In Progress -->
+        <div class="kpi-card progress-tasks-card">
+          <div class="kpi-icon">⏳</div>
+          <div class="kpi-details">
+            <h3 data-translate="kpi_progress">En Proceso</h3>
+            <span class="kpi-value" id="count-progress">0</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Pending -->
+        <div class="kpi-card pending-tasks-card">
+          <div class="kpi-icon">❌</div>
+          <div class="kpi-details">
+            <h3 data-translate="kpi_pending">Pendientes</h3>
+            <span class="kpi-value" id="count-pending">0</span>
+          </div>
+        </div>
+      </section>
+      
     </div>
 
-    <p><a href="../../index.html">Back to home</a></p>
+    <!-- Bottom: Peak hours bar chart -->
+    <section class="accessibility-card bar-chart-section" style="margin-top: 1.5rem;">
+      <h2 data-translate="chart_bar_title">Horas de mayor registro de tareas</h2>
+      <p style="font-size: 0.88rem; opacity: 0.8; margin-top: 0;" data-translate="chart_bar_desc">Representación de las horas del día con mayor volumen de creación.</p>
+      
+      <div class="chart-wrapper">
+        <div class="chart-y-axis">
+          <span>Max</span>
+          <span>50%</span>
+          <span>0</span>
+        </div>
+        <div class="chart-container" id="bar-chart-container">
+          <!-- 24 bars injected dynamically here -->
+        </div>
+      </div>
+    </section>
 
-    <script src="../../js/estadisticas.js" defer></script>
+  </main>
+
+  <script src="../../js/estadisticas.js" defer></script>
 </body>
 </html>

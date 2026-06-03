@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi App To Do</title>
     <link rel="stylesheet" href="css/style.css?v=3">
     <script src="js/theme.js?v=3"></script>
+    <script src="js/language.js" defer></script>
 </head>
 <body>
     <nav>
@@ -14,100 +15,165 @@
             <span class="brand-name">MiiActToDo</span>
         </div>
         <div class="nav-actions">
-            <a href="pages/about/index.html" class="nav-btn nav-btn-about">About</a>
-            <a href="pages/tablero/index.html" class="nav-btn nav-btn-tablero">Tablero</a>
-            <a href="pages/estadisticasymejoras/index.html" class="nav-btn nav-btn-stats">Estadísticas y mejoras</a>
-            <a href="pages/compartir/index.html" class="nav-btn nav-btn-share">Compartir</a>
-            <button type="button" class="nav-btn nav-btn-download" data-action="download-board">Download</button>
+            <a href="pages/about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+            <a href="pages/tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+            <a href="pages/estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+            <a href="pages/compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+            <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
         </div>
     </nav>
 
     <main>
         <section class="board-intro">
-            <h1>Tablero de tareas</h1>
-            <p>En el cuerpo principal tienes ahora tu tablero con tres columnas: <strong>Done</strong>, <strong>Not Done</strong> e <strong>In Progress</strong>. Más abajo verás los ámbitos desplegables.</p>
+            <h1 data-translate="intro_title">Tablero de tareas</h1>
+            <p data-translate="intro_desc">En el cuerpo principal tienes tu tablero con tres columnas: Hecho, Pendiente y En progreso. Más abajo verás los ámbitos desplegables.</p>
         </section>
 
         <section class="columns">
-            <article class="column">
-                <h2>Done</h2>
-                <ul>
-                    <li>Task 1</li>
-                    <li>Task 2</li>
-                    <li>Task 3</li>
+            <article class="column" data-column="done">
+                <h2 data-translate="col_done">Hecho</h2>
+                <ul class="task-list">
+                    <!-- Dynamic tasks will be rendered here -->
                 </ul>
             </article>
-            <article class="column">
-                <h2>Not Done</h2>
-                <ul>
-                    <li>Task 4</li>
-                    <li>Task 5</li>
-                    <li>Task 6</li>
+            <article class="column" data-column="not-done">
+                <h2 data-translate="col_not_done">Pendiente</h2>
+                <ul class="task-list">
+                    <!-- Dynamic tasks will be rendered here -->
                 </ul>
             </article>
-            <article class="column">
-                <h2>In Progress</h2>
-                <ul>
-                    <li>Task 7</li>
-                    <li>Task 8</li>
-                    <li>Task 9</li>
+            <article class="column" data-column="in-progress">
+                <h2 data-translate="col_in_progress">En progreso</h2>
+                <ul class="task-list">
+                    <!-- Dynamic tasks will be rendered here -->
                 </ul>
             </article>
         </section>
 
         <section class="ambitos">
-            <h2>Ámbitos</h2>
-            <p>Esta opción de Ámbitos queda reservada y sin desarrollar por ahora.</p>
+            <h2 data-translate="ambitos_section_title">Ámbitos</h2>
             <div class="ambitos-buttons">
-                <button type="button" data-ambito="familia">Familia</button>
-                <button type="button" data-ambito="personal">Personal</button>
-                <button type="button" data-ambito="social">Social</button>
-                <button type="button" data-ambito="laboral">Laboral</button>
-                <button type="button" data-ambito="ocio">Ocio</button>
-                <button type="button" data-ambito="salud">Salud</button>
-                <button type="button" data-ambito="hogar">Hogar</button>
-                <button type="button" data-ambito="finanzas">Finanzas</button>
+                <button type="button" data-ambito="familia" data-translate="ambitos_familia">👪 Familia</button>
+                <button type="button" data-ambito="personal" data-translate="ambitos_personal">👤 Personal</button>
+                <button type="button" data-ambito="social" data-translate="ambitos_social">👥 Social</button>
+                <button type="button" data-ambito="laboral" data-translate="ambitos_laboral">💼 Laboral</button>
+                <button type="button" data-ambito="ocio" data-translate="ambitos_ocio">🎭 Ocio</button>
+                <button type="button" data-ambito="salud" data-translate="ambitos_salud">❤️ Salud</button>
+                <button type="button" data-ambito="hogar" data-translate="ambitos_hogar">🏠 Hogar</button>
+                <button type="button" data-ambito="finanzas" data-translate="ambitos_finanzas">💰 Finanzas</button>
+            </div>
+            
+            <div class="ambitos-details" style="margin-top: 1rem;">
+                <details data-ambito-section="familia">
+                    <summary data-translate="ambitos_familia">👪 Familia</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="familia"></ul>
+                </details>
+                <details data-ambito-section="personal">
+                    <summary data-translate="ambitos_personal">👤 Personal</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="personal"></ul>
+                </details>
+                <details data-ambito-section="social">
+                    <summary data-translate="ambitos_social">👥 Social</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="social"></ul>
+                </details>
+                <details data-ambito-section="laboral">
+                    <summary data-translate="ambitos_laboral">💼 Laboral</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="laboral"></ul>
+                </details>
+                <details data-ambito-section="ocio">
+                    <summary data-translate="ambitos_ocio">🎭 Ocio</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="ocio"></ul>
+                </details>
+                <details data-ambito-section="salud">
+                    <summary data-translate="ambitos_salud">❤️ Salud</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="salud"></ul>
+                </details>
+                <details data-ambito-section="hogar">
+                    <summary data-translate="ambitos_hogar">🏠 Hogar</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="hogar"></ul>
+                </details>
+                <details data-ambito-section="finanzas">
+                    <summary data-translate="ambitos_finanzas">💰 Finanzas</summary>
+                    <ul class="criteria-task-list" data-criteria-key="ambito" data-criteria-val="finanzas"></ul>
+                </details>
             </div>
         </section>
 
         <section class="detalles">
-            <h2>Otros criterios</h2>
+            <h2 data-translate="otros_criterios_title">Otros criterios</h2>
             <details>
-                <summary>Urgencia</summary>
-                <ul>
-                    <li>Alta urgencia</li>
-                    <li>Media urgencia</li>
-                    <li>Baja urgencia</li>
-                </ul>
+                <summary data-translate="criterio_urgencia">🚨 Urgencia</summary>
+                <div class="criteria-breakdown">
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="urgencia_alta">🔴 Alta urgencia</h4>
+                        <ul class="criteria-task-list" data-criteria-key="urgencia" data-criteria-val="alta"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="urgencia_media">🟡 Media urgencia</h4>
+                        <ul class="criteria-task-list" data-criteria-key="urgencia" data-criteria-val="media"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="urgencia_baja">🟢 Baja urgencia</h4>
+                        <ul class="criteria-task-list" data-criteria-key="urgencia" data-criteria-val="baja"></ul>
+                    </div>
+                </div>
             </details>
             <details>
-                <summary>Importancia</summary>
-                <ul>
-                    <li>Muy importante</li>
-                    <li>Importante</li>
-                    <li>Menos importante</li>
-                </ul>
+                <summary data-translate="criterio_importancia">⭐ Importancia</summary>
+                <div class="criteria-breakdown">
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="importancia_muy">🔥 Muy importante</h4>
+                        <ul class="criteria-task-list" data-criteria-key="importancia" data-criteria-val="muy"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="importancia_imp">✨ Importante</h4>
+                        <ul class="criteria-task-list" data-criteria-key="importancia" data-criteria-val="importante"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="importancia_menos">💤 Menos importante</h4>
+                        <ul class="criteria-task-list" data-criteria-key="importancia" data-criteria-val="menos"></ul>
+                    </div>
+                </div>
             </details>
             <details>
-                <summary>Dificultad</summary>
-                <ul>
-                    <li>Alta dificultad</li>
-                    <li>Media dificultad</li>
-                    <li>Baja dificultad</li>
-                </ul>
+                <summary data-translate="criterio_dificultad">⚙️ Dificultad</summary>
+                <div class="criteria-breakdown">
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="dificultad_alta">🧗 Alta dificultad</h4>
+                        <ul class="criteria-task-list" data-criteria-key="dificultad" data-criteria-val="alta"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="dificultad_media">⚙️ Media dificultad</h4>
+                        <ul class="criteria-task-list" data-criteria-key="dificultad" data-criteria-val="media"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="dificultad_baja">🌱 Baja dificultad</h4>
+                        <ul class="criteria-task-list" data-criteria-key="dificultad" data-criteria-val="baja"></ul>
+                    </div>
+                </div>
             </details>
             <details>
-                <summary>Tiempo</summary>
-                <ul>
-                    <li>Poco: 2 días</li>
-                    <li>Medio: 4 días</li>
-                    <li>Largo: más de una semana</li>
-                </ul>
+                <summary data-translate="criterio_tiempo">📅 Tiempo</summary>
+                <div class="criteria-breakdown">
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="tiempo_poco">⏱️ Poco: 2 días</h4>
+                        <ul class="criteria-task-list" data-criteria-key="tiempo" data-criteria-val="poco"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="tiempo_medio">⏳ Medio: 4 días</h4>
+                        <ul class="criteria-task-list" data-criteria-key="tiempo" data-criteria-val="medio"></ul>
+                    </div>
+                    <div class="criteria-group" style="margin-top: 0.5rem;">
+                        <h4 data-translate="tiempo_largo">📅 Largo: más de una semana</h4>
+                        <ul class="criteria-task-list" data-criteria-key="tiempo" data-criteria-val="largo"></ul>
+                    </div>
+                </div>
             </details>
         </section>
     </main>
 
     <script src="js/nav.js" defer></script>
     <script src="js/ambitos.js" defer></script>
+    <script src="js/tasks.js" defer></script>
 </body>
 </html>
