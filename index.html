@@ -252,6 +252,10 @@
         }
 
         btn.addEventListener('click', () => {
+          const lang = localStorage.getItem('app-language') || 'es';
+          const titleShow = lang === 'en' ? 'Show instructions' : 'Mostrar instrucciones';
+          const titleHide = lang === 'en' ? 'Hide instructions' : 'Ocultar instrucciones';
+
           const isVisible = section.style.display !== 'none';
           if (isVisible) {
             // Hide with smooth fade
@@ -261,7 +265,7 @@
               section.style.display = 'none';
               section.style.opacity = '';
             }, 300);
-            btn.title = 'Mostrar instrucciones';
+            btn.title = titleShow;
             btn.style.opacity = '0.5';
             localStorage.setItem('instructions-hidden', 'true');
           } else {
@@ -271,11 +275,19 @@
             section.style.transition = 'opacity 0.3s ease';
             setTimeout(() => { section.style.opacity = '1'; }, 10);
             setTimeout(() => { section.style.transition = ''; section.style.opacity = ''; }, 320);
-            btn.title = 'Ocultar instrucciones';
+            btn.title = titleHide;
             btn.style.opacity = '1';
             localStorage.setItem('instructions-hidden', 'false');
           }
         });
+        
+        // Initialize tooltip based on language
+        const lang = localStorage.getItem('app-language') || 'es';
+        if (localStorage.getItem('instructions-hidden') === 'true') {
+            btn.title = lang === 'en' ? 'Show instructions' : 'Mostrar instrucciones';
+        } else {
+            btn.title = lang === 'en' ? 'Hide instructions' : 'Ocultar instrucciones';
+        }
       });
     </script>
 </body>

@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'task-9', text: 'Estudiar temario oposiciones', column: 'in-progress', ambito: 'laboral', urgencia: 'baja', importancia: 'menos', dificultad: 'alta', tiempo: 'largo', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Temas del 10 al 15 completos', dateType: 'range', dateStart: '2026-06-01', dateEnd: '2026-06-07', timeType: 'range', timeStart: '08:00', timeEnd: '11:00', taskEmoji: '' }
   ];
 
-  const currentDbVersion = 'v5';
+  const currentDbVersion = 'v6';
   let tasks = JSON.parse(localStorage.getItem('todo-tasks'));
   const dbVersion = localStorage.getItem('todo-tasks-version');
   const needsMigration = !tasks || !Array.isArray(tasks) || tasks.length === 0 || dbVersion !== currentDbVersion;
@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let editingTaskId = null;
   let activeAddColumn = null;
+  let currentAmbitoFilter = null;
 
   // Helper functions
   const saveTasks = () => {
@@ -188,260 +189,320 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const bindFormEvents = (container) => {
-    const labels = getDynamicLabels();
-
-    // Date type switcher
-    const dateTypeSelect = container.querySelector('.task-date-type-select');
-    const dateStartWrapper = container.querySelector('.date-start-wrapper');
-    const dateEndWrapper = container.querySelector('.date-end-wrapper');
-    const dateStartLabel = container.querySelector('.date-start-label');
-
-    if (dateTypeSelect && dateStartWrapper && dateEndWrapper && dateStartLabel) {
-      dateTypeSelect.addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (val === '') {
-          dateStartWrapper.classList.add('hidden');
-          dateEndWrapper.classList.add('hidden');
-        } else if (val === 'single') {
-          dateStartWrapper.classList.remove('hidden');
-          dateEndWrapper.classList.add('hidden');
-          dateStartLabel.textContent = labels.date_start_label;
-        } else if (val === 'range') {
-          dateStartWrapper.classList.remove('hidden');
-          dateEndWrapper.classList.remove('hidden');
-          dateStartLabel.textContent = labels.date_start_range;
-        }
-      });
-    }
-
-    // Time type switcher
-    const timeTypeSelect = container.querySelector('.task-time-type-select');
-    const timeStartWrapper = container.querySelector('.time-start-wrapper');
-    const timeEndWrapper = container.querySelector('.time-end-wrapper');
-    const timeStartLabel = container.querySelector('.time-start-label');
-
-    if (timeTypeSelect && timeStartWrapper && timeEndWrapper && timeStartLabel) {
-      timeTypeSelect.addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (val === '') {
-          timeStartWrapper.classList.add('hidden');
-          timeEndWrapper.classList.add('hidden');
-        } else if (val === 'single') {
-          timeStartWrapper.classList.remove('hidden');
-          timeEndWrapper.classList.add('hidden');
-          timeStartLabel.textContent = labels.time_start_label;
-        } else if (val === 'range') {
-          timeStartWrapper.classList.remove('hidden');
-          timeEndWrapper.classList.remove('hidden');
-          timeStartLabel.textContent = labels.time_start_range;
-        }
-      });
-    }
-
-    // Watchers to rebuild emoticon options on the fly
-    const selectsToWatch = [
-      container.querySelector('.task-ambito-select'),
-      container.querySelector('.task-urgencia-select'),
-      container.querySelector('.task-importancia-select'),
-      container.querySelector('.task-dificultad-select')
-    ];
-
-    selectsToWatch.forEach(sel => {
-      if (sel) {
-        sel.addEventListener('change', () => {
-          updateEmojiOptions(container);
+    // Helper: highlight selected radio label visually
+    const bindRadioHighlight = (radioClass, activeColor = '#a78bfa', activeBg = 'rgba(167,139,250,0.18)') => {
+      const radios = container.querySelectorAll(`.${radioClass}`);
+      radios.forEach(r => {
+        r.addEventListener('change', () => {
+          radios.forEach(rb => {
+            const lbl = rb.closest('label');
+            if (!lbl) return;
+            if (rb.checked) {
+              lbl.style.borderColor = activeColor;
+              lbl.style.background = activeBg;
+              lbl.style.color = activeColor;
+            } else {
+              lbl.style.borderColor = 'rgba(255,255,255,0.1)';
+              lbl.style.background = 'rgba(255,255,255,0.04)';
+              lbl.style.color = '#94a3b8';
+            }
+          });
         });
-      }
+      });
+    };
+
+    bindRadioHighlight('task-column-radio');
+    bindRadioHighlight('task-ambito-radio');
+    bindRadioHighlight('task-urgencia-radio');
+    bindRadioHighlight('task-importancia-radio');
+    bindRadioHighlight('task-dificultad-radio');
+
+    // When typing in the custom ámbito field, deselect radio
+    const ambitoCustom = container.querySelector('.task-ambito-custom');
+    if (ambitoCustom) {
+      ambitoCustom.addEventListener('input', () => {
+        if (ambitoCustom.value.trim()) {
+          const radios = container.querySelectorAll('.task-ambito-radio');
+          radios.forEach(r => {
+            r.checked = false;
+            const lbl = r.closest('label');
+            if (lbl) {
+              lbl.style.borderColor = 'rgba(255,255,255,0.1)';
+              lbl.style.background = 'rgba(255,255,255,0.04)';
+              lbl.style.color = '#94a3b8';
+            }
+          });
+        }
+      });
+    }
+
+    // Date type radio → show/hide date fields
+    const dateRadios = container.querySelectorAll('.task-date-type-radio');
+    const dateFieldsRow = container.querySelector('.date-fields-row');
+    const dateEndField = container.querySelector('.date-end-field');
+
+    dateRadios.forEach(r => {
+      r.addEventListener('change', () => {
+        const val = r.value;
+        if (val === '') {
+          if (dateFieldsRow) dateFieldsRow.style.display = 'none';
+        } else {
+          if (dateFieldsRow) dateFieldsRow.style.display = 'flex';
+          if (dateEndField) dateEndField.style.display = val === 'range' ? '' : 'none';
+        }
+      });
+    });
+
+    // Time type radio → show/hide time fields
+    const timeRadios = container.querySelectorAll('.task-time-type-radio');
+    const timeFieldsRow = container.querySelector('.time-fields-row');
+    const timeEndField = container.querySelector('.time-end-field');
+
+    timeRadios.forEach(r => {
+      r.addEventListener('change', () => {
+        const val = r.value;
+        if (val === '') {
+          if (timeFieldsRow) timeFieldsRow.style.display = 'none';
+        } else {
+          if (timeFieldsRow) timeFieldsRow.style.display = 'flex';
+          if (timeEndField) timeEndField.style.display = val === 'range' ? '' : 'none';
+        }
+      });
     });
   };
 
+
   const getFormHtml = (taskObj = {}, isEdit = false) => {
     const labels = getDynamicLabels();
-    const cardColor = taskObj.cardColor || '#ffffff';
+    const cardColor = taskObj.cardColor || '#170e30';
     let cardTextColor = taskObj.cardTextColor;
     if (!cardTextColor) {
       const lum = getLuminance(cardColor);
       cardTextColor = lum < 0.5 ? '#ffffff' : '#1f2937';
     }
     const fontSize = taskObj.fontSize || 'medium';
-    
-    const activeEmojis = getActiveEmojisList(taskObj);
-    let emojiOptions = `<option value="">${labels.none}</option>`;
-    activeEmojis.forEach(item => {
-      const isSel = taskObj.taskEmoji === item.char;
-      emojiOptions += `<option value="${item.char}" ${isSel ? 'selected' : ''}>${item.char} (${item.type})</option>`;
-    });
+    const lang = localStorage.getItem('app-language') || 'es';
+
+    const fldStyle = `width:100%;box-sizing:border-box;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#f1f5f9;font-size:0.92rem;font-family:inherit;outline:none;`;
+    const lblStyle = `display:block;font-size:0.75rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;`;
+    const sectionStyle = `margin-bottom:1rem;`;
+    const gridStyle = `display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;`;
+    const grid3Style = `display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;`;
+
+    // State column selector
+    const col = taskObj.column || 'not-done';
+    const stateOptions = [
+      { val: 'not-done',    emoji: '🕐', label: lang === 'en' ? 'Pending'     : 'Pendiente'  },
+      { val: 'in-progress', emoji: '⚡', label: lang === 'en' ? 'In Progress' : 'En Proceso' },
+      { val: 'done',        emoji: '✅', label: lang === 'en' ? 'Done'        : 'Hecho'      },
+    ];
+
+    const stateButtons = stateOptions.map(s => `
+      <label class="state-radio-label" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;border-radius:10px;border:2px solid ${col === s.val ? '#a78bfa' : 'rgba(255,255,255,0.1)'};background:${col === s.val ? 'rgba(167,139,250,0.15)' : 'rgba(255,255,255,0.04)'};font-size:0.78rem;font-weight:600;color:${col === s.val ? '#a78bfa' : '#94a3b8'};transition:all 0.2s;text-align:center;">
+        <input type="radio" name="task-state" class="task-column-radio" value="${s.val}" ${col === s.val ? 'checked' : ''} style="display:none;">
+        <span style="font-size:1.3rem;">${s.emoji}</span>
+        ${s.label}
+      </label>
+    `).join('');
+
+    // Ámbito buttons
+    const ambitoList = [
+      { val:'familia',  emoji:'👪', label: lang==='en'?'Family':'Familia'  },
+      { val:'personal', emoji:'👤', label: 'Personal'                       },
+      { val:'social',   emoji:'👥', label: 'Social'                         },
+      { val:'laboral',  emoji:'💼', label: lang==='en'?'Work':'Laboral'    },
+      { val:'ocio',     emoji:'🎭', label: lang==='en'?'Leisure':'Ocio'    },
+      { val:'salud',    emoji:'❤️', label: lang==='en'?'Health':'Salud'    },
+      { val:'hogar',    emoji:'🏠', label: lang==='en'?'Home':'Hogar'      },
+      { val:'finanzas', emoji:'💰', label: lang==='en'?'Finance':'Finanzas'},
+    ];
+    const ambitoButtons = ambitoList.map(a => `
+      <label class="ambito-radio-label" style="cursor:pointer;display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;border:1.5px solid ${taskObj.ambito===a.val?'#a78bfa':'rgba(255,255,255,0.1)'};background:${taskObj.ambito===a.val?'rgba(167,139,250,0.18)':'rgba(255,255,255,0.04)'};font-size:0.78rem;font-weight:600;color:${taskObj.ambito===a.val?'#a78bfa':'#94a3b8'};white-space:nowrap;">
+        <input type="radio" name="task-ambito" class="task-ambito-radio" value="${a.val}" ${taskObj.ambito===a.val?'checked':''} style="display:none;">
+        ${a.emoji} ${a.label}
+      </label>
+    `).join('');
+
+    // Urgencia, Importancia, Dificultad
+    const urgLevels = [
+      { val:'alta',  emoji:'🔴', label: lang==='en'?'High':'Alta'   },
+      { val:'media', emoji:'🟡', label: lang==='en'?'Medium':'Media'},
+      { val:'baja',  emoji:'🟢', label: lang==='en'?'Low':'Baja'    },
+    ];
+    const impLevels = [
+      { val:'muy',        emoji:'🔥', label: lang==='en'?'Very High':'Muy alta' },
+      { val:'importante', emoji:'⭐', label: lang==='en'?'Important':'Importante'},
+      { val:'menos',      emoji:'💤', label: lang==='en'?'Low':'Baja'           },
+    ];
+    const difLevels = [
+      { val:'alta',  emoji:'🧗', label: lang==='en'?'Hard':'Alta'   },
+      { val:'media', emoji:'⚙️', label: lang==='en'?'Medium':'Media'},
+      { val:'baja',  emoji:'🌱', label: lang==='en'?'Easy':'Baja'   },
+    ];
+
+    const levelButtons = (levels, name, cssClass, current) => levels.map(l => `
+      <label style="cursor:pointer;display:flex;align-items:center;gap:4px;padding:5px 8px;border-radius:8px;border:1.5px solid ${current===l.val?'#a78bfa':'rgba(255,255,255,0.1)'};background:${current===l.val?'rgba(167,139,250,0.18)':'rgba(255,255,255,0.04)'};font-size:0.78rem;font-weight:600;color:${current===l.val?'#a78bfa':'#94a3b8'};flex:1;justify-content:center;">
+        <input type="radio" name="${name}" class="${cssClass}" value="${l.val}" ${current===l.val?'checked':''} style="display:none;">
+        ${l.emoji} ${l.label}
+      </label>
+    `).join('');
+
+    // Date & time rows
+    const dtType = taskObj.dateType || '';
+    const tmType = taskObj.timeType || '';
 
     return `
-      <div class="task-form-container" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; text-align: left;">
-        <div class="form-field">
-          <input type="text" class="task-title-input" placeholder="${lang === 'en' ? 'Task title...' : 'Título de la tarea...'}" value="${taskObj.text || ''}" style="width: 100%; box-sizing: border-box; padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.15);" required>
+      <div class="task-form-container" style="display:flex;flex-direction:column;gap:0;width:100%;text-align:left;background:rgba(10,5,27,0.82);border:1px solid rgba(167,139,250,0.2);border-radius:14px;padding:1.1rem 1rem;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+
+        <!-- 1. Nombre y Descripción -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">📝 ${lang==='en'?'Task Name':'Nombre de la Tarea'} *</label>
+          <input type="text" class="task-title-input" placeholder="${lang==='en'?'Task title...':'Escribe el nombre de la tarea...'}" value="${taskObj.text||''}" style="${fldStyle}" required>
         </div>
-        
-        <div class="form-field">
-          <input type="text" class="task-desc-input" placeholder="${labels.desc_placeholder}" value="${taskObj.description || ''}" style="width: 100%; box-sizing: border-box; padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.15);">
+
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">📄 ${lang==='en'?'Description':'Descripción'}</label>
+          <input type="text" class="task-desc-input" placeholder="${lang==='en'?'Short description...':'Descripción breve de la tarea...'}" value="${taskObj.description||''}" style="${fldStyle}">
         </div>
 
-        <div class="edit-selectors-grid">
-          <div class="selector-item">
-            <label>${labels.ambito}</label>
-            <select class="task-ambito-select">
-              <option value="">${labels.none}</option>
-              <option value="familia" ${taskObj.ambito === 'familia' ? 'selected' : ''}>👪 ${lang === 'en' ? 'Family' : 'Familia'}</option>
-              <option value="personal" ${taskObj.ambito === 'personal' ? 'selected' : ''}>👤 ${lang === 'en' ? 'Personal' : 'Personal'}</option>
-              <option value="social" ${taskObj.ambito === 'social' ? 'selected' : ''}>👥 ${lang === 'en' ? 'Social' : 'Social'}</option>
-              <option value="laboral" ${taskObj.ambito === 'laboral' ? 'selected' : ''}>💼 ${lang === 'en' ? 'Work' : 'Laboral'}</option>
-              <option value="ocio" ${taskObj.ambito === 'ocio' ? 'selected' : ''}>🎭 ${lang === 'en' ? 'Leisure' : 'Ocio'}</option>
-              <option value="salud" ${taskObj.ambito === 'salud' ? 'selected' : ''}>❤️ ${lang === 'en' ? 'Health' : 'Salud'}</option>
-              <option value="hogar" ${taskObj.ambito === 'hogar' ? 'selected' : ''}>🏠 ${lang === 'en' ? 'Home' : 'Hogar'}</option>
-              <option value="finanzas" ${taskObj.ambito === 'finanzas' ? 'selected' : ''}>💰 ${lang === 'en' ? 'Finance' : 'Finanzas'}</option>
-            </select>
-          </div>
-          
-          <div class="selector-item">
-            <label>${labels.urgencia}</label>
-            <select class="task-urgencia-select">
-              <option value="">${labels.none_f}</option>
-              <option value="alta" ${taskObj.urgencia === 'alta' ? 'selected' : ''}>🔴 ${lang === 'en' ? 'High' : 'Alta'}</option>
-              <option value="media" ${taskObj.urgencia === 'media' ? 'selected' : ''}>🟡 ${lang === 'en' ? 'Medium' : 'Media'}</option>
-              <option value="baja" ${taskObj.urgencia === 'baja' ? 'selected' : ''}>🟢 ${lang === 'en' ? 'Low' : 'Baja'}</option>
-            </select>
-          </div>
+        <!-- 2. Estado -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">📌 ${lang==='en'?'Status':'Estado de la Tarea'}</label>
+          <div style="${grid3Style}">${stateButtons}</div>
+        </div>
 
-          <div class="selector-item">
-            <label>${labels.importancia}</label>
-            <select class="task-importancia-select">
-              <option value="">${labels.none_f}</option>
-              <option value="muy" ${taskObj.importancia === 'muy' ? 'selected' : ''}>🔥 ${lang === 'en' ? 'Very' : 'Muy'}</option>
-              <option value="importante" ${taskObj.importancia === 'importante' ? 'selected' : ''}>⭐ ${lang === 'en' ? 'Important' : 'Importante'}</option>
-              <option value="menos" ${taskObj.importancia === 'menos' ? 'selected' : ''}>💤 ${lang === 'en' ? 'Less' : 'Menos'}</option>
-            </select>
-          </div>
+        <!-- 3. Ámbito -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">🗂️ ${lang==='en'?'Scope':'Ámbito'}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;">${ambitoButtons}</div>
+          <input type="text" class="task-ambito-custom" placeholder="${lang==='en'?'Or write a custom scope...':'O escribe un ámbito personalizado...'}" value="${ambitoList.find(a=>a.val===taskObj.ambito)?'':taskObj.ambito||''}" style="${fldStyle}font-size:0.82rem;margin-top:2px;">
+        </div>
 
-          <div class="selector-item">
-            <label>${labels.dificultad}</label>
-            <select class="task-dificultad-select">
-              <option value="">${labels.none_f}</option>
-              <option value="alta" ${taskObj.dificultad === 'alta' ? 'selected' : ''}>🧗 ${lang === 'en' ? 'High' : 'Alta'}</option>
-              <option value="media" ${taskObj.dificultad === 'media' ? 'selected' : ''}>⚙️ ${lang === 'en' ? 'Medium' : 'Media'}</option>
-              <option value="baja" ${taskObj.dificultad === 'baja' ? 'selected' : ''}>🌱 ${lang === 'en' ? 'Low' : 'Baja'}</option>
-            </select>
+        <!-- 4. Niveles -->
+        <div style="${sectionStyle}">
+          <div style="${gridStyle}align-items:start;">
+            <div>
+              <label style="${lblStyle}">🚨 ${lang==='en'?'Urgency':'Urgencia'}</label>
+              <div style="display:flex;gap:4px;">${levelButtons(urgLevels,'task-urgencia','task-urgencia-radio',taskObj.urgencia)}</div>
+            </div>
+            <div>
+              <label style="${lblStyle}">💎 ${lang==='en'?'Importance':'Importancia'}</label>
+              <div style="display:flex;gap:4px;">${levelButtons(impLevels,'task-importancia','task-importancia-radio',taskObj.importancia)}</div>
+            </div>
           </div>
-
-          <div class="selector-item">
-            <label>${labels.tiempo}</label>
-            <select class="task-tiempo-select">
-              <option value="">${labels.none}</option>
-              <option value="poco" ${taskObj.tiempo === 'poco' ? 'selected' : ''}>⏱️ ${lang === 'en' ? 'Little (2d)' : 'Poco (2d)'}</option>
-              <option value="medio" ${taskObj.tiempo === 'medio' ? 'selected' : ''}>⏳ ${lang === 'en' ? 'Medium (4d)' : 'Medio (4d)'}</option>
-              <option value="largo" ${taskObj.tiempo === 'largo' ? 'selected' : ''}>📅 ${lang === 'en' ? 'Long (>1w)' : 'Largo (>1s)'}</option>
-            </select>
-          </div>
-
-          <div class="selector-item">
-            <label>${labels.color}</label>
-            <input type="color" class="task-card-color-picker" value="${cardColor}">
-          </div>
-
-          <div class="selector-item">
-            <label>${labels.textColor}</label>
-            <input type="color" class="task-text-color-picker" value="${cardTextColor}">
-          </div>
-
-          <div class="selector-item">
-            <label>${labels.size}</label>
-            <select class="task-font-size-select">
-              <option value="small" ${fontSize === 'small' ? 'selected' : ''}>${labels.size_s}</option>
-              <option value="medium" ${fontSize === 'medium' ? 'selected' : ''}>${labels.size_m}</option>
-              <option value="large" ${fontSize === 'large' ? 'selected' : ''}>${labels.size_l}</option>
-            </select>
-          </div>
-
-          <div class="selector-item">
-            <label>${labels.emoji_main}</label>
-            <select class="task-emoji-select">
-              ${emojiOptions}
-            </select>
+          <div style="margin-top:0.55rem;">
+            <label style="${lblStyle}">🧩 ${lang==='en'?'Difficulty':'Dificultad'}</label>
+            <div style="display:flex;gap:4px;">${levelButtons(difLevels,'task-dificultad','task-dificultad-radio',taskObj.dificultad)}</div>
           </div>
         </div>
 
-        <div class="edit-selectors-grid" style="border-color: rgba(37, 99, 235, 0.2); background: rgba(37, 99, 235, 0.02); margin: 0.25rem 0;">
-          <div class="selector-item">
-            <label>${labels.col_dest}</label>
-            <select class="task-column-select">
-              <option value="done" ${taskObj.column === 'done' ? 'selected' : ''}>${labels.col_done}</option>
-              <option value="not-done" ${taskObj.column === 'not-done' ? 'selected' : ''}>${labels.col_not_done}</option>
-              <option value="in-progress" ${taskObj.column === 'in-progress' ? 'selected' : ''}>${labels.col_in_progress}</option>
-              <option value="deleted" ${taskObj.column === 'deleted' ? 'selected' : ''}>${labels.col_deleted}</option>
-            </select>
+        <!-- 5. Fechas -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">📅 ${lang==='en'?'Dates':'Fechas'}</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="date-type" class="task-date-type-radio" value="" ${!dtType?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'None':'Sin fecha'}
+            </label>
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="date-type" class="task-date-type-radio" value="single" ${dtType==='single'?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'One date':'Una fecha'}
+            </label>
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="date-type" class="task-date-type-radio" value="range" ${dtType==='range'?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'Date range':'Rango de fechas'}
+            </label>
           </div>
-
-          <div class="selector-item">
-            <label>${labels.date_type}</label>
-            <select class="task-date-type-select">
-              <option value="" ${!taskObj.dateType ? 'selected' : ''}>${labels.none_f}</option>
-              <option value="single" ${taskObj.dateType === 'single' ? 'selected' : ''}>${labels.date_single}</option>
-              <option value="range" ${taskObj.dateType === 'range' ? 'selected' : ''}>${labels.date_range}</option>
-            </select>
-          </div>
-          
-          <div class="selector-item date-start-wrapper ${taskObj.dateType ? '' : 'hidden'}">
-            <label class="date-start-label">${taskObj.dateType === 'range' ? labels.date_start_range : labels.date_start_label}</label>
-            <input type="date" class="task-date-start-input" value="${taskObj.dateStart || ''}" style="padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15);">
-          </div>
-          
-          <div class="selector-item date-end-wrapper ${taskObj.dateType === 'range' ? '' : 'hidden'}">
-            <label>${labels.date_end_label}</label>
-            <input type="date" class="task-date-end-input" value="${taskObj.dateEnd || ''}" style="padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15);">
-          </div>
-
-          <div class="selector-item">
-            <label>${labels.time_type}</label>
-            <select class="task-time-type-select">
-              <option value="" ${!taskObj.timeType ? 'selected' : ''}>${labels.none}</option>
-              <option value="single" ${taskObj.timeType === 'single' ? 'selected' : ''}>${labels.time_single}</option>
-              <option value="range" ${taskObj.timeType === 'range' ? 'selected' : ''}>${labels.time_range}</option>
-            </select>
-          </div>
-          
-          <div class="selector-item time-start-wrapper ${taskObj.timeType ? '' : 'hidden'}">
-            <label class="time-start-label">${taskObj.timeType === 'range' ? labels.time_start_range : labels.time_start_label}</label>
-            <input type="time" class="task-time-start-input" value="${taskObj.timeStart || ''}" style="padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15);">
-          </div>
-          
-          <div class="selector-item time-end-wrapper ${taskObj.timeType === 'range' ? '' : 'hidden'}">
-            <label>${labels.time_end_label}</label>
-            <input type="time" class="task-time-end-input" value="${taskObj.timeEnd || ''}" style="padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15);">
+          <div class="date-fields-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;${!dtType?'display:none;':''}">
+            <div style="flex:1;min-width:130px;">
+              <label style="${lblStyle}font-size:0.68rem;">${lang==='en'?'Start Date':'Fecha Inicio'}</label>
+              <input type="date" class="task-date-start-input" value="${taskObj.dateStart||''}" style="${fldStyle}">
+            </div>
+            <div class="date-end-field" style="flex:1;min-width:130px;${dtType!=='range'?'display:none;':''}">
+              <label style="${lblStyle}font-size:0.68rem;">${lang==='en'?'End Date':'Fecha Fin'}</label>
+              <input type="date" class="task-date-end-input" value="${taskObj.dateEnd||''}" style="${fldStyle}">
+            </div>
           </div>
         </div>
 
-        <div class="edit-actions" style="margin-top: 0.25rem;">
-          <button class="task-btn ${isEdit ? 'save-edit-btn' : 'save-add-btn'}" style="background: #2563eb; color: #fff; padding: 5px 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">${isEdit ? labels.save : labels.add}</button>
-          <button class="task-btn ${isEdit ? 'cancel-edit-btn' : 'cancel-add-btn'}" style="background: rgba(0,0,0,0.06); padding: 5px 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">${labels.cancel}</button>
+        <!-- 6. Horario -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">🕒 ${lang==='en'?'Schedule':'Horario'}</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="time-type" class="task-time-type-radio" value="" ${!tmType?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'None':'Sin hora'}
+            </label>
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="time-type" class="task-time-type-radio" value="single" ${tmType==='single'?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'One time':'Una hora'}
+            </label>
+            <label style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="radio" name="time-type" class="task-time-type-radio" value="range" ${tmType==='range'?'checked':''} style="accent-color:#a78bfa;"> ${lang==='en'?'Time range':'Rango de horas'}
+            </label>
+          </div>
+          <div class="time-fields-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;${!tmType?'display:none;':''}">
+            <div style="flex:1;min-width:120px;">
+              <label style="${lblStyle}font-size:0.68rem;">${lang==='en'?'Start Time':'Hora Inicio'}</label>
+              <input type="time" class="task-time-start-input" value="${taskObj.timeStart||''}" style="${fldStyle}">
+            </div>
+            <div class="time-end-field" style="flex:1;min-width:120px;${tmType!=='range'?'display:none;':''}">
+              <label style="${lblStyle}font-size:0.68rem;">${lang==='en'?'End Time':'Hora Fin'}</label>
+              <input type="time" class="task-time-end-input" value="${taskObj.timeEnd||''}" style="${fldStyle}">
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Asignado y Comentario -->
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">👤 ${lang==='en'?'Assignee':'Asignado a'}</label>
+          <input type="text" class="task-assignee-input" placeholder="${lang==='en'?'Person in charge...':'Persona encargada...'}" value="${taskObj.assignee||''}" style="${fldStyle}">
+        </div>
+        <div style="${sectionStyle}">
+          <label style="${lblStyle}">💬 ${lang==='en'?'Comment':'Comentario'}</label>
+          <textarea class="task-comment-input" placeholder="${lang==='en'?'Additional notes...':'Notas adicionales...'}" style="${fldStyle}min-height:60px;resize:vertical;">${taskObj.comment||''}</textarea>
+        </div>
+
+        <!-- 9. Botones guardar/cancelar -->
+        <div style="display:flex;gap:8px;margin-top:0.3rem;">
+          <button class="task-btn ${isEdit?'save-edit-btn':'save-add-btn'}" style="flex:1;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;padding:9px 16px;border:none;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;transition:opacity 0.2s;">
+            ${isEdit ? '💾 '+(lang==='en'?'Save':'Guardar') : '✅ '+(lang==='en'?'Add Task':'Añadir Tarea')}
+          </button>
+          <button class="task-btn ${isEdit?'cancel-edit-btn':'cancel-add-btn'}" style="background:rgba(255,255,255,0.08);color:#94a3b8;padding:9px 16px;border:1px solid rgba(255,255,255,0.1);border-radius:9px;font-weight:600;font-size:0.95rem;cursor:pointer;">
+            ❌ ${lang==='en'?'Cancel':'Cancelar'}
+          </button>
         </div>
       </div>
     `;
   };
 
+
+
   const getFormData = (container) => {
+    const getRadio = (name) => {
+      const checked = container.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : '';
+    };
+    // Ámbito: radio button OR custom text input
+    const ambitoRadio = getRadio('task-ambito');
+    const ambitoCustom = (container.querySelector('.task-ambito-custom')?.value || '').trim();
+    const ambito = ambitoRadio || ambitoCustom;
+
     return {
-      description: container.querySelector('.task-desc-input').value.trim(),
-      ambito: container.querySelector('.task-ambito-select').value,
-      urgencia: container.querySelector('.task-urgencia-select').value,
-      importancia: container.querySelector('.task-importancia-select').value,
-      dificultad: container.querySelector('.task-dificultad-select').value,
-      tiempo: container.querySelector('.task-tiempo-select').value,
-      cardColor: container.querySelector('.task-card-color-picker').value,
-      cardTextColor: container.querySelector('.task-text-color-picker').value,
-      fontSize: container.querySelector('.task-font-size-select').value,
-      taskEmoji: container.querySelector('.task-emoji-select').value,
-      dateType: container.querySelector('.task-date-type-select').value,
-      dateStart: container.querySelector('.task-date-start-input')?.value || '',
-      dateEnd: container.querySelector('.task-date-end-input')?.value || '',
-      timeType: container.querySelector('.task-time-type-select').value,
-      timeStart: container.querySelector('.task-time-start-input')?.value || '',
-      timeEnd: container.querySelector('.task-time-end-input')?.value || '',
-      column: container.querySelector('.task-column-select')?.value || ''
+      description: container.querySelector('.task-desc-input')?.value.trim() || '',
+      assignee: container.querySelector('.task-assignee-input')?.value.trim() || '',
+      comment: container.querySelector('.task-comment-input')?.value.trim() || '',
+      ambito,
+      urgencia:    getRadio('task-urgencia'),
+      importancia: getRadio('task-importancia'),
+      dificultad:  getRadio('task-dificultad'),
+      tiempo:      container.querySelector('.task-tiempo-select')?.value || '',
+      cardColor:   container.querySelector('.task-card-color-picker')?.value || '#170e30',
+      cardTextColor: container.querySelector('.task-text-color-picker')?.value || '#ffffff',
+      fontSize:    container.querySelector('.task-font-size-select')?.value || 'medium',
+      taskEmoji:   container.querySelector('.task-emoji-select')?.value || '',
+      dateType:    getRadio('date-type'),
+      dateStart:   container.querySelector('.task-date-start-input')?.value || '',
+      dateEnd:     container.querySelector('.task-date-end-input')?.value || '',
+      timeType:    getRadio('time-type'),
+      timeStart:   container.querySelector('.task-time-start-input')?.value || '',
+      timeEnd:     container.querySelector('.task-time-end-input')?.value || '',
+      column:      getRadio('task-state') || container.querySelector('.task-column-select')?.value || 'not-done'
     };
   };
 
@@ -459,6 +520,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cardTextColor: metadata.cardTextColor || '#ffffff',
       fontSize: metadata.fontSize || 'medium',
       description: metadata.description || '',
+      assignee: metadata.assignee || '',
+      comment: metadata.comment || '',
       dateType: metadata.dateType || '',
       dateStart: metadata.dateStart || '',
       dateEnd: metadata.dateEnd || '',
@@ -490,6 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
       task.cardTextColor = metadata.cardTextColor;
       task.fontSize = metadata.fontSize;
       task.description = metadata.description;
+      task.assignee = metadata.assignee;
+      task.comment = metadata.comment;
       task.dateType = metadata.dateType;
       task.dateStart = metadata.dateStart;
       task.dateEnd = metadata.dateEnd;
@@ -692,8 +757,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       list.innerHTML = '';
-      // Filter tasks by column and sort them chronologically
-      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId));
+      // Filter tasks by column, ambito (if selected) and sort them chronologically
+      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || t.ambito === currentAmbitoFilter)));
 
       columnTasks.forEach(task => {
         const li = document.createElement('li');
@@ -731,10 +796,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const saveEdit = () => {
             const newText = titleInput.value.trim();
-            if (newText) {
-              const meta = getFormData(li);
-              updateTask(task.id, newText, meta);
+            if (!newText) {
+              titleInput.style.border = '2px solid #ef4444';
+              titleInput.focus();
+              return;
             }
+            const meta = getFormData(li);
+            updateTask(task.id, newText, meta);
             editingTaskId = null;
             renderTasks();
           };
@@ -920,35 +988,54 @@ document.addEventListener('DOMContentLoaded', () => {
             timeRow = `<div><span style="color: #a78bfa; font-weight: 600;">🕒 Horario:</span> <span style="color: #cbd5e1; font-weight: 500;">${timePart}</span></div>`;
           }
 
+          let assigneeRow = '';
+          if (task.assignee) {
+            assigneeRow = `<div><span style="color: #a78bfa; font-weight: 600;">👤 ${lang==='en'?'Assignee:':'Asignado a:'}</span> <span style="color: #f1f5f9; font-weight: 500;">${task.assignee}</span></div>`;
+          }
+
+          let commentRow = '';
+          if (task.comment) {
+            commentRow = `<div><span style="color: #a78bfa; font-weight: 600;">💬 ${lang==='en'?'Comment:':'Comentario:'}</span> <span style="color: #cbd5e1; font-style: italic;">${task.comment}</span></div>`;
+          }
+
           let metadataListHtml = '';
-          if (ambitoRow || urgenciaRow || importanciaRow || dificultadRow || dateRow || timeRow) {
+          if (ambitoRow || urgenciaRow || importanciaRow || dificultadRow || dateRow || timeRow || assigneeRow || commentRow) {
             metadataListHtml = `
               <div class="task-metadata-list" style="margin-top: 0.65rem; display: flex; flex-direction: column; gap: 4px; font-size: 0.84rem; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem; text-align: left; line-height: 1.5;">
                 ${ambitoRow}
+                ${assigneeRow}
                 ${urgenciaRow}
                 ${importanciaRow}
                 ${dificultadRow}
                 ${dateRow}
                 ${timeRow}
+                ${commentRow}
               </div>
             `;
           }
 
           const titleColor = task.cardTextColor && task.cardTextColor !== '#1f2937' ? task.cardTextColor : '#00f59b';
 
+          // No button in 'done' column — tasks stay in done until moved manually
           let doneActionsHtml = '';
-          if (isDone) {
-            const tooltipText = lang === 'en' ? 'Mark as not done' : 'Marcar como no realizada';
-            doneActionsHtml = `<button class="task-btn mark-not-done-btn" title="${tooltipText}" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s; background: transparent; border: none; cursor: pointer;">↩️</button>`;
-          }
 
           let deletedActionsHtml = '';
           if (columnId === 'deleted') {
+            const lblPend    = lang === 'en' ? 'Pending'     : 'Pendiente';
+            const lblProg    = lang === 'en' ? 'In Progress' : 'En Proceso';
+            const lblDone    = lang === 'en' ? 'Done'        : 'Hecho';
+            const lblRecover = lang === 'en' ? 'Recover to:' : 'Recuperar a:';
             deletedActionsHtml = `
-              <button class="task-btn recover-btn" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s; background: transparent; border: none; cursor: pointer; position: relative;">
-                🔄
-                <span class="rich-tooltip-content recover-tooltip-content">${dict.task_restore_tooltip || 'Recuperar como pendiente, en proceso o hecho'}</span>
-              </button>
+              <div class="recover-menu-wrapper" style="position:relative;display:inline-block;">
+                <button class="task-btn recover-btn" title="${lblRecover}" style="padding:3px 7px;font-size:0.82rem;font-weight:700;background:rgba(99,102,241,0.18);border:1.5px solid rgba(99,102,241,0.4);border-radius:7px;color:#a78bfa;cursor:pointer;display:flex;align-items:center;gap:4px;">
+                  🔄 ${lblRecover}
+                </button>
+                <div class="recover-dropdown" style="display:none;position:absolute;right:0;top:110%;background:#1e1533;border:1px solid rgba(167,139,250,0.3);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999;min-width:140px;overflow:hidden;">
+                  <button class="recover-to-btn" data-col="not-done"    style="display:block;width:100%;padding:8px 14px;background:none;border:none;color:#f1f5f9;cursor:pointer;text-align:left;font-size:0.82rem;font-weight:600;">🕐 ${lblPend}</button>
+                  <button class="recover-to-btn" data-col="in-progress" style="display:block;width:100%;padding:8px 14px;background:none;border:none;color:#f1f5f9;cursor:pointer;text-align:left;font-size:0.82rem;font-weight:600;">⚡ ${lblProg}</button>
+                  <button class="recover-to-btn" data-col="done"        style="display:block;width:100%;padding:8px 14px;background:none;border:none;color:#f1f5f9;cursor:pointer;text-align:left;font-size:0.82rem;font-weight:600;">✅ ${lblDone}</button>
+                </div>
+              </div>
             `;
           }
 
@@ -957,7 +1044,9 @@ document.addEventListener('DOMContentLoaded', () => {
           
           li.innerHTML = `
             <div class="task-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
-              <span class="task-text-container" style="display: flex; align-items: center; flex-wrap: wrap;">
+              <span class="task-text-container" style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
+                ${columnId === 'not-done' || columnId === 'in-progress' ? `<button class="task-btn toggle-done-btn" style="padding: 0; background: none; border: none; cursor: pointer; font-size: 1.1rem; filter: grayscale(100%) opacity(0.5); transition: all 0.2s;" title="${lang==='en'?'Mark as done':'Marcar como hecha'}" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.5)'">✅</button>` : ''}
+                ${columnId === 'done' ? `<button class="task-btn toggle-pending-btn" style="padding: 0; background: none; border: none; cursor: pointer; font-size: 1.1rem; filter: grayscale(100%) opacity(0.5); transition: all 0.2s;" title="${lang==='en'?'Mark as pending':'Marcar como pendiente'}" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.5)'">❌</button>` : ''}
                 ${emojiPrefix}
                 <span class="task-text" style="font-weight: 700; color: ${titleColor}; font-size: 1.05rem; line-height: 1.35;">${task.text}</span>
               </span>
@@ -981,22 +1070,36 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
 
           // Action Listeners
-          if (isDone) {
-            li.querySelector('.mark-not-done-btn').addEventListener('click', (e) => {
-              e.stopPropagation();
-              task.column = 'not-done';
-              saveTasks();
-              renderTasks();
-            });
-          }
-
           if (columnId === 'deleted') {
-            li.querySelector('.recover-btn').addEventListener('click', (e) => {
+            const recoverBtn = li.querySelector('.recover-btn');
+            const recoverDropdown = li.querySelector('.recover-dropdown');
+
+            // Toggle dropdown on click
+            recoverBtn.addEventListener('click', (e) => {
               e.stopPropagation();
-              task.column = task.prevColumn || 'not-done';
-              delete task.prevColumn;
-              saveTasks();
-              renderTasks();
+              const isOpen = recoverDropdown.style.display === 'block';
+              // Close all other open dropdowns first
+              document.querySelectorAll('.recover-dropdown').forEach(d => { d.style.display = 'none'; });
+              recoverDropdown.style.display = isOpen ? 'none' : 'block';
+            });
+
+            // Recover to chosen column
+            li.querySelectorAll('.recover-to-btn').forEach(btn => {
+              btn.addEventListener('mouseenter', () => { btn.style.background = 'rgba(167,139,250,0.15)'; });
+              btn.addEventListener('mouseleave', () => { btn.style.background = 'none'; });
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                task.column = btn.dataset.col;
+                delete task.prevColumn;
+                saveTasks();
+                renderTasks();
+              });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function closeDropdown() {
+              if (recoverDropdown) recoverDropdown.style.display = 'none';
+              document.removeEventListener('click', closeDropdown);
             });
           }
 
@@ -1010,14 +1113,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 deleteTask(task.id);
               }
             } else {
-              task.prevColumn = task.column;
-              task.column = 'deleted';
-              saveTasks();
-              renderTasks();
+              const confirmMsg = lang === 'en' 
+                ? `Are you sure you want to delete the task, yes or no?` 
+                : `¿Estás seguro de que quieres eliminar la tarea, sí o no?`;
+              if (confirm(confirmMsg)) {
+                task.prevColumn = task.column;
+                task.column = 'deleted';
+                saveTasks();
+                renderTasks();
+              }
             }
           });
 
           if (columnId !== 'deleted') {
+            const toggleDoneBtn = li.querySelector('.toggle-done-btn');
+            if (toggleDoneBtn) {
+              toggleDoneBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                task.prevColumn = task.column;
+                task.column = 'done';
+                saveTasks();
+                renderTasks();
+              });
+            }
+
+            const togglePendBtn = li.querySelector('.toggle-pending-btn');
+            if (togglePendBtn) {
+              togglePendBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                task.prevColumn = task.column;
+                task.column = 'not-done';
+                saveTasks();
+                renderTasks();
+              });
+            }
+
             li.querySelector('.edit-btn').addEventListener('click', (e) => {
               e.stopPropagation();
               editingTaskId = task.id;
@@ -1029,7 +1159,6 @@ document.addEventListener('DOMContentLoaded', () => {
               renderTasks();
             });
           }
-          });
 
           // Drag Events
           li.addEventListener('dragstart', (e) => {
@@ -1216,6 +1345,37 @@ document.addEventListener('DOMContentLoaded', () => {
           instructionsArrow.style.transform = 'scale(0.8) rotate(-15deg)';
         }
       }
+    });
+    
+    // Add event listeners for ambito buttons
+    const ambitoButtons = document.querySelectorAll('.ambitos-buttons button');
+    ambitoButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const clickedAmbito = btn.dataset.ambito;
+        
+        if (currentAmbitoFilter === clickedAmbito) {
+          // Deselect if clicking the currently active one
+          currentAmbitoFilter = null;
+          btn.style.boxShadow = '';
+          btn.style.borderColor = 'rgba(255,255,255,0.1)';
+          btn.style.background = 'rgba(255, 255, 255, 0.05)';
+        } else {
+          // Select new filter
+          currentAmbitoFilter = clickedAmbito;
+          // Reset styling for all buttons
+          ambitoButtons.forEach(b => {
+            b.style.boxShadow = '';
+            b.style.borderColor = 'rgba(255,255,255,0.1)';
+            b.style.background = 'rgba(255, 255, 255, 0.05)';
+          });
+          // Highlight active button
+          btn.style.borderColor = '#a78bfa';
+          btn.style.boxShadow = '0 0 10px rgba(167, 139, 250, 0.3)';
+          btn.style.background = 'rgba(167, 139, 250, 0.15)';
+        }
+        
+        renderTasks();
+      });
     });
   }
 

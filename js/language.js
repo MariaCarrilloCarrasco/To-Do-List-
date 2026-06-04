@@ -30,7 +30,7 @@ const translations = {
     intro_desc: "En el cuerpo principal tienes tu tablero con tres columnas: Hecho, Pendiente y En progreso. Más abajo verás los ámbitos desplegables.",
     main_board_title: "Tablero de tareas",
     main_board_desc: "En el cuerpo principal tienes tu tablero interactivo con tres columnas: <span style='font-weight: 700; color: #00f59b;'>Hecho</span>, <span style='font-weight: 700; color: #00f59b;'>Pendiente</span> y <span style='font-weight: 700; color: #00f59b;'>En proceso</span>.",
-    intro_bullet_1: "<strong>Arrastrar y Soltar</strong>: Puede mover el contenido de una tarea de una columna a otra, simplemente, cogiéndola, arrástrandola y soltándola.",
+    intro_bullet_1: "<strong>Arrastrar o pulsar estado</strong>: Puede mover una tarea de una columna a otra arrastrándola, o pulsando el tic ✅ o cruz ❌ junto al nombre para cambiarla entre pendiente y hecha.",
     intro_bullet_2: "<strong>Añadir Tarea</strong>: Pulse el botón <strong style='color: #00f59b;'>[+]</strong> en la cabecera de cualquier columna para añadir una tarea (indicando título, descripción y temporalización programada).",
     intro_bullet_3: "<strong>Modificar o Eliminar</strong>: Utilice los iconos ✏️ (editar) o 🗑️ (eliminar) dentro de cada tarjeta para cambiar su información o quitarla.",
     board_tablero_title: "Tablero",
@@ -187,7 +187,7 @@ const translations = {
     intro_desc: "In the main body you have your board with three columns: Done, Pending and In Progress. Below you will see the collapsible scopes.",
     main_board_title: "Task Board",
     main_board_desc: "In the main body you have your interactive board with three columns: <span style='font-weight: 700; color: #00f59b;'>Done</span>, <span style='font-weight: 700; color: #00f59b;'>Pending</span> and <span style='font-weight: 700; color: #00f59b;'>In progress</span>.",
-    intro_bullet_1: "<strong>Drag and Drop</strong>: You can move the content of a task from one column to another simply by grabbing, dragging, and dropping it.",
+    intro_bullet_1: "<strong>Drag or click status</strong>: You can move a task by dragging it, or clicking the tick ✅ or cross ❌ next to the name to toggle between pending and done.",
     intro_bullet_2: "<strong>Add Task</strong>: Click the <strong style='color: #00f59b;'>[+]</strong> button in any column header to add a task (specifying title, description, and scheduled time).",
     intro_bullet_3: "<strong>Modify or Delete</strong>: Use the ✏️ (edit) or 🗑️ (delete) icons inside each card to change its information or remove it.",
     board_tablero_title: "Board",
@@ -2265,8 +2265,8 @@ const stepsTranslations = {
     },
     4: {
       title: "Marcar Tarea (Tick y Cruz)",
-      desc: "Haz clic en la cruz <strong>❌</strong> para completarla (se moverá a Hecho). Pulsa el tick verde <strong>✅</strong> para volver a activarla.",
-      narrator: "Paso 4. Marcar Tarea como Hecha. Haz clic en la cruz roja al inicio de la tarjeta para marcarla como completada. Cambiará al tick verde y se moverá sola a la columna Hecho. Puedes clicar el tick verde para volver a hacerla pendiente.",
+      desc: "Haz clic en el tic <strong>✅</strong> para completarla (se moverá a Hecho). Pulsa la cruz <strong>❌</strong> para volver a ponerla pendiente.",
+      narrator: "Paso 4. Cambiar el estado de la Tarea. Haz clic en el tic al lado del nombre de la tarea para marcarla como completada y moverla a Hecho. O haz clic en la cruz si ya está hecha para volver a ponerla como pendiente.",
       lseText: 'Hacer check 📈 "Hecho". Pulgar arriba feliz.',
       lseChapter: "Marcar"
     },
