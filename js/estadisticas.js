@@ -36,11 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const lang = localStorage.getItem('app-language') || 'es';
 
-    // 1. Calculate KPI Counts
-    const total = tasks.length;
-    const completed = tasks.filter(t => t.column === 'done').length;
-    const inProgress = tasks.filter(t => t.column === 'in-progress').length;
-    const pending = tasks.filter(t => t.column === 'not-done').length;
+    // 1. Calculate KPI Counts (filtering out deleted tasks)
+    const activeTasks = tasks.filter(t => t.column !== 'deleted');
+    const total = activeTasks.length;
+    const completed = activeTasks.filter(t => t.column === 'done').length;
+    const inProgress = activeTasks.filter(t => t.column === 'in-progress').length;
+    const pending = activeTasks.filter(t => t.column === 'not-done').length;
 
     // Update labels in the DOM
     const totalEl = document.getElementById('count-total');
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const hourlyCounts = new Array(24).fill(0);
 
-      tasks.forEach(task => {
+      activeTasks.forEach(task => {
         if (seededTaskHours[task.id] !== undefined) {
           // It's a seeded task, use simulated hours
           const hour = seededTaskHours[task.id];

@@ -1,10 +1,10 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Outfit', sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #f2f6fb;
-  color: #1f2937;
+  background: #0a051b;
+  color: #f1f5f9;
 }
 
 nav {
@@ -14,8 +14,9 @@ nav {
   flex-wrap: wrap;
   gap: 1.75rem;
   padding: 1.5rem 2rem;
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+  background: #130c2c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .nav-brand {
@@ -31,6 +32,12 @@ nav {
   border-radius: 50%;
   background: #f59e0b;
   padding: 6px;
+  animation: logo-spin 8s linear infinite;
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .brand-name {
@@ -95,10 +102,10 @@ nav {
 }
 
 .nav-btn-tablero {
-  background: linear-gradient(135deg, #10b981, #047857);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
 }
 .nav-btn-tablero:hover {
-  background: linear-gradient(135deg, #34d399, #059669);
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
 }
 
 .nav-btn-stats {
@@ -132,9 +139,46 @@ main {
 .board-intro {
   margin-bottom: 1.5rem;
   padding: 1.5rem;
-  background: #ffffff;
+  background: #130c2c;
   border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.intro-instructions {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.intro-step {
+  background: rgba(120, 120, 120, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 120, 120, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intro-step:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.04);
+}
+
+.intro-step h3 {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.intro-step p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  line-height: 1.4;
 }
 
 .columns {
@@ -145,16 +189,45 @@ main {
 }
 
 .column {
-  background: #ffffff;
+  background: #130c2c;
   border-radius: 18px;
   padding: 1.25rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.20);
 }
 
 .column h2 {
   margin-top: 0;
   font-size: 1.15rem;
-  color: #111827;
+  color: #00f59b !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.column-add-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid #00f59b;
+  background: transparent;
+  color: #00f59b;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.column-add-btn:hover {
+  background: rgba(0, 245, 155, 0.1);
+  transform: scale(1.08);
 }
 
 .column ul {
@@ -364,27 +437,28 @@ main {
 
 /* Base Card Style */
 .task-card {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; /* Override theme border-bottom */
-  border-radius: 12px;
-  padding: 0.95rem 1rem !important;
+  background: #170e30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem !important;
   cursor: grab;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
               box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
               border-color 0.2s ease,
               background-color 0.2s ease;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 2px 4px -2px rgba(15, 23, 42, 0.02);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
 }
 
 .task-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
-  border-color: rgba(99, 102, 241, 0.3) !important;
+  box-shadow: 0 12px 25px rgba(0, 245, 155, 0.15);
+  border-color: rgba(0, 245, 155, 0.4) !important;
 }
 
 .task-card:active {
@@ -483,27 +557,7 @@ main {
 }
 
 .add-task-btn {
-  width: 100%;
-  background: transparent;
-  border: 2px dashed rgba(99, 102, 241, 0.3);
-  color: inherit;
-  padding: 0.65rem;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.75;
-}
-
-.add-task-btn:hover {
-  background: rgba(99, 102, 241, 0.05);
-  border-color: rgba(99, 102, 241, 0.6);
-  opacity: 1;
-  transform: translateY(-1px);
+  display: none !important;
 }
 
 .add-task-form, .task-edit-form {
@@ -608,18 +662,13 @@ main {
 
 /* Completed task styling */
 .task-card.completed .task-text {
-  text-decoration: line-through;
-  opacity: 0.65;
+  text-decoration: none;
+  opacity: 1;
 }
 
 .task-card.completed {
-  background: rgba(240, 253, 244, 0.85); /* Soft green background */
-  border-color: rgba(16, 185, 129, 0.25) !important;
-}
-
-.dark-theme-panel .task-card.completed {
-  background: rgba(6, 78, 59, 0.25); /* Dark theme green background */
-  border-color: rgba(16, 185, 129, 0.25) !important;
+  background: #170e30 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
 }
 
 /* Metadata badges and tags styling */
@@ -869,6 +918,159 @@ main {
 .lang-selector-nav button:active {
   transform: scale(0.95);
 }
+
+/* Split Layout & Code Inspector Sidebar - REMOVED */
+
+
+/* Help Button & Curved Figma Guide Arrow */
+.help-toggle-btn {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.help-toggle-btn:hover {
+  transform: scale(1.08) rotate(5deg);
+  background: rgba(120, 120, 120, 0.25) !important;
+  box-shadow: 0 6px 15px rgba(0, 245, 155, 0.2);
+}
+
+.help-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Figma Pointing Arrow Styles & Keyframe pulse */
+@keyframes arrowPulse {
+  0% {
+    transform: rotate(-5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-5deg) translateY(4px);
+    filter: drop-shadow(0 0 4px rgba(0, 245, 155, 0.5));
+  }
+  100% {
+    transform: rotate(-5deg) translateY(0);
+  }
+}
+
+.figma-pointing-arrow {
+  animation: arrowPulse 2s infinite ease-in-out;
+}
+
+/* Smooth toggle visibility for board instructions */
+.board-intro {
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease-in-out, 
+              padding 0.35s ease-in-out, 
+              margin 0.35s ease-in-out,
+              border 0.2s ease-in-out;
+}
+
+.board-intro.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Deleted task card styling (Figma concept) */
+.task-card.deleted-card {
+  opacity: 0.55;
+  border: 1.5px dashed rgba(239, 68, 68, 0.4) !important;
+  background: rgba(30, 10, 20, 0.4) !important;
+}
+
+.task-card.deleted-card:hover {
+  opacity: 0.95;
+  box-shadow: 0 12px 25px rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.7) !important;
+}
+
+/* Recover button styling */
+.task-card .recover-btn:hover {
+  transform: scale(1.15);
+}
+
+/* Rich Tooltips (Hover descriptive cards with arrows) */
+.rich-tooltip-content {
+  visibility: hidden;
+  width: 250px;
+  background: rgba(19, 12, 44, 0.96) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f1f5f9 !important;
+  text-align: left;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(0, 245, 155, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  font-size: 0.76rem !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  line-height: 1.45;
+  
+  /* Positioning relative to parent button */
+  position: absolute;
+  z-index: 1000;
+  bottom: 130%; /* Position above */
+  right: 50%;
+  transform: translateX(50%) translateY(8px);
+  
+  /* Transitions */
+  opacity: 0;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.22s;
+  pointer-events: none;
+}
+
+/* Tooltip Arrow (Flecha) */
+.rich-tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* Bottom of tooltip */
+  left: 50%;
+  margin-left: -7px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: rgba(19, 12, 44, 0.96) transparent transparent transparent;
+}
+
+/* Tooltip Arrow Outer Border highlight */
+.rich-tooltip-content::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8.5px;
+  border-width: 8.5px;
+  border-style: solid;
+  border-color: rgba(0, 245, 155, 0.45) transparent transparent transparent;
+  z-index: -1;
+}
+
+/* Show Tooltip on Hover */
+.task-card .edit-btn:hover .rich-tooltip-content,
+.task-card .recover-btn:hover .rich-tooltip-content,
+.column h2 .column-add-btn:hover .rich-tooltip-content {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(50%) translateY(0);
+}
+
+/* Specific adjustments for add button tooltip */
+.column h2 .column-add-btn .add-tooltip-content {
+  width: 260px;
+  bottom: 140%;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Clean end of stylesheet */
+
 
 
 

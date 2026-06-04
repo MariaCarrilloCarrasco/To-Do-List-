@@ -24,11 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = localStorage.getItem('app-language') || 'es';
     const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
 
-    // Get current stats
-    const total = tasks.length;
-    const completed = tasks.filter(t => t.column === 'done').length;
-    const inProgress = tasks.filter(t => t.column === 'in-progress').length;
-    const pending = tasks.filter(t => t.column === 'not-done').length;
+    // Get current stats (filtering out deleted tasks)
+    const activeTasksList = tasks.filter(t => t.column !== 'deleted');
+    const total = activeTasksList.length;
+    const completed = activeTasksList.filter(t => t.column === 'done').length;
+    const inProgress = activeTasksList.filter(t => t.column === 'in-progress').length;
+    const pending = activeTasksList.filter(t => t.column === 'not-done').length;
 
     // Get translations for labels
     const titleText = dict.share_summary_title || '📊 Resumen de mis tareas en MiiActToDo:';
@@ -50,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return dateStr;
     };
 
-    // Build task summary lines (list up to 5 non-done tasks)
-    const activeTasks = tasks.filter(t => t.column !== 'done').slice(0, 5);
+    // Build task summary lines (list up to 5 non-done, non-deleted tasks)
+    const activeTasks = tasks.filter(t => t.column !== 'done' && t.column !== 'deleted').slice(0, 5);
     let activeTasksLines = '';
     
     if (activeTasks.length > 0) {

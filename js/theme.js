@@ -40,7 +40,7 @@ function applyTheme(bgColor, textColor) {
       background: ${bgColor} !important;
       color: ${textColor} !important;
     }
-    h1:not(.theme-panel *), h2:not(.theme-panel *), h3:not(.theme-panel *), h4:not(.theme-panel *), h5:not(.theme-panel *), h6:not(.theme-panel *), p:not(.theme-panel *), li:not(.theme-panel *), span:not(.theme-panel *):not(.social-btn *), summary:not(.theme-panel *), label:not(.theme-panel *) {
+    h1:not(.theme-panel *), h2:not(.theme-panel *), h3:not(.theme-panel *), h4:not(.theme-panel *), h5:not(.theme-panel *), h6:not(.theme-panel *), p:not(.theme-panel *), li:not(.theme-panel *):not(.task-card), span:not(.theme-panel *):not(.social-btn *):not(.task-card *), summary:not(.theme-panel *), label:not(.theme-panel *) {
       color: ${textColor} !important;
     }
     main a:not(.nav-btn), .detalles a, .board-intro a {

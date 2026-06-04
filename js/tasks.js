@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dificultad: dict.form_dificultad || 'Dificultad:',
       tiempo: dict.form_tiempo || 'Tiempo:',
       color: dict.form_color || '🎨 Color:',
+      textColor: dict.form_text_color || '✍️ Letras:',
       size: dict.form_size || '🔤 Tamaño:',
       size_s: dict.form_size_s || 'Pequeño',
       size_m: dict.form_size_m || 'Mediano',
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       col_done: dict.col_done || 'Hecho',
       col_not_done: dict.col_not_done || 'Pendiente',
       col_in_progress: dict.col_in_progress || 'En progreso',
+      col_deleted: dict.col_deleted || 'Eliminadas',
       empty_tasks: dict.empty_tasks || 'No hay tareas',
       connect_word: dict.form_connect_word || 'al',
       connect_time: dict.form_connect_time || 'a'
@@ -48,18 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Default seeded tasks for the board
   const defaultTasks = [
-    { id: 'task-1', text: 'Preparar cena familiar', column: 'done', ambito: 'familia', urgencia: 'alta', importancia: 'muy', dificultad: 'baja', tiempo: 'poco', cardColor: '#ffffff', fontSize: 'medium', description: 'Reunión en casa de los abuelos', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '20:30', taskEmoji: '👪' },
-    { id: 'task-2', text: 'Hacer ejercicio matutino', column: 'done', ambito: 'personal', urgencia: 'media', importancia: 'importante', dificultad: 'media', tiempo: 'medio', cardColor: '#ffffff', fontSize: 'medium', description: 'Correr en el parque 30 min', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '07:30', taskEmoji: '👤' },
-    { id: 'task-3', text: 'Quedar con amigos', column: 'done', ambito: 'social', urgencia: 'baja', importancia: 'menos', dificultad: 'baja', tiempo: 'poco', cardColor: '#ffffff', fontSize: 'medium', description: 'Tomar café en la plaza', dateType: 'single', dateStart: '2026-06-04', timeType: 'single', timeStart: '17:00', taskEmoji: '👥' },
-    { id: 'task-4', text: 'Entregar informe del proyecto', column: 'not-done', ambito: 'laboral', urgencia: 'alta', importancia: 'muy', dificultad: 'alta', tiempo: 'largo', cardColor: '#ffffff', fontSize: 'medium', description: 'Enviar pdf firmado por email', dateType: 'single', dateStart: '2026-06-05', timeType: 'single', timeStart: '12:00', taskEmoji: '💼' },
-    { id: 'task-5', text: 'Comprar entradas cine', column: 'not-done', ambito: 'ocio', urgencia: 'media', importancia: 'importante', dificultad: 'media', tiempo: 'medio', cardColor: '#ffffff', fontSize: 'medium', description: 'Función del viernes noche', dateType: 'single', dateStart: '2026-06-05', timeType: 'single', timeStart: '18:00', taskEmoji: '🎭' },
-    { id: 'task-6', text: 'Revisión médica anual', column: 'not-done', ambito: 'salud', urgencia: 'baja', importancia: 'menos', dificultad: 'baja', tiempo: 'poco', cardColor: '#ffffff', fontSize: 'medium', description: 'Analítica de sangre rutinaria', dateType: 'single', dateStart: '2026-06-08', timeType: 'single', timeStart: '09:00', taskEmoji: '❤️' },
-    { id: 'task-7', text: 'Limpieza a fondo cocina', column: 'in-progress', ambito: 'hogar', urgencia: 'alta', importancia: 'muy', dificultad: 'media', tiempo: 'medio', cardColor: '#ffffff', fontSize: 'medium', description: 'Limpiar horno y armarios', dateType: 'range', dateStart: '2026-06-03', dateEnd: '2026-06-04', timeType: 'range', timeStart: '16:00', timeEnd: '18:00', taskEmoji: '🏠' },
-    { id: 'task-8', text: 'Pagar facturas pendientes', column: 'in-progress', ambito: 'finanzas', urgencia: 'media', importancia: 'importante', dificultad: 'baja', tiempo: 'poco', cardColor: '#ffffff', fontSize: 'medium', description: 'Factura de luz y wifi', dateType: 'single', dateStart: '2026-06-04', timeType: 'single', timeStart: '10:00', taskEmoji: '💰' },
-    { id: 'task-9', text: 'Estudiar temario oposiciones', column: 'in-progress', ambito: 'laboral', urgencia: 'baja', importancia: 'menos', dificultad: 'alta', tiempo: 'largo', cardColor: '#ffffff', fontSize: 'medium', description: 'Temas del 10 al 15 completos', dateType: 'range', dateStart: '2026-06-01', dateEnd: '2026-06-07', timeType: 'range', timeStart: '08:00', timeEnd: '11:00', taskEmoji: '🧗' }
+    { id: 'task-1', text: 'Preparar cena familiar', column: 'done', ambito: 'familia', urgencia: 'alta', importancia: 'muy', dificultad: 'baja', tiempo: 'poco', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Reunión en casa de los abuelos', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '20:30', taskEmoji: '' },
+    { id: 'task-2', text: 'Hacer ejercicio matutino', column: 'done', ambito: 'personal', urgencia: 'media', importancia: 'importante', dificultad: 'media', tiempo: 'medio', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Correr en el parque 30 min', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '07:30', taskEmoji: '' },
+    { id: 'task-3', text: 'Quedar con amigos', column: 'done', ambito: 'social', urgencia: 'baja', importancia: 'menos', dificultad: 'baja', tiempo: 'poco', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Tomar café en la plaza', dateType: 'single', dateStart: '2026-06-04', timeType: 'single', timeStart: '17:00', taskEmoji: '' },
+    { id: 'task-4', text: 'Entregar informe del proyecto', column: 'not-done', ambito: 'laboral', urgencia: 'alta', importancia: 'muy', dificultad: 'alta', tiempo: 'largo', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Enviar pdf firmado por email', dateType: 'single', dateStart: '2026-06-05', timeType: 'single', timeStart: '12:00', taskEmoji: '' },
+    { id: 'task-5', text: 'Comprar entradas cine', column: 'not-done', ambito: 'ocio', urgencia: 'media', importancia: 'importante', dificultad: 'media', tiempo: 'medio', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Función del viernes noche', dateType: 'single', dateStart: '2026-06-05', timeType: 'single', timeStart: '18:00', taskEmoji: '' },
+    { id: 'task-6', text: 'Revisión médica anual', column: 'not-done', ambito: 'salud', urgencia: 'baja', importancia: 'menos', dificultad: 'baja', tiempo: 'poco', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Analítica de sangre rutinaria', dateType: 'single', dateStart: '2026-06-08', timeType: 'single', timeStart: '09:00', taskEmoji: '' },
+    { id: 'task-7', text: 'Limpieza a fondo cocina', column: 'in-progress', ambito: 'hogar', urgencia: 'alta', importancia: 'muy', dificultad: 'media', tiempo: 'medio', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Limpiar horno y armarios', dateType: 'range', dateStart: '2026-06-03', dateEnd: '2026-06-04', timeType: 'range', timeStart: '16:00', timeEnd: '18:00', taskEmoji: '' },
+    { id: 'task-8', text: 'Pagar facturas pendientes', column: 'in-progress', ambito: 'finanzas', urgencia: 'media', importancia: 'importante', dificultad: 'baja', tiempo: 'poco', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Factura de luz y wifi', dateType: 'single', dateStart: '2026-06-04', timeType: 'single', timeStart: '10:00', taskEmoji: '' },
+    { id: 'task-9', text: 'Estudiar temario oposiciones', column: 'in-progress', ambito: 'laboral', urgencia: 'baja', importancia: 'menos', dificultad: 'alta', tiempo: 'largo', cardColor: '#170e30', cardTextColor: '#ffffff', fontSize: 'medium', description: 'Temas del 10 al 15 completos', dateType: 'range', dateStart: '2026-06-01', dateEnd: '2026-06-07', timeType: 'range', timeStart: '08:00', timeEnd: '11:00', taskEmoji: '' }
   ];
 
-  const currentDbVersion = 'v3';
+  const currentDbVersion = 'v5';
   let tasks = JSON.parse(localStorage.getItem('todo-tasks'));
   const dbVersion = localStorage.getItem('todo-tasks-version');
   const needsMigration = !tasks || !Array.isArray(tasks) || tasks.length === 0 || dbVersion !== currentDbVersion;
@@ -256,6 +258,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const getFormHtml = (taskObj = {}, isEdit = false) => {
     const labels = getDynamicLabels();
     const cardColor = taskObj.cardColor || '#ffffff';
+    let cardTextColor = taskObj.cardTextColor;
+    if (!cardTextColor) {
+      const lum = getLuminance(cardColor);
+      cardTextColor = lum < 0.5 ? '#ffffff' : '#1f2937';
+    }
     const fontSize = taskObj.fontSize || 'medium';
     
     const activeEmojis = getActiveEmojisList(taskObj);
@@ -337,6 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="selector-item">
+            <label>${labels.textColor}</label>
+            <input type="color" class="task-text-color-picker" value="${cardTextColor}">
+          </div>
+
+          <div class="selector-item">
             <label>${labels.size}</label>
             <select class="task-font-size-select">
               <option value="small" ${fontSize === 'small' ? 'selected' : ''}>${labels.size_s}</option>
@@ -354,6 +366,16 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="edit-selectors-grid" style="border-color: rgba(37, 99, 235, 0.2); background: rgba(37, 99, 235, 0.02); margin: 0.25rem 0;">
+          <div class="selector-item">
+            <label>${labels.col_dest}</label>
+            <select class="task-column-select">
+              <option value="done" ${taskObj.column === 'done' ? 'selected' : ''}>${labels.col_done}</option>
+              <option value="not-done" ${taskObj.column === 'not-done' ? 'selected' : ''}>${labels.col_not_done}</option>
+              <option value="in-progress" ${taskObj.column === 'in-progress' ? 'selected' : ''}>${labels.col_in_progress}</option>
+              <option value="deleted" ${taskObj.column === 'deleted' ? 'selected' : ''}>${labels.col_deleted}</option>
+            </select>
+          </div>
+
           <div class="selector-item">
             <label>${labels.date_type}</label>
             <select class="task-date-type-select">
@@ -410,6 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dificultad: container.querySelector('.task-dificultad-select').value,
       tiempo: container.querySelector('.task-tiempo-select').value,
       cardColor: container.querySelector('.task-card-color-picker').value,
+      cardTextColor: container.querySelector('.task-text-color-picker').value,
       fontSize: container.querySelector('.task-font-size-select').value,
       taskEmoji: container.querySelector('.task-emoji-select').value,
       dateType: container.querySelector('.task-date-type-select').value,
@@ -417,7 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dateEnd: container.querySelector('.task-date-end-input')?.value || '',
       timeType: container.querySelector('.task-time-type-select').value,
       timeStart: container.querySelector('.task-time-start-input')?.value || '',
-      timeEnd: container.querySelector('.task-time-end-input')?.value || ''
+      timeEnd: container.querySelector('.task-time-end-input')?.value || '',
+      column: container.querySelector('.task-column-select')?.value || ''
     };
   };
 
@@ -425,13 +449,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const newTask = {
       id: 'task-' + Date.now(),
       text: text,
-      column: columnId,
+      column: metadata.column || columnId,
       ambito: metadata.ambito || '',
       urgencia: metadata.urgencia || '',
       importancia: metadata.importancia || '',
       dificultad: metadata.dificultad || '',
       tiempo: metadata.tiempo || '',
-      cardColor: metadata.cardColor || '#ffffff',
+      cardColor: metadata.cardColor || '#170e30',
+      cardTextColor: metadata.cardTextColor || '#ffffff',
       fontSize: metadata.fontSize || 'medium',
       description: metadata.description || '',
       dateType: metadata.dateType || '',
@@ -462,6 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       task.dificultad = metadata.dificultad;
       task.tiempo = metadata.tiempo;
       task.cardColor = metadata.cardColor;
+      task.cardTextColor = metadata.cardTextColor;
       task.fontSize = metadata.fontSize;
       task.description = metadata.description;
       task.dateType = metadata.dateType;
@@ -471,6 +497,9 @@ document.addEventListener('DOMContentLoaded', () => {
       task.timeStart = metadata.timeStart;
       task.timeEnd = metadata.timeEnd;
       task.taskEmoji = metadata.taskEmoji;
+      if (metadata.column) {
+        task.column = metadata.column;
+      }
       saveTasks();
     }
   };
@@ -524,6 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dificultad: '',
             tiempo: '',
             cardColor: '#ffffff',
+            cardTextColor: '#1f2937',
             fontSize: 'medium',
             description: '',
             dateType: '',
@@ -576,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const val = list.dataset.criteriaVal;
       list.innerHTML = '';
       
-      const filteredTasks = tasks.filter(t => t[key] === val);
+      const filteredTasks = tasks.filter(t => t[key] === val && t.column !== 'deleted');
       if (filteredTasks.length === 0) {
         const li = document.createElement('li');
         li.innerHTML = `<em style="opacity: 0.5;">${labels.empty_tasks}</em>`;
@@ -627,6 +657,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.renderTasks = () => {
     const labels = getDynamicLabels();
     const lang = localStorage.getItem('app-language') || 'es';
+    const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
+
+    // Update header add tooltip dynamically
+    const addBtnTooltip = document.querySelector('.column-add-btn[data-column="not-done"] .add-tooltip-content');
+    if (addBtnTooltip) {
+      addBtnTooltip.innerHTML = dict.add_tooltip || '';
+    }
 
     const formatDate = (dateStr) => {
       if (!dateStr) return '';
@@ -665,12 +702,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Apply custom backgrounds and sizes dynamically
         if (task.cardColor) {
-          li.style.backgroundColor = task.cardColor;
-          const lum = getLuminance(task.cardColor);
-          const textColor = lum < 0.5 ? '#ffffff' : '#1f2937';
-          li.style.color = textColor;
-          li.style.setProperty('--text-color', textColor);
-          li.style.borderColor = lum < 0.5 ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+          li.style.setProperty('background-color', task.cardColor, 'important');
+        }
+
+        const textColor = task.cardTextColor || (getLuminance(task.cardColor || '#ffffff') < 0.5 ? '#ffffff' : '#1f2937');
+        li.style.setProperty('color', textColor, 'important');
+        li.style.setProperty('--text-color', textColor, 'important');
+
+        if (task.cardColor) {
+          const isDarkText = getLuminance(textColor) < 0.5;
+          li.style.setProperty('border-color', isDarkText ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)', 'important');
         }
 
         if (task.fontSize) {
@@ -715,184 +756,279 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           // Render normal card with badges
           const isDone = columnId === 'done';
-          const toggleSymbol = isDone ? '✅' : '❌';
-          const toggleTitle = isDone 
-            ? (lang === 'en' ? 'Mark as pending' : 'Marcar como pendiente') 
-            : (lang === 'en' ? 'Mark as completed' : 'Marcar como completada');
-          
           if (isDone) {
             li.classList.add('completed');
           }
+          const isDeleted = columnId === 'deleted';
+          if (isDeleted) {
+            li.classList.add('deleted-card');
+          }
 
-          // Build dynamic emoticon prefix next to title
+          // Build dynamic emoticon prefix next to title (fallback or category specific)
           let emojiPrefix = '';
           if (task.taskEmoji) {
             emojiPrefix = `<span class="task-main-emoji" style="margin-right: 0.35rem; font-style: normal; font-size: 1.15rem;">${task.taskEmoji}</span>`;
-          } else {
-            // Fallback: build dynamic emoticons prefix of active categories
-            let fallbacks = '';
-            if (task.ambito) {
-              const emojis = {
-                familia: '👪', personal: '👤', social: '👥',
-                laboral: '💼', ocio: '🎭', salud: '❤️',
-                hogar: '🏠', finanzas: '💰'
-              };
-              fallbacks += (emojis[task.ambito] || '') + ' ';
-            }
-            if (task.urgencia) {
-              const emojis = { alta: '🔴', media: '🟡', baja: '🟢' };
-              fallbacks += (emojis[task.urgencia] || '') + ' ';
-            }
-            if (task.importancia) {
-              const emojis = { muy: '🔥', importante: '⭐', menos: '💤' };
-              fallbacks += (emojis[task.importancia] || '') + ' ';
-            }
-            if (task.dificultad) {
-              const emojis = { alta: '🧗', media: '⚙️', baja: '🌱' };
-              fallbacks += (emojis[task.dificultad] || '') + ' ';
-            }
-            if (task.tiempo) {
-              const emojis = { poco: '⏱️', medio: '⏳', largo: '📅' };
-              fallbacks += (emojis[task.tiempo] || '') + ' ';
-            }
-            if (fallbacks) {
-              emojiPrefix = `<span class="task-title-emojis" style="margin-right: 0.35rem; font-style: normal; letter-spacing: 0.1rem;">${fallbacks.trim()}</span>`;
-            }
+          }
+
+          // Build status text ✓ Vamos avanzando if Hecho, or encouragement text if Pendiente
+          let statusTextHtml = '';
+          if (isDone) {
+            statusTextHtml = `
+              <div class="task-status-text" style="color: #00f59b; font-size: 0.85rem; font-weight: 700; margin: 0.25rem 0 0.4rem 0; line-height: 1.35;">
+                ✓ Vamos avanzando
+                ${task.id === 'task-1' ? `<div style="font-size: 0.75rem; font-weight: 500; opacity: 0.85; margin-top: 2px;">(El tick "✓" significa tarea realizada)</div>` : ''}
+              </div>
+            `;
+          } else if (columnId === 'not-done') {
+            const encouragementText = lang === 'en' ? 'Keep it up!' 
+                                    : lang === 'fr' ? 'Bon courage !'
+                                    : lang === 'de' ? 'Kopf hoch!'
+                                    : lang === 'it' ? 'Forza!'
+                                    : lang === 'pt' ? 'Força!'
+                                    : lang === 'ca' ? "Molt d'ànim!"
+                                    : lang === 'gl' ? 'Moito ánimo!'
+                                    : lang === 'eu' ? 'Eutsi goiari!'
+                                    : '¡Mucho ánimo!';
+            statusTextHtml = `
+              <div class="task-status-text" style="color: #ef4444; font-size: 0.85rem; font-weight: 700; margin: 0.25rem 0 0.4rem 0; line-height: 1.35;">
+                ${encouragementText}
+              </div>
+            `;
           }
 
           // Build description HTML
           let descHtml = '';
           if (task.description) {
-            descHtml = `<div class="task-description" style="font-size: 0.8rem; opacity: 0.75; margin: 0.25rem 0 0.4rem 0; font-style: italic; line-height: 1.3;">${task.description}</div>`;
+            descHtml = `<div class="task-description" style="font-size: 0.88rem; color: #f1f5f9; margin: 0.35rem 0 0.5rem 0; line-height: 1.5; text-align: left;">${task.description}</div>`;
           }
 
-          // Build scheduling HTML
-          let scheduleHtml = '';
+          // Build custom vertical metadata stack matching Figma mockup
+          const getDaysCountText = (startStr, endStr) => {
+            if (!startStr || !endStr) return '';
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const daysLabel = lang === 'en' ? 'days' : 'días';
+            return ` (${diffDays} ${daysLabel})`;
+          };
+
+          let ambitoRow = '';
+          if (task.ambito) {
+            const labelsMap = {
+              familia: lang === 'en' ? 'Family' : 'Familiar',
+              personal: lang === 'en' ? 'Personal' : 'Personal',
+              social: lang === 'en' ? 'Social' : 'Social',
+              laboral: lang === 'en' ? 'Work' : 'Laboral',
+              ocio: lang === 'en' ? 'Leisure' : 'Ocio',
+              salud: lang === 'en' ? 'Health' : 'Salud',
+              hogar: lang === 'en' ? 'Home' : 'Hogar',
+              finanzas: lang === 'en' ? 'Finance' : 'Finanzas'
+            };
+            const emojisMap = {
+              familia: '👥', personal: '👤', social: '🤝',
+              laboral: '💼', ocio: '🎮', salud: '🩺',
+              hogar: '🏠', finanzas: '💰'
+            };
+            const colorsMap = {
+              familia: '#f472b6', personal: '#818cf8', social: '#60a5fa',
+              laboral: '#fbbf24', ocio: '#a78bfa', salud: '#34d399',
+              hogar: '#22d3ee', finanzas: '#2dd4bf'
+            };
+            const label = labelsMap[task.ambito] || task.ambito;
+            const emoji = emojisMap[task.ambito] || '📁';
+            const color = colorsMap[task.ambito] || '#ffffff';
+            ambitoRow = `<div><span style="color: #a78bfa; font-weight: 600;">Ámbito:</span> ${emoji} <span style="color: ${color}; font-weight: 500;">${label}</span></div>`;
+          }
+
+          let urgenciaRow = '';
+          if (task.urgencia) {
+            const labelsMap = {
+              alta: lang === 'en' ? 'High' : 'Alta',
+              media: lang === 'en' ? 'Medium' : 'Media',
+              baja: lang === 'en' ? 'Low' : 'Baja'
+            };
+            const colorsMap = {
+              alta: '#f87171',
+              media: '#fbbf24',
+              baja: '#34d399'
+            };
+            const label = labelsMap[task.urgencia] || task.urgencia;
+            const color = colorsMap[task.urgencia] || '#ffffff';
+            urgenciaRow = `<div><span style="color: #a78bfa; font-weight: 600;">🚨 Urgencia:</span> <span style="color: ${color}; font-weight: 500;">${label}</span></div>`;
+          }
+
+          let importanciaRow = '';
+          if (task.importancia) {
+            const labelsMap = {
+              alta: lang === 'en' ? 'High' : 'Alta',
+              muy: lang === 'en' ? 'High' : 'Alta',
+              media: lang === 'en' ? 'Medium' : 'Media',
+              importante: lang === 'en' ? 'Medium' : 'Media',
+              baja: lang === 'en' ? 'Low' : 'Baja',
+              menos: lang === 'en' ? 'Low' : 'Baja'
+            };
+            const colorsMap = {
+              alta: '#60a5fa',
+              muy: '#60a5fa',
+              media: '#a78bfa',
+              importante: '#a78bfa',
+              baja: '#94a3b8',
+              menos: '#94a3b8'
+            };
+            const label = labelsMap[task.importancia] || task.importancia;
+            const color = colorsMap[task.importancia] || '#ffffff';
+            importanciaRow = `<div><span style="color: #a78bfa; font-weight: 600;">💎 Importancia:</span> <span style="color: ${color}; font-weight: 500;">${label}</span></div>`;
+          }
+
+          let dificultadRow = '';
+          if (task.dificultad) {
+            const labelsMap = {
+              alta: lang === 'en' ? 'High' : 'Alta',
+              media: lang === 'en' ? 'Medium' : 'Media',
+              baja: lang === 'en' ? 'Low' : 'Baja'
+            };
+            const colorsMap = {
+              alta: '#f472b6',
+              media: '#06b6d4',
+              baja: '#34d399'
+            };
+            const label = labelsMap[task.dificultad] || task.dificultad;
+            const color = colorsMap[task.dificultad] || '#ffffff';
+            dificultadRow = `<div><span style="color: #a78bfa; font-weight: 600;">🧩 Dificultad:</span> <span style="color: ${color}; font-weight: 500;">${label}</span></div>`;
+          }
+
+          let dateRow = '';
           let datePart = '';
-          let timePart = '';
-
           if (task.dateType === 'single' && task.dateStart) {
-            datePart = `📅 ${formatDate(task.dateStart)}`;
+            datePart = formatDate(task.dateStart);
           } else if (task.dateType === 'range' && task.dateStart && task.dateEnd) {
-            datePart = `📅 ${formatDate(task.dateStart)} ${labels.connect_word} ${formatDate(task.dateEnd)}`;
+            datePart = `${formatDate(task.dateStart)} - ${formatDate(task.dateEnd)}${getDaysCountText(task.dateStart, task.dateEnd)}`;
+          }
+          if (datePart) {
+            dateRow = `<div><span style="color: #a78bfa; font-weight: 600;">📅</span> <span style="color: #cbd5e1; font-weight: 500;">${datePart}</span></div>`;
           }
 
+          let timeRow = '';
+          let timePart = '';
           if (task.timeType === 'single' && task.timeStart) {
-            timePart = `🕒 ${task.timeStart}`;
+            timePart = task.timeStart;
           } else if (task.timeType === 'range' && task.timeStart && task.timeEnd) {
-            timePart = `🕒 ${task.timeStart} ${labels.connect_time} ${task.timeEnd}`;
+            timePart = `${task.timeStart} - ${task.timeEnd}`;
+          }
+          if (timePart) {
+            timeRow = `<div><span style="color: #a78bfa; font-weight: 600;">🕒 Horario:</span> <span style="color: #cbd5e1; font-weight: 500;">${timePart}</span></div>`;
           }
 
-          if (datePart || timePart) {
-            scheduleHtml = `
-              <div class="task-schedule-info" style="display: flex; flex-direction: column; gap: 2px; font-size: 0.72rem; opacity: 0.8; margin-top: 0.25rem; font-weight: 600;">
-                ${datePart ? `<div>${datePart}</div>` : ''}
-                ${timePart ? `<div>${timePart}</div>` : ''}
+          let metadataListHtml = '';
+          if (ambitoRow || urgenciaRow || importanciaRow || dificultadRow || dateRow || timeRow) {
+            metadataListHtml = `
+              <div class="task-metadata-list" style="margin-top: 0.65rem; display: flex; flex-direction: column; gap: 4px; font-size: 0.84rem; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem; text-align: left; line-height: 1.5;">
+                ${ambitoRow}
+                ${urgenciaRow}
+                ${importanciaRow}
+                ${dificultadRow}
+                ${dateRow}
+                ${timeRow}
               </div>
             `;
           }
 
-          // Build dynamic badges HTML
-          let badgesHtml = '';
-          if (task.ambito) {
-            const labelsMap = {
-              familia: lang === 'en' ? '👪 Family' : '👪 Familia',
-              personal: lang === 'en' ? '👤 Personal' : '👤 Personal',
-              social: lang === 'en' ? '👥 Social' : '👥 Social',
-              laboral: lang === 'en' ? '💼 Work' : '💼 Laboral',
-              ocio: lang === 'en' ? '🎭 Leisure' : '🎭 Ocio',
-              salud: lang === 'en' ? '❤️ Health' : '❤️ Salud',
-              hogar: lang === 'en' ? '🏠 Home' : '🏠 Hogar',
-              finanzas: lang === 'en' ? '💰 Finance' : '💰 Finanzas'
-            };
-            badgesHtml += `<span class="tag tag-ambito tag-ambito-${task.ambito}">${labelsMap[task.ambito]}</span>`;
+          const titleColor = task.cardTextColor && task.cardTextColor !== '#1f2937' ? task.cardTextColor : '#00f59b';
+
+          let doneActionsHtml = '';
+          if (isDone) {
+            const tooltipText = lang === 'en' ? 'Mark as not done' : 'Marcar como no realizada';
+            doneActionsHtml = `<button class="task-btn mark-not-done-btn" title="${tooltipText}" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s; background: transparent; border: none; cursor: pointer;">↩️</button>`;
           }
-          if (task.urgencia) {
-            const labelsMap = {
-              alta: lang === 'en' ? '🔴 High' : '🔴 Alta',
-              media: lang === 'en' ? '🟡 Medium' : '🟡 Media',
-              baja: lang === 'en' ? '🟢 Low' : '🟢 Baja'
-            };
-            badgesHtml += `<span class="tag tag-urgencia-${task.urgencia}">${labelsMap[task.urgencia]}</span>`;
+
+          let deletedActionsHtml = '';
+          if (columnId === 'deleted') {
+            deletedActionsHtml = `
+              <button class="task-btn recover-btn" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s; background: transparent; border: none; cursor: pointer; position: relative;">
+                🔄
+                <span class="rich-tooltip-content recover-tooltip-content">${dict.task_restore_tooltip || 'Recuperar como pendiente, en proceso o hecho'}</span>
+              </button>
+            `;
           }
-          if (task.importancia) {
-            const labelsMap = {
-              muy: lang === 'en' ? '🔥 Very' : '🔥 Muy',
-              importante: lang === 'en' ? '⭐ Imp.' : '⭐ Imp.',
-              menos: lang === 'en' ? '💤 Less' : '💤 Menos'
-            };
-            badgesHtml += `<span class="tag tag-importancia-${task.importancia}">${labelsMap[task.importancia]}</span>`;
-          }
-          if (task.dificultad) {
-            const labelsMap = {
-              alta: lang === 'en' ? '🧗 High' : '🧗 Alta',
-              media: lang === 'en' ? '⚙️ Medium' : '⚙️ Media',
-              baja: lang === 'en' ? '🌱 Low' : '🌱 Baja'
-            };
-            badgesHtml += `<span class="tag tag-dificultad-${task.dificultad}">${labelsMap[task.dificultad]}</span>`;
-          }
-          if (task.tiempo) {
-            const labelsMap = {
-              poco: lang === 'en' ? '⏱️ Little' : '⏱️ Poco',
-              medio: lang === 'en' ? '⏳ Medium' : '⏳ Medio',
-              largo: lang === 'en' ? '📅 Long' : '📅 Largo'
-            };
-            badgesHtml += `<span class="tag tag-tiempo-${task.tiempo}">${labelsMap[task.tiempo]}</span>`;
-          }
-          
+
           li.setAttribute('draggable', 'true');
+          const deleteTooltip = columnId === 'deleted' ? (dict.task_delete_perm || 'Eliminar permanentemente') : (lang === 'en' ? 'Delete' : 'Eliminar');
+          
           li.innerHTML = `
-            <button class="task-btn status-toggle-btn" title="${toggleTitle}">${toggleSymbol}</button>
-            <div class="task-content" style="display: flex; flex-direction: column; width: 100%; overflow: hidden;">
+            <div class="task-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
               <span class="task-text-container" style="display: flex; align-items: center; flex-wrap: wrap;">
                 ${emojiPrefix}
-                <span class="task-text" style="font-weight: 700;">${task.text}</span>
+                <span class="task-text" style="font-weight: 700; color: ${titleColor}; font-size: 1.05rem; line-height: 1.35;">${task.text}</span>
               </span>
-              ${descHtml}
-              ${scheduleHtml}
-              ${badgesHtml ? `<div class="task-tags">${badgesHtml}</div>` : ''}
+              <div class="task-actions-top" style="display: flex; gap: 6px; flex-shrink: 0; align-items: center;">
+                ${doneActionsHtml}
+                ${deletedActionsHtml}
+                ${columnId !== 'deleted' ? `
+                  <button class="task-btn edit-btn" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s; position: relative;">
+                    ✏️
+                    <span class="rich-tooltip-content edit-tooltip-content">${dict.edit_tooltip || ''}</span>
+                  </button>
+                ` : ''}
+                <button class="task-btn delete-btn" title="${deleteTooltip}" style="padding: 2px; font-size: 0.85rem; opacity: 0.85; transition: opacity 0.2s;">🗑️</button>
+              </div>
             </div>
-            <div class="task-actions">
-              <select class="task-move-select" aria-label="${labels.col_dest}">
-                <option value="done" ${columnId === 'done' ? 'selected' : ''}>${labels.col_done}</option>
-                <option value="not-done" ${columnId === 'not-done' ? 'selected' : ''}>${labels.col_not_done}</option>
-                <option value="in-progress" ${columnId === 'in-progress' ? 'selected' : ''}>${labels.col_in_progress}</option>
-              </select>
-              <button class="task-btn edit-btn" title="Editar">✏️</button>
-              <button class="task-btn delete-btn" title="Eliminar">🗑️</button>
+            <div class="task-content" style="display: flex; flex-direction: column; width: 100%; overflow: hidden; margin-top: 2px;">
+              ${statusTextHtml}
+              ${descHtml}
+              ${metadataListHtml}
             </div>
           `;
 
           // Action Listeners
-          li.querySelector('.status-toggle-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const newColumn = isDone ? 'not-done' : 'done';
-            moveTaskColumn(task.id, newColumn);
-          });
+          if (isDone) {
+            li.querySelector('.mark-not-done-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              task.column = 'not-done';
+              saveTasks();
+              renderTasks();
+            });
+          }
+
+          if (columnId === 'deleted') {
+            li.querySelector('.recover-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              task.column = task.prevColumn || 'not-done';
+              delete task.prevColumn;
+              saveTasks();
+              renderTasks();
+            });
+          }
 
           li.querySelector('.delete-btn').addEventListener('click', (e) => {
             e.stopPropagation();
-            const confirmMsg = lang === 'en' 
-              ? `Are you sure you want to delete "${task.text}"?`
-              : `¿Estás seguro de eliminar la tarea "${task.text}"?`;
-            if (confirm(confirmMsg)) {
-              deleteTask(task.id);
+            if (columnId === 'deleted') {
+              const confirmMsg = dict.confirm_delete_perm || (lang === 'en' 
+                ? `Are you sure you want to permanently delete "${task.text}"?`
+                : `¿Estás seguro de eliminar permanentemente la tarea "${task.text}"?`);
+              if (confirm(confirmMsg)) {
+                deleteTask(task.id);
+              }
+            } else {
+              task.prevColumn = task.column;
+              task.column = 'deleted';
+              saveTasks();
+              renderTasks();
             }
           });
 
-          li.querySelector('.edit-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            editingTaskId = task.id;
-            renderTasks();
-          });
+          if (columnId !== 'deleted') {
+            li.querySelector('.edit-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              editingTaskId = task.id;
+              renderTasks();
+            });
 
-          li.querySelector('.task-move-select').addEventListener('change', (e) => {
-            moveTaskColumn(task.id, e.target.value);
-          });
-
-          li.querySelector('.task-text').addEventListener('dblclick', () => {
-            editingTaskId = task.id;
-            renderTasks();
+            li.querySelector('.task-text').addEventListener('dblclick', () => {
+              editingTaskId = task.id;
+              renderTasks();
+            });
+          }
           });
 
           // Drag Events
@@ -938,61 +1074,150 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
       });
 
-      // Render Add Task Form/Trigger
+       // Render Add Task Form/Trigger or Guide Box
       let addContainer = col.querySelector('.add-task-container');
       if (addContainer) {
         addContainer.remove();
       }
-
-      addContainer = document.createElement('div');
-      addContainer.className = 'add-task-container';
-
-      if (activeAddColumn === columnId) {
-        addContainer.innerHTML = getFormHtml({}, false);
-        bindFormEvents(addContainer);
-
-        const input = addContainer.querySelector('.task-title-input');
-        const saveBtn = addContainer.querySelector('.save-add-btn');
-        const cancelBtn = addContainer.querySelector('.cancel-add-btn');
-
-        const saveAdd = () => {
-          const text = input.value.trim();
-          if (text) {
-            const meta = getFormData(addContainer);
-            addTask(text, columnId, meta);
-            activeAddColumn = null;
-            renderTasks();
-          }
-        };
-
-        saveBtn.addEventListener('click', saveAdd);
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') saveAdd();
-          if (e.key === 'Escape') {
-            activeAddColumn = null;
-            renderTasks();
-          }
-        });
-        cancelBtn.addEventListener('click', () => {
-          activeAddColumn = null;
-          renderTasks();
-        });
-
-        setTimeout(() => input.focus(), 0);
-      } else {
-        const addBtnText = lang === 'en' ? '+ Add task' : '+ Añadir tarea';
-        addContainer.innerHTML = `<button class="add-task-btn">${addBtnText}</button>`;
-        addContainer.querySelector('.add-task-btn').addEventListener('click', () => {
-          activeAddColumn = columnId;
-          renderTasks();
-        });
+      let guideContainer = col.querySelector('.board-guide-box');
+      if (guideContainer) {
+        guideContainer.remove();
       }
 
-      col.appendChild(addContainer);
+      if (columnId === 'not-done') {
+        addContainer = document.createElement('div');
+        addContainer.className = 'add-task-container';
+
+        if (activeAddColumn === columnId) {
+          addContainer.innerHTML = getFormHtml({}, false);
+          bindFormEvents(addContainer);
+
+          const input = addContainer.querySelector('.task-title-input');
+          const saveBtn = addContainer.querySelector('.save-add-btn');
+          const cancelBtn = addContainer.querySelector('.cancel-add-btn');
+
+          const saveAdd = () => {
+            const text = input.value.trim();
+            if (text) {
+              const meta = getFormData(addContainer);
+              addTask(text, columnId, meta);
+              activeAddColumn = null;
+              renderTasks();
+            }
+          };
+
+          saveBtn.addEventListener('click', saveAdd);
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveAdd();
+            if (e.key === 'Escape') {
+              activeAddColumn = null;
+              renderTasks();
+            }
+          });
+          cancelBtn.addEventListener('click', () => {
+            activeAddColumn = null;
+            renderTasks();
+          });
+
+          setTimeout(() => input.focus(), 0);
+        } else {
+          const addBtnText = lang === 'en' ? '+ Add task' : '+ Añadir tarea';
+          addContainer.innerHTML = `<button class="add-task-btn">${addBtnText}</button>`;
+          addContainer.querySelector('.add-task-btn').addEventListener('click', () => {
+            activeAddColumn = columnId;
+            renderTasks();
+          });
+        }
+
+        col.appendChild(addContainer);
+      } else if (columnId === 'deleted') {
+        // Render permanent guide box in Deleted column
+        guideContainer = document.createElement('div');
+        guideContainer.className = 'board-guide-box';
+        guideContainer.style.cssText = `
+          margin-top: 1.25rem;
+          padding: 0.95rem;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px dashed rgba(239, 68, 68, 0.35);
+          border-radius: 14px;
+          font-size: 0.76rem;
+          line-height: 1.45;
+          color: #cbd5e1;
+        `;
+        
+        const guideTitle = lang === 'en' ? '📋 Actions Guide' : '📋 Guía de Acciones';
+        const restoreText = `<strong>🔄 ${dict.task_restore || 'Recuperar tarea'}</strong>:<br>${dict.task_restore_tooltip || 'Recuperar como pendiente, en proceso o hecho.'}`;
+        const editText = dict.edit_tooltip || '';
+        
+        guideContainer.innerHTML = `
+          <div style="font-weight: 700; color: #ef4444; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            <span>📋</span> <span>${guideTitle}</span>
+          </div>
+          <div style="margin-bottom: 0.65rem; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.65rem;">
+            ${restoreText}
+          </div>
+          <div>
+            ${editText}
+          </div>
+        `;
+        col.appendChild(guideContainer);
+      }
     });
 
     renderCriteriaBreakdowns(); // Update category details list breakdowns
   };
+
+  // Bind column header add buttons (+ buttons)
+  document.querySelectorAll('.column-add-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const colId = btn.getAttribute('data-column');
+      if (colId) {
+        activeAddColumn = colId;
+        renderTasks();
+      }
+    });
+  });
+
+  // Bind instructions toggle help button
+  const toggleInstructionsBtn = document.getElementById('toggle-instructions-btn');
+  const boardIntro = document.querySelector('.board-intro');
+  const instructionsArrow = document.getElementById('instructions-arrow');
+
+  if (toggleInstructionsBtn && boardIntro) {
+    // Read instructions visibility preference from localStorage
+    const savedVisibility = localStorage.getItem('board-instructions-visible');
+    
+    // Default to visible if not set
+    if (savedVisibility === 'false') {
+      boardIntro.classList.add('collapsed');
+      if (instructionsArrow) {
+        instructionsArrow.style.opacity = '0';
+        instructionsArrow.style.transform = 'scale(0.8) rotate(-15deg)';
+      }
+    }
+
+    toggleInstructionsBtn.addEventListener('click', () => {
+      const isCurrentlyCollapsed = boardIntro.classList.contains('collapsed');
+      if (isCurrentlyCollapsed) {
+        // Expand
+        boardIntro.classList.remove('collapsed');
+        localStorage.setItem('board-instructions-visible', 'true');
+        if (instructionsArrow) {
+          instructionsArrow.style.opacity = '1';
+          instructionsArrow.style.transform = 'rotate(-5deg)';
+        }
+      } else {
+        // Collapse
+        boardIntro.classList.add('collapsed');
+        localStorage.setItem('board-instructions-visible', 'false');
+        if (instructionsArrow) {
+          instructionsArrow.style.opacity = '0';
+          instructionsArrow.style.transform = 'scale(0.8) rotate(-15deg)';
+        }
+      }
+    });
+  }
 
   // Run initial render
   renderTasks();

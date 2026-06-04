@@ -13,16 +13,20 @@
         <p data-translate="print_header_desc">Organización actual de tus tareas por columnas.</p>
 
         <section class="columns">
-            <div class="column" data-column="done">
-                <h2 data-translate="col_done">Hecho</h2>
-                <ul class="task-list"></ul>
-            </div>
             <div class="column" data-column="not-done">
                 <h2 data-translate="col_not_done">Pendiente</h2>
                 <ul class="task-list"></ul>
             </div>
             <div class="column" data-column="in-progress">
                 <h2 data-translate="col_in_progress">En progreso</h2>
+                <ul class="task-list"></ul>
+            </div>
+            <div class="column" data-column="done">
+                <h2 data-translate="col_done">Hecho</h2>
+                <ul class="task-list"></ul>
+            </div>
+            <div class="column" data-column="deleted">
+                <h2 data-translate="col_deleted">Eliminadas</h2>
                 <ul class="task-list"></ul>
             </div>
         </section>
@@ -158,7 +162,7 @@
             const colList = document.querySelector(`.column[data-column="${task.column}"] ul`);
             if (colList) {
               const li = document.createElement('li');
-              const prefix = task.column === 'done' ? '✅ ' : '❌ ';
+              const prefix = task.column === 'done' ? '✅ ' : (task.column === 'deleted' ? '🗑️ ' : '❌ ');
               
               // Build dynamic emojis prefix (using taskEmoji if chosen, else fallbacks)
               let emojiPrefix = '';
@@ -259,10 +263,14 @@
               
               // Apply custom styles matching print view
               if (task.cardColor) {
-                li.style.backgroundColor = task.cardColor;
-                const lum = getLuminance(task.cardColor);
-                li.style.color = lum < 0.5 ? '#ffffff' : '#1f2937';
-                li.style.borderColor = lum < 0.5 ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+                li.style.setProperty('background-color', task.cardColor, 'important');
+              }
+              const textColor = task.cardTextColor || (getLuminance(task.cardColor || '#ffffff') < 0.5 ? '#ffffff' : '#1f2937');
+              li.style.setProperty('color', textColor, 'important');
+
+              if (task.cardColor) {
+                const isDarkText = getLuminance(textColor) < 0.5;
+                li.style.setProperty('border-color', isDarkText ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)', 'important');
                 li.style.border = '1px solid';
                 li.style.padding = '0.6rem';
                 li.style.borderRadius = '8px';
@@ -277,6 +285,9 @@
               if (task.column === 'done') {
                 li.style.textDecoration = 'line-through';
                 li.style.opacity = '0.6';
+              } else if (task.column === 'deleted') {
+                li.style.opacity = '0.55';
+                li.style.borderStyle = 'dashed';
               }
               colList.appendChild(li);
             }
