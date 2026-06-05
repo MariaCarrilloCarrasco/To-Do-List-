@@ -365,6 +365,12 @@ document.addEventListener('DOMContentLoaded', () => {
     .ambitos-buttons button[data-ambito="finanzas"] {
       background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
     }
+    .ambitos-buttons button[data-ambito="otro"] {
+      background: linear-gradient(135deg, #facc15, #ca8a04) !important;
+    }
+    .ambitos-buttons button[data-ambito="todos"] {
+      background: linear-gradient(135deg, #64748b, #475569) !important;
+    }
   `;
   document.head.appendChild(themeControlCss);
   

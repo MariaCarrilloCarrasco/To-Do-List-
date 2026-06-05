@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let editingTaskId = null;
   let activeAddColumn = null;
-  let currentAmbitoFilter = null;
+  let currentAmbitoFilter = 'todos';
 
   // Helper functions
   const saveTasks = () => {
@@ -315,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { val:'salud',    emoji:'❤️', label: lang==='en'?'Health':'Salud'    },
       { val:'hogar',    emoji:'🏠', label: lang==='en'?'Home':'Hogar'      },
       { val:'finanzas', emoji:'💰', label: lang==='en'?'Finance':'Finanzas'},
+      { val:'otro',     emoji:'🔄', label: lang==='en'?'Other':'Otro'      },
     ];
     const ambitoButtons = ambitoList.map(a => `
       <label class="ambito-radio-label" style="cursor:pointer;display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;border:1.5px solid ${taskObj.ambito===a.val?'#a78bfa':'rgba(255,255,255,0.1)'};background:${taskObj.ambito===a.val?'rgba(167,139,250,0.18)':'rgba(255,255,255,0.04)'};font-size:0.78rem;font-weight:600;color:${taskObj.ambito===a.val?'#a78bfa':'#94a3b8'};white-space:nowrap;">
@@ -758,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       list.innerHTML = '';
       // Filter tasks by column, ambito (if selected) and sort them chronologically
-      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || t.ambito === currentAmbitoFilter)));
+      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || currentAmbitoFilter === 'todos' || t.ambito === currentAmbitoFilter)));
 
       columnTasks.forEach(task => {
         const li = document.createElement('li');
@@ -891,17 +892,18 @@ document.addEventListener('DOMContentLoaded', () => {
               ocio: lang === 'en' ? 'Leisure' : 'Ocio',
               salud: lang === 'en' ? 'Health' : 'Salud',
               hogar: lang === 'en' ? 'Home' : 'Hogar',
-              finanzas: lang === 'en' ? 'Finance' : 'Finanzas'
+              finanzas: lang === 'en' ? 'Finance' : 'Finanzas',
+              otro: lang === 'en' ? 'Other' : 'Otro'
             };
             const emojisMap = {
               familia: '👥', personal: '👤', social: '🤝',
               laboral: '💼', ocio: '🎮', salud: '🩺',
-              hogar: '🏠', finanzas: '💰'
+              hogar: '🏠', finanzas: '💰', otro: '🔄'
             };
             const colorsMap = {
               familia: '#f472b6', personal: '#818cf8', social: '#60a5fa',
               laboral: '#fbbf24', ocio: '#a78bfa', salud: '#34d399',
-              hogar: '#22d3ee', finanzas: '#2dd4bf'
+              hogar: '#22d3ee', finanzas: '#2dd4bf', otro: '#facc15'
             };
             const label = labelsMap[task.ambito] || task.ambito;
             const emoji = emojisMap[task.ambito] || '📁';
@@ -1354,11 +1356,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const clickedAmbito = btn.dataset.ambito;
         
         if (currentAmbitoFilter === clickedAmbito) {
-          // Deselect if clicking the currently active one
-          currentAmbitoFilter = null;
-          btn.style.boxShadow = '';
-          btn.style.borderColor = 'rgba(255,255,255,0.1)';
-          btn.style.background = 'rgba(255, 255, 255, 0.05)';
+          // If clicking the currently active one
+          if (clickedAmbito !== 'todos') {
+            currentAmbitoFilter = 'todos';
+            btn.style.boxShadow = '';
+            btn.style.borderColor = 'rgba(255,255,255,0.1)';
+            btn.style.background = 'rgba(255, 255, 255, 0.05)';
+            // Select 'todos' visually
+            const todosBtn = Array.from(ambitoButtons).find(b => b.dataset.ambito === 'todos');
+            if (todosBtn) {
+              todosBtn.style.borderColor = '#a78bfa';
+              todosBtn.style.boxShadow = '0 0 10px rgba(167, 139, 250, 0.3)';
+              todosBtn.style.background = 'rgba(167, 139, 250, 0.15)';
+            }
+          }
         } else {
           // Select new filter
           currentAmbitoFilter = clickedAmbito;

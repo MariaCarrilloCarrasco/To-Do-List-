@@ -324,6 +324,14 @@ main {
   background: linear-gradient(135deg, #14b8a6, #0d9488); /* Teal */
 }
 
+.ambitos-buttons button[data-ambito="otro"] {
+  background: linear-gradient(135deg, #facc15, #ca8a04); /* Yellow */
+}
+
+.ambitos-buttons button[data-ambito="todos"] {
+  background: linear-gradient(135deg, #64748b, #475569); /* Slate */
+}
+
 
 .ambitos details {
   margin-top: 1rem;

@@ -92,6 +92,8 @@ const translations = {
     ambitos_salud: "❤️ Salud",
     ambitos_hogar: "🏠 Hogar",
     ambitos_finanzas: "💰 Finanzas",
+    ambitos_otro: "🔄 Otro",
+    ambitos_todos: "🌐 Todos",
     
     otros_criterios_title: "Otros criterios",
     criterio_urgencia: "Urgencia",
@@ -187,7 +189,7 @@ const translations = {
     intro_desc: "In the main body you have your board with three columns: Done, Pending and In Progress. Below you will see the collapsible scopes.",
     main_board_title: "Task Board",
     main_board_desc: "In the main body you have your interactive board with three columns: <span style='font-weight: 700; color: #00f59b;'>Done</span>, <span style='font-weight: 700; color: #00f59b;'>Pending</span> and <span style='font-weight: 700; color: #00f59b;'>In progress</span>.",
-    intro_bullet_1: "<strong>Drag or click status</strong>: You can move a task by dragging it, or clicking the tick ✅ or cross ❌ next to the name to toggle between pending and done.",
+    intro_bullet_1: "<strong>Drag or click status</strong>: You can move a task by dragging it, or clicking the tick ✅ or cross ❌ next to the name to toggle between pending, in progress, and done.",
     intro_bullet_2: "<strong>Add Task</strong>: Click the <strong style='color: #00f59b;'>[+]</strong> button in any column header to add a task (specifying title, description, and scheduled time).",
     intro_bullet_3: "<strong>Modify or Delete</strong>: Use the ✏️ (edit) or 🗑️ (delete) icons inside each card to change its information or remove it.",
     board_tablero_title: "Board",
@@ -249,6 +251,8 @@ const translations = {
     ambitos_salud: "❤️ Health",
     ambitos_hogar: "🏠 Home",
     ambitos_finanzas: "💰 Finance",
+    ambitos_otro: "🔄 Other",
+    ambitos_todos: "🌐 All",
     
     otros_criterios_title: "Other criteria",
     criterio_urgencia: "Urgency",
@@ -2302,8 +2306,8 @@ const stepsTranslations = {
     },
     4: {
       title: "Mark Task (Tick and Cross)",
-      desc: "Click the cross <strong>❌</strong> to complete it (it will move to Done). Press the green tick <strong>✅</strong> to reactivate it.",
-      narrator: "Step 4. Mark Task as Done. Click the red cross at the beginning of the card to mark it as completed. It will change to the green tick and move on its own to the Done column. You can click the green tick to make it pending again.",
+      desc: "Click the tick <strong>✅</strong> to complete it (moves to Done). Click the cross <strong>❌</strong> to make it pending again.",
+      narrator: "Step 4. Change Task status. Click the tick next to the task name to mark it as completed and move it to Done. Or click the cross if it's already done to make it pending again.",
       lseText: 'Make check 📈 "Done". Happy thumb up.',
       lseChapter: "Mark"
     },

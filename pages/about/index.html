@@ -177,7 +177,8 @@
         }
         isNarrating = false;
         const currentLang = localStorage.getItem('app-language') || 'es';
-        speakBtn.innerHTML = currentLang === 'en' ? '🔊 Listen to Manual' : '🔊 Escuchar Manual';
+        const dict = window.translations && window.translations[currentLang] ? window.translations[currentLang] : (window.translations ? window.translations.es : null);
+        speakBtn.innerHTML = dict && dict.narrator_btn_speak ? dict.narrator_btn_speak : (currentLang === 'en' ? '🔊 Listen to Manual' : '🔊 Escuchar Manual');
         speakBtn.classList.remove('active');
         stopBtn.style.display = 'none';
       };
@@ -188,7 +189,18 @@
 
         const currentLang = localStorage.getItem('app-language') || 'es';
         utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = currentLang === 'en' ? 'en-US' : 'es-ES';
+        
+        // Map 2-letter codes to standard locales for better TTS voice matching
+        const langMap = {
+          'en': 'en-US', 'es': 'es-ES', 'fr': 'fr-FR', 'de': 'de-DE',
+          'it': 'it-IT', 'pt': 'pt-PT', 'ca': 'ca-ES', 'gl': 'gl-ES',
+          'eu': 'eu-ES', 'nl': 'nl-NL', 'pl': 'pl-PL', 'ro': 'ro-RO',
+          'sv': 'sv-SE', 'da': 'da-DK', 'no': 'no-NO', 'fi': 'fi-FI',
+          'cs': 'cs-CZ', 'hu': 'hu-HU', 'el': 'el-GR', 'tr': 'tr-TR',
+          'ar': 'ar-SA', 'zh': 'zh-CN', 'ja': 'ja-JP', 'ko': 'ko-KR',
+          'hi': 'hi-IN', 'ru': 'ru-RU'
+        };
+        utterance.lang = langMap[currentLang] || currentLang;
         utterance.rate = 0.95; // Slightly slower for readability
         
         utterance.onend = () => {
@@ -200,7 +212,11 @@
         };
 
         isNarrating = true;
-        speakBtn.innerHTML = currentLang === 'en' ? '⏸️ Narrating...' : '⏸️ Narrando...';
+        
+        const dict = window.translations && window.translations[currentLang] ? window.translations[currentLang] : (window.translations ? window.translations.es : null);
+        const speakingText = dict && dict.narrator_btn_speaking ? dict.narrator_btn_speaking : (currentLang === 'en' ? '⏸️ Narrating...' : '⏸️ Narrando...');
+        
+        speakBtn.innerHTML = speakingText;
         speakBtn.classList.add('active');
         stopBtn.style.display = 'inline-block';
         synth.speak(utterance);
@@ -212,7 +228,9 @@
         } else {
           let allText = "";
           const currentLang = localStorage.getItem('app-language') || 'es';
-          allText += (currentLang === 'en' ? "User Manual. " : "Manual de Uso. ");
+          const dict = window.translations && window.translations[currentLang] ? window.translations[currentLang] : (window.translations ? window.translations.es : null);
+          const manualTitle = dict && dict.about_title ? dict.about_title + ". " : (currentLang === 'en' ? "User Manual. " : "Manual de Uso. ");
+          allText += manualTitle;
           
           const steps = document.querySelectorAll('.easy-step');
           steps.forEach(step => {

@@ -7,9 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=3">
-    <script src="js/theme.js?v=3"></script>
-    <script src="js/language.js" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <script src="js/theme.js?v=4"></script>
+    <script src="js/language.js?v=4" defer></script>
 </head>
 <body>
     <nav>
@@ -98,6 +98,8 @@
                         <button type="button" data-ambito="salud" data-translate="ambitos_salud">❤️ Salud</button>
                         <button type="button" data-ambito="hogar" data-translate="ambitos_hogar">🏠 Hogar</button>
                         <button type="button" data-ambito="finanzas" data-translate="ambitos_finanzas">💰 Finanzas</button>
+                        <button type="button" data-ambito="otro" data-translate="ambitos_otro">🔄 Otro</button>
+                        <button type="button" data-ambito="todos" data-translate="ambitos_todos" class="active-filter" style="border-color: #a78bfa; background: rgba(167, 139, 250, 0.15); box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);">🌐 Todos</button>
                     </div>
                     
                     <div class="ambitos-details" style="margin-top: 1rem;">
@@ -233,9 +235,9 @@
         </footer>
     </main>
 
-    <script src="js/nav.js" defer></script>
-    <script src="js/ambitos.js" defer></script>
-    <script src="js/tasks.js" defer></script>
+    <script src="js/nav.js?v=4" defer></script>
+    <script src="js/ambitos.js?v=4" defer></script>
+    <script src="js/tasks.js?v=4" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('toggle-instructions-btn');
