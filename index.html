@@ -23,9 +23,13 @@
             <a href="pages/estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
             <a href="pages/compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
             <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+            <button type="button" id="font-size-reset-btn" class="nav-btn nav-btn-font-size" title="Volver al tamaño de letra original">A</button>
+            <button type="button" id="font-size-btn" class="nav-btn nav-btn-font-size" title="Aumentar tamaño de letra">A+</button>
+            <button type="button" id="font-size-larger-btn" class="nav-btn nav-btn-font-size" title="Hacer la letra aún más grande">A++</button>
         </div>
     </nav>
-    <main>
+
+    <main>
                 <h1 class="main-board-title" style="color: #00f59b; font-size: 1.8rem; font-weight: 800; margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.75rem;">
                     <span data-translate="main_board_title">Tablero de tareas</span>
                     <button type="button" id="toggle-instructions-btn" class="help-toggle-btn" title="Mostrar/Ocultar Instrucciones" style="background: rgba(120, 120, 120, 0.15); border: 1px solid rgba(120, 120, 120, 0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: #00f59b; transition: all 0.25s ease;">❓</button>
@@ -290,7 +294,61 @@
         } else {
             btn.title = lang === 'en' ? 'Hide instructions' : 'Ocultar instrucciones';
         }
+
+        const fontSizeResetBtn = document.getElementById('font-size-reset-btn');
+        const fontSizeBtn = document.getElementById('font-size-btn');
+        const fontSizeLargerBtn = document.getElementById('font-size-larger-btn');
+        const fontSizes = [16, 18, 20, 22, 24, 26, 28];
+        const currentFontSize = parseInt(localStorage.getItem('app-font-size') || '16', 10);
+
+        const updateFontSize = (size) => {
+          document.documentElement.style.setProperty('--root-font-size', `${size}px`);
+          localStorage.setItem('app-font-size', size);
+          if (fontSizeBtn) {
+            fontSizeBtn.title = `Aumentar tamaño desde ${size}px`;
+          }
+          if (fontSizeLargerBtn) {
+            fontSizeLargerBtn.title = `Hacer la letra aún más grande (actual ${size}px)`;
+          }
+          if (fontSizeResetBtn) {
+            fontSizeResetBtn.title = `Restaurar tamaño original (16px)`;
+          }
+        };
+
+        const nextSize = () => {
+          const activeSize = parseInt(localStorage.getItem('app-font-size') || '16', 10);
+          const currentIndex = fontSizes.indexOf(activeSize);
+          const nextIndex = currentIndex === -1 || currentIndex === fontSizes.length - 1 ? 0 : currentIndex + 1;
+          return fontSizes[nextIndex];
+        };
+
+        const nextLargerSize = () => {
+          const activeSize = parseInt(localStorage.getItem('app-font-size') || '16', 10);
+          const currentIndex = fontSizes.indexOf(activeSize);
+          const nextIndex = currentIndex === -1 ? 0 : Math.min(currentIndex + 2, fontSizes.length - 1);
+          return fontSizes[nextIndex];
+        };
+
+        if (fontSizeBtn) {
+          fontSizeBtn.addEventListener('click', () => {
+            updateFontSize(nextSize());
+          });
+        }
+
+        if (fontSizeLargerBtn) {
+          fontSizeLargerBtn.addEventListener('click', () => {
+            updateFontSize(nextLargerSize());
+          });
+        }
+
+        if (fontSizeResetBtn) {
+          fontSizeResetBtn.addEventListener('click', () => {
+            updateFontSize(16);
+          });
+        }
+
+        updateFontSize(currentFontSize);
       });
     </script>
 </body>
-</html>
+</html>

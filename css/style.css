@@ -1,3 +1,7 @@
+html {
+  font-size: var(--root-font-size, 16px);
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   margin: 0;
