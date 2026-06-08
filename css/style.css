@@ -90,6 +90,23 @@ nav {
   outline-offset: 2px;
 }
 
+.nav-btn-font-size {
+  background: #2f323d;
+  color: #ffffff;
+  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35);
+}
+
+.nav-btn-font-size:hover,
+.nav-btn-font-size:focus {
+  background: #1e212a;
+  transform: translateY(-1px);
+}
+
+.nav-btn-font-size:active {
+  background: #11131a;
+  transform: translateY(0);
+}
+
 /* Specific button color palettes using vibrant modern gradients */
 .nav-btn-inicio {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
