@@ -1336,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', () => {
               todosBtn.style.background = 'rgba(167, 139, 250, 0.15)';
             }
           }
-        } else 
+        } else {
           currentAmbitoFilter = clickedAmbito;
           ambitoButtons.forEach(b => {
             b.style.boxShadow = '';
@@ -1347,11 +1347,9 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.style.boxShadow = '0 0 10px rgba(167, 139, 250, 0.3)';
           btn.style.background = 'rgba(167, 139, 250, 0.15)';
         }
-        
         renderTasks();
       });
     });
   }
-
   renderTasks();
 });
