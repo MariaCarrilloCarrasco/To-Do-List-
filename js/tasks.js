@@ -1,8 +1,4 @@
-// js/tasks.js
-// Dynamic Task Management with Categorized Badges, Scheduling & Bilingual Support
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Dynamic labels helper using global translations
   const getDynamicLabels = () => {
     const lang = localStorage.getItem('app-language') || 'es';
     const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
@@ -72,13 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('todo-tasks-version', currentDbVersion);
   }
 
-  // Sort tasks chronologically helper function
   const sortTasksChronologically = (taskList) => {
     return [...taskList].sort((a, b) => {
       const dateA = a.dateStart || '';
       const dateB = b.dateStart || '';
       
-      // Scheduled dates go first
       if (dateA && !dateB) return -1;
       if (!dateA && dateB) return 1;
       
@@ -87,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dateA > dateB) return 1;
       }
       
-      // If dates are equal or both missing, compare times
       const timeA = a.timeStart || '';
       const timeB = b.timeStart || '';
       
@@ -99,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (timeA > timeB) return 1;
       }
       
-      // Secondary fallback: compare IDs to keep order stable
       return a.id.localeCompare(b.id);
     });
   };
@@ -108,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAddColumn = null;
   let currentAmbitoFilter = 'todos';
 
-  // Helper functions
   const saveTasks = () => {
     localStorage.setItem('todo-tasks', JSON.stringify(tasks));
     renderCriteriaBreakdowns(); // Update details breakdowns
@@ -189,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const bindFormEvents = (container) => {
-    // Helper: highlight selected radio label visually
     const bindRadioHighlight = (radioClass, activeColor = '#a78bfa', activeBg = 'rgba(167,139,250,0.18)') => {
       const radios = container.querySelectorAll(`.${radioClass}`);
       radios.forEach(r => {
@@ -217,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bindRadioHighlight('task-importancia-radio');
     bindRadioHighlight('task-dificultad-radio');
 
-    // When typing in the custom ámbito field, deselect radio
     const ambitoCustom = container.querySelector('.task-ambito-custom');
     if (ambitoCustom) {
       ambitoCustom.addEventListener('input', () => {
@@ -236,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Date type radio → show/hide date fields
     const dateRadios = container.querySelectorAll('.task-date-type-radio');
     const dateFieldsRow = container.querySelector('.date-fields-row');
     const dateEndField = container.querySelector('.date-end-field');
@@ -253,7 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Time type radio → show/hide time fields
     const timeRadios = container.querySelectorAll('.task-time-type-radio');
     const timeFieldsRow = container.querySelector('.time-fields-row');
     const timeEndField = container.querySelector('.time-end-field');
@@ -289,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridStyle = `display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;`;
     const grid3Style = `display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;`;
 
-    // State column selector
+    
     const col = taskObj.column || 'not-done';
     const stateOptions = [
       { val: 'not-done',    emoji: '🕐', label: lang === 'en' ? 'Pending'     : 'Pendiente'  },
@@ -305,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </label>
     `).join('');
 
-    // Ámbito buttons
+  
     const ambitoList = [
       { val:'familia',  emoji:'👪', label: lang==='en'?'Family':'Familia'  },
       { val:'personal', emoji:'👤', label: 'Personal'                       },
@@ -324,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </label>
     `).join('');
 
-    // Urgencia, Importancia, Dificultad
+    
     const urgLevels = [
       { val:'alta',  emoji:'🔴', label: lang==='en'?'High':'Alta'   },
       { val:'media', emoji:'🟡', label: lang==='en'?'Medium':'Media'},
@@ -348,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </label>
     `).join('');
 
-    // Date & time rows
     const dtType = taskObj.dateType || '';
     const tmType = taskObj.timeType || '';
 
@@ -652,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { offset: Number.NEGATIVE_INFINITY }).element;
   };
 
-  // Render function for category breakdowns at the bottom of the page
+
   const renderCriteriaBreakdowns = () => {
     const labels = getDynamicLabels();
     const lang = localStorage.getItem('app-language') || 'es';
@@ -678,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `<em style="opacity: 0.5;">${labels.empty_tasks}</em>`;
         list.appendChild(li);
       } else {
-        // Sort category tasks chronologically too
+    
         const sortedFiltered = sortTasksChronologically(filteredTasks);
         sortedFiltered.forEach(task => {
           const li = document.createElement('li');
@@ -719,13 +705,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Main Render Function for Column Boards
   window.renderTasks = () => {
     const labels = getDynamicLabels();
     const lang = localStorage.getItem('app-language') || 'es';
     const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
 
-    // Update header add tooltip dynamically
     const addBtnTooltip = document.querySelector('.column-add-btn[data-column="not-done"] .add-tooltip-content');
     if (addBtnTooltip) {
       addBtnTooltip.innerHTML = dict.add_tooltip || '';
@@ -758,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       list.innerHTML = '';
-      // Filter tasks by column, ambito (if selected) and sort them chronologically
+      
       const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || currentAmbitoFilter === 'todos' || t.ambito === currentAmbitoFilter)));
 
       columnTasks.forEach(task => {
@@ -766,7 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
         li.className = 'task-card';
         li.dataset.id = task.id;
 
-        // Apply custom backgrounds and sizes dynamically
         if (task.cardColor) {
           li.style.setProperty('background-color', task.cardColor, 'important');
         }
@@ -833,13 +816,11 @@ document.addEventListener('DOMContentLoaded', () => {
             li.classList.add('deleted-card');
           }
 
-          // Build dynamic emoticon prefix next to title (fallback or category specific)
           let emojiPrefix = '';
           if (task.taskEmoji) {
             emojiPrefix = `<span class="task-main-emoji" style="margin-right: 0.35rem; font-style: normal; font-size: 1.15rem;">${task.taskEmoji}</span>`;
           }
 
-          // Build status text ✓ Vamos avanzando if Hecho, or encouragement text if Pendiente
           let statusTextHtml = '';
           if (isDone) {
             statusTextHtml = `
@@ -865,13 +846,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           }
 
-          // Build description HTML
           let descHtml = '';
           if (task.description) {
             descHtml = `<div class="task-description" style="font-size: 0.88rem; color: #f1f5f9; margin: 0.35rem 0 0.5rem 0; line-height: 1.5; text-align: left;">${task.description}</div>`;
           }
 
-          // Build custom vertical metadata stack matching Figma mockup
           const getDaysCountText = (startStr, endStr) => {
             if (!startStr || !endStr) return '';
             const start = new Date(startStr);
@@ -1017,8 +996,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const titleColor = task.cardTextColor && task.cardTextColor !== '#1f2937' ? task.cardTextColor : '#00f59b';
-
-          // No button in 'done' column — tasks stay in done until moved manually
           let doneActionsHtml = '';
 
           let deletedActionsHtml = '';
@@ -1070,13 +1047,10 @@ document.addEventListener('DOMContentLoaded', () => {
               ${metadataListHtml}
             </div>
           `;
-
-          // Action Listeners
           if (columnId === 'deleted') {
             const recoverBtn = li.querySelector('.recover-btn');
             const recoverDropdown = li.querySelector('.recover-dropdown');
 
-            // Toggle dropdown on click
             recoverBtn.addEventListener('click', (e) => {
               e.stopPropagation();
               const isOpen = recoverDropdown.style.display === 'block';
@@ -1085,7 +1059,6 @@ document.addEventListener('DOMContentLoaded', () => {
               recoverDropdown.style.display = isOpen ? 'none' : 'block';
             });
 
-            // Recover to chosen column
             li.querySelectorAll('.recover-to-btn').forEach(btn => {
               btn.addEventListener('mouseenter', () => { btn.style.background = 'rgba(167,139,250,0.15)'; });
               btn.addEventListener('mouseleave', () => { btn.style.background = 'none'; });
@@ -1098,7 +1071,6 @@ document.addEventListener('DOMContentLoaded', () => {
               });
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function closeDropdown() {
               if (recoverDropdown) recoverDropdown.style.display = 'none';
               document.removeEventListener('click', closeDropdown);
@@ -1179,7 +1151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         list.appendChild(li);
       });
 
-      // Drag and drop column list events
       list.addEventListener('dragover', (e) => {
         e.preventDefault();
         list.classList.add('drag-over');
@@ -1205,7 +1176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
       });
 
-       // Render Add Task Form/Trigger or Guide Box
       let addContainer = col.querySelector('.add-task-container');
       if (addContainer) {
         addContainer.remove();
@@ -1295,10 +1265,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    renderCriteriaBreakdowns(); // Update category details list breakdowns
+    renderCriteriaBreakdowns(); 
   };
 
-  // Bind column header add buttons (+ buttons)
+  
   document.querySelectorAll('.column-add-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1310,16 +1280,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Bind instructions toggle help button
+  
   const toggleInstructionsBtn = document.getElementById('toggle-instructions-btn');
   const boardIntro = document.querySelector('.board-intro');
   const instructionsArrow = document.getElementById('instructions-arrow');
 
   if (toggleInstructionsBtn && boardIntro) {
-    // Read instructions visibility preference from localStorage
+    
     const savedVisibility = localStorage.getItem('board-instructions-visible');
     
-    // Default to visible if not set
+  
     if (savedVisibility === 'false') {
       boardIntro.classList.add('collapsed');
       if (instructionsArrow) {
@@ -1331,7 +1301,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleInstructionsBtn.addEventListener('click', () => {
       const isCurrentlyCollapsed = boardIntro.classList.contains('collapsed');
       if (isCurrentlyCollapsed) {
-        // Expand
         boardIntro.classList.remove('collapsed');
         localStorage.setItem('board-instructions-visible', 'true');
         if (instructionsArrow) {
@@ -1349,20 +1318,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    // Add event listeners for ambito buttons
     const ambitoButtons = document.querySelectorAll('.ambitos-buttons button');
     ambitoButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const clickedAmbito = btn.dataset.ambito;
         
         if (currentAmbitoFilter === clickedAmbito) {
-          // If clicking the currently active one
           if (clickedAmbito !== 'todos') {
             currentAmbitoFilter = 'todos';
             btn.style.boxShadow = '';
             btn.style.borderColor = 'rgba(255,255,255,0.1)';
             btn.style.background = 'rgba(255, 255, 255, 0.05)';
-            // Select 'todos' visually
             const todosBtn = Array.from(ambitoButtons).find(b => b.dataset.ambito === 'todos');
             if (todosBtn) {
               todosBtn.style.borderColor = '#a78bfa';
@@ -1370,16 +1336,13 @@ document.addEventListener('DOMContentLoaded', () => {
               todosBtn.style.background = 'rgba(167, 139, 250, 0.15)';
             }
           }
-        } else {
-          // Select new filter
+        } else 
           currentAmbitoFilter = clickedAmbito;
-          // Reset styling for all buttons
           ambitoButtons.forEach(b => {
             b.style.boxShadow = '';
             b.style.borderColor = 'rgba(255,255,255,0.1)';
             b.style.background = 'rgba(255, 255, 255, 0.05)';
           });
-          // Highlight active button
           btn.style.borderColor = '#a78bfa';
           btn.style.boxShadow = '0 0 10px rgba(167, 139, 250, 0.3)';
           btn.style.background = 'rgba(167, 139, 250, 0.15)';
@@ -1390,6 +1353,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Run initial render
   renderTasks();
 });

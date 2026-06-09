@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-      // 1. Text to Speech Narrator using HTML5 Web Speech API
       const speakBtn = document.getElementById('audio-speak-btn');
       const stopBtn = document.getElementById('audio-stop-btn');
       let synth = window.speechSynthesis;
@@ -25,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentLang = localStorage.getItem('app-language') || 'es';
         utterance = new SpeechSynthesisUtterance(text);
         
-        // Map 2-letter codes to standard locales for better TTS voice matching
         const langMap = {
           'en': 'en-US', 'es': 'es-ES', 'fr': 'fr-FR', 'de': 'de-DE',
           'it': 'it-IT', 'pt': 'pt-PT', 'ca': 'ca-ES', 'gl': 'gl-ES',
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       stopBtn.addEventListener('click', stopSpeech);
 
-      // 2. Clickable steps LSE interaction
       const steps = document.querySelectorAll('.easy-step');
       const lseEmoji = document.getElementById('lse-avatar-emoji');
       const lseStatus = document.getElementById('lse-status-text');
@@ -99,21 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
           const stepId = step.getAttribute('data-step');
           const stepText = step.getAttribute('data-text');
 
-          // Read individual step
           speakText(stepText);
 
-          // Update LSE visual interpreter simulation (text updates via language.js updateUIForLanguage)
           const currentLang = localStorage.getItem('app-language') || 'es';
           const action = lseActions[stepId];
           if (action) {
             lseEmoji.innerHTML = action.emoji;
             
-            // Trigger language-based LSE text
             if (window.updateUIForLanguage) {
               window.updateUIForLanguage(currentLang);
             }
             
-            // Trigger quick animation pop
             lseEmoji.style.animation = 'none';
             setTimeout(() => {
               lseEmoji.style.animation = 'lse-wave 1.5s ease-in-out infinite';
@@ -144,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         brailleOutput.innerHTML = transliterateToBraille(val) || '⠠';
       });
 
-      // 4. Pictograms Search connecting to official ARASAAC API
       const pictoSearch = document.getElementById('picto-search-field');
       const pictoGrid = document.getElementById('picto-results-grid');
 
@@ -256,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const terms = defaultSearchTerms[lang] || defaultSearchTerms.es;
         pictoGrid.innerHTML = '';
         
-        // Emojis mapping for fallback
         const emojis = {
           'Crear': '➕', 'Create': '➕',
           'Editar': '✏️', 'Edit': '✏️',
@@ -274,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
           card.innerHTML = `<span class="picto-symbol">${fallbackEmoji}</span><span class="picto-name">${t.label}</span>`;
           pictoGrid.appendChild(card);
           
-          // Asynchronously fetch from ARASAAC API
           const apiLang = lang === 'en' ? 'en' : 'es';
           fetch(`https://api.arasaac.org/api/pictograms/${apiLang}/search/${encodeURIComponent(t.query)}`)
             .then(res => res.json())
@@ -349,18 +339,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
       });
 
-      // Load initial pictograms based on active language
+
       const activeLang = localStorage.getItem('app-language') || 'es';
       loadDefaultPictograms(activeLang);
 
-      // Listen for language changes to reload
       window.addEventListener('languagechanged', (e) => {
         loadDefaultPictograms(e.detail.language);
-        // Clear input
         pictoSearch.value = '';
       });
 
-      // Stop speech on page unload/navigate
       window.addEventListener('beforeunload', () => {
         if (synth) synth.cancel();
       });

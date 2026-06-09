@@ -1,4 +1,3 @@
-// Helper to compute luminance for smart card adjustments
 function getLuminance(hex) {
   let color = hex.replace('#', '');
   if (color.length === 3) {
@@ -14,7 +13,6 @@ function getLuminance(hex) {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
-// Applies custom theme colors to the page using a dynamic style block
 function applyTheme(bgColor, textColor) {
   let styleEl = document.getElementById('custom-theme-styles');
   if (!styleEl) {
@@ -68,7 +66,6 @@ function applyTheme(bgColor, textColor) {
   `;
 }
 
-// Early theme application to avoid screen flash
 (function() {
   const savedBg = localStorage.getItem('theme-bg-color');
   const savedText = localStorage.getItem('theme-text-color');
@@ -85,7 +82,6 @@ function applyTheme(bgColor, textColor) {
   }
 })();
 
-// DOM Injections and logic when page loads
 document.addEventListener('DOMContentLoaded', () => {
   const themeControlCss = document.createElement('style');
   themeControlCss.textContent = `

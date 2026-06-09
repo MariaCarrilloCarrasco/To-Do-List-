@@ -1,6 +1,3 @@
-// js/language.js
-// Multilingual Language Support (9 Languages) with Premium Dropdown Selector and Global Download Modal
-
 const translations = {
   es: {
     footer_reminder: "Por favor, no olvide mover las tareas a la columna de \"Hecho\" cuando estén realizadas. Gracias.",
@@ -1363,7 +1360,7 @@ const translations = {
     download_pdf_btn: "📄 Opslaan als PDF / Afdrukken", download_png_btn: "🖼️ Downloaden als afbeelding (PNG)"
   },
 
-  // ==================== POLISH ====================
+  
   pl: {
     footer_reminder: "Prosimy nie zapominać o przenoszeniu zadań do kolumny \"Zrobione\", gdy zostaną wykonane. Dziękujemy.",
     footer_save_success: "Zmiany zostały automatycznie zapisane pomyślnie.",

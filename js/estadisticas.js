@@ -1,8 +1,5 @@
-// js/estadisticas.js
-// Dynamic Statistics calculations, Progress Circle, and Registration Hour Bar Chart
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Fallback default tasks if localStorage is empty
+  
   const defaultTasks = [
     { id: 'task-1', text: 'Task 1', column: 'done' },
     { id: 'task-2', text: 'Task 2', column: 'done' },
@@ -15,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'task-9', text: 'Task 9', column: 'in-progress' }
   ];
 
-  // Dummy hours mapping for seeded task IDs (to make the chart look nice on first run)
+  
   const seededTaskHours = {
     'task-1': 10,
     'task-2': 10,
@@ -36,14 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const lang = localStorage.getItem('app-language') || 'es';
 
-    // 1. Calculate KPI Counts (filtering out deleted tasks)
     const activeTasks = tasks.filter(t => t.column !== 'deleted');
     const total = activeTasks.length;
     const completed = activeTasks.filter(t => t.column === 'done').length;
     const inProgress = activeTasks.filter(t => t.column === 'in-progress').length;
     const pending = activeTasks.filter(t => t.column === 'not-done').length;
 
-    // Update labels in the DOM
     const totalEl = document.getElementById('count-total');
     const doneEl = document.getElementById('count-done');
     const progressEl = document.getElementById('count-progress');
@@ -54,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (progressEl) progressEl.textContent = inProgress;
     if (pendingEl) pendingEl.textContent = pending;
 
-    // 2. Update Progress Conic-Gradient Circle
     const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
     const inProgressPercentage = total === 0 ? 0 : Math.round((inProgress / total) * 100);
     const pendingPercentage = total === 0 ? 0 : Math.round((pending / total) * 100);
@@ -66,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const degDone = percentage * 3.6;
       const degProgress = degDone + (inProgressPercentage * 3.6);
       
-      // Update circle background conic-gradient (green: completed, orange: in progress, red: pending)
       circle.style.background = `conic-gradient(
         #10b981 0deg ${degDone}deg,
         #f59e0b ${degDone}deg ${degProgress}deg,
@@ -86,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // 3. Render Hour Registration Bar Chart
     const barChartContainer = document.getElementById('bar-chart-container');
     if (barChartContainer) {
       barChartContainer.innerHTML = '';
@@ -95,15 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       activeTasks.forEach(task => {
         if (seededTaskHours[task.id] !== undefined) {
-          // It's a seeded task, use simulated hours
+
           const hour = seededTaskHours[task.id];
           hourlyCounts[hour]++;
         } else if (task.id && task.id.startsWith('task-')) {
-          // Parse timestamp from user-created task ID
+
           const tsStr = task.id.replace('task-', '');
           const ts = parseInt(tsStr, 10);
+          
           if (!isNaN(ts) && ts > 1000000) {
             const hour = new Date(ts).getHours();
+          
             if (hour >= 0 && hour < 24) {
               hourlyCounts[hour]++;
             }
@@ -111,10 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Find max count to scale heights
+      
       const maxCount = Math.max(...hourlyCounts, 1);
 
-      // Render 24 hour columns
+      
       for (let i = 0; i < 24; i++) {
         const count = hourlyCounts[i];
         const heightPercent = (count / maxCount) * 100;
@@ -137,13 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Expose renderStats globally so it can be re-triggered on language change
+  
   window.renderStats = renderStats;
 
-  // Run first render
+  
   renderStats();
 
-  // Listen for global language changed events to update bar chart tooltips
+  
   window.addEventListener('languagechanged', () => {
     renderStats();
   });

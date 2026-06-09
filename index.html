@@ -35,7 +35,7 @@
                     <button type="button" id="toggle-instructions-btn" class="help-toggle-btn" title="Mostrar/Ocultar Instrucciones" style="background: rgba(120, 120, 120, 0.15); border: 1px solid rgba(120, 120, 120, 0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: #00f59b; transition: all 0.25s ease;">❓</button>
                 </h1>
                 <p class="main-board-desc" data-translate="main_board_desc" style="color: #00f59b; font-size: 0.95rem; margin: 0 0 1.5rem 0; opacity: 0.9;">
-                    En el cuerpo principal tienes tu tablero interactivo con tres columnas: <span style='font-weight: 700; color: #00f59b;'>Hecho</span>, <span style='font-weight: 700; color: #00f59b;'>Pendiente</span> y <span style='font-weight: 700; color: #00f59b;'>En proceso</span>.
+                    <span style='font-weight: 700; color: #00f59b;'>Hecho</span>, <span style='font-weight: 700; color: #00f59b;'>Pendiente</span> y <span style='font-weight: 700; color: #00f59b;'>En proceso</span>.
                 </p>
 
 
@@ -62,15 +62,13 @@
                             </button>
                         </h2>
                         <ul class="task-list">
-                            <!-- Dynamic tasks will be rendered here -->
                         </ul>
                     </article>
                     <article class="column" data-column="in-progress">
                         <h2>
                             <span data-translate="col_in_progress">En progreso</span>
                         </h2>
-                        <ul class="task-list">
-                            <!-- Dynamic tasks will be rendered here -->
+                        <ul class="task-list"></ul>
                         </ul>
                     </article>
                     <article class="column" data-column="done">
@@ -78,7 +76,6 @@
                             <span data-translate="col_done">Hecho</span>
                         </h2>
                         <ul class="task-list">
-                            <!-- Dynamic tasks will be rendered here -->
                         </ul>
                     </article>
                     <article class="column" data-column="deleted">
@@ -86,7 +83,6 @@
                             <span data-translate="col_deleted">Eliminadas</span>
                         </h2>
                         <ul class="task-list">
-                            <!-- Dynamic tasks will be rendered here -->
                         </ul>
                     </article>
                 </section>
@@ -215,19 +211,16 @@
                 </section>
         
         <footer class="board-status-footer" style="margin-top: 3.5rem; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 1rem; font-size: 0.85rem; line-height: 1.6; text-align: left; width: 100%;">
-            <!-- Reminder message (always visible) -->
             <div class="status-reminder-box" style="display: flex; gap: 8px; align-items: flex-start; color: #cbd5e1; font-weight: 500;">
                 <span>ℹ️</span>
                 <p data-translate="footer_reminder" style="margin: 0;">Por favor, no olvide mover las tareas a la columna de "Hecho" cuando estén realizadas. Gracias.</p>
             </div>
             
-            <!-- Success status message (green) -->
             <div class="status-success-box" style="display: flex; gap: 8px; align-items: flex-start; color: #00f59b; font-weight: 600;">
                 <span>🟢</span>
                 <p data-translate="footer_save_success" style="margin: 0;">Los cambios realizados se han guardado automáticamente, de manera, exitosa.</p>
             </div>
             
-            <!-- Error status message (red) -->
             <div class="status-error-box" style="display: flex; gap: 8px; align-items: flex-start; color: #ef4444; font-weight: 600;">
                 <span>🔴</span>
                 <p data-translate="footer_save_error" style="margin: 0;">

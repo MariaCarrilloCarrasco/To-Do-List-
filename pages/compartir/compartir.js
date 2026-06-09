@@ -1,8 +1,4 @@
-// pages/compartir/compartir.js
-// Handles task summarization, text preview compiling, clipboard copying and social network sharing links
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Default tasks in case localStorage is empty
   const defaultTasks = [
     { id: 'task-1', text: 'Preparar cena familiar', column: 'done', ambito: 'familia', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '20:30' },
     { id: 'task-2', text: 'Hacer ejercicio matutino', column: 'done', ambito: 'personal', dateType: 'single', dateStart: '2026-06-03', timeType: 'single', timeStart: '07:30' },
@@ -24,14 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = localStorage.getItem('app-language') || 'es';
     const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
 
-    // Get current stats (filtering out deleted tasks)
     const activeTasksList = tasks.filter(t => t.column !== 'deleted');
     const total = activeTasksList.length;
     const completed = activeTasksList.filter(t => t.column === 'done').length;
     const inProgress = activeTasksList.filter(t => t.column === 'in-progress').length;
     const pending = activeTasksList.filter(t => t.column === 'not-done').length;
 
-    // Get translations for labels
     const titleText = dict.share_summary_title || '📊 Resumen de mis tareas en MiiActToDo:';
     const totalText = dict.kpi_total || 'Total Registradas';
     const completedText = dict.col_done || 'Hecho';
@@ -41,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const highlightHeader = lang === 'en' ? '📝 Featured active tasks:' : '📝 Tareas activas destacadas:';
     const footerText = lang === 'en' ? 'Organize your day with MiiActToDo!' : '¡Organiza tu día con MiiActToDo!';
 
-    // Format date string helper
     const formatDate = (dateStr) => {
       if (!dateStr) return '';
       const parts = dateStr.split('-');
@@ -51,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return dateStr;
     };
 
-    // Build task summary lines (list up to 5 non-done, non-deleted tasks)
     const activeTasks = tasks.filter(t => t.column !== 'done' && t.column !== 'deleted').slice(0, 5);
     let activeTasksLines = '';
     
@@ -84,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Combine message
     const message = `${titleText}
 📋 ${totalText}: ${total}
 ✅ ${completedText}: ${completed}
@@ -93,13 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
 ${activeTasksLines}
 🚀 ${footerText}`;
 
-    // Fill in textarea
     const textarea = document.getElementById('sharePreview');
     if (textarea) {
       textarea.value = message;
     }
 
-    // Update social links
     const encodedMessage = encodeURIComponent(message);
     const mockAppUrl = 'https://factoriaf5.org'; // Dummy URL to share alongside the quote
 
@@ -120,7 +109,6 @@ ${activeTasksLines}
     }
   };
 
-  // Clipboard copy handler
   const copyBtn = document.getElementById('copyBtn');
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
@@ -128,10 +116,10 @@ ${activeTasksLines}
       if (!textarea) return;
 
       textarea.select();
-      textarea.setSelectionRange(0, 99999); // For mobile devices
+      textarea.setSelectionRange(0, 99999); 
 
       navigator.clipboard.writeText(textarea.value).then(() => {
-        // Visual Copy success feedback
+        
         const lang = localStorage.getItem('app-language') || 'es';
         const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
         const successMsg = dict.share_copied_toast || '¡Copiado!';
@@ -150,10 +138,8 @@ ${activeTasksLines}
     });
   }
 
-  // Load share content
   buildShareContent();
-
-  // Re-trigger building share message on language change
+  
   window.addEventListener('languagechanged', () => {
     buildShareContent();
   });

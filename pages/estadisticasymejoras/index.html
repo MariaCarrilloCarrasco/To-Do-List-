@@ -28,10 +28,7 @@
   <main>
     <h1 data-translate="stats_title">Estadísticas y Mejoras</h1>
     <p data-translate="stats_desc">Aquí puedes encontrar el resumen y métricas de tus tareas.</p>
-
     <div class="stats-container">
-      
-      <!-- Left: Circular Progress Glass Card -->
       <section class="accessibility-card circle-chart-card">
         <h2 data-translate="kpi_desc_circle">Porcentaje de progreso</h2>
         <div class="circle-container">
@@ -40,10 +37,7 @@
           </div>
         </div>
       </section>
-
-      <!-- Right: KPI cards grid -->
       <section class="kpi-grid">
-        <!-- Card 1: Registered -->
         <div class="kpi-card total-tasks-card">
           <div class="kpi-icon">📋</div>
           <div class="kpi-details">
@@ -51,8 +45,6 @@
             <span class="kpi-value" id="count-total">0</span>
           </div>
         </div>
-
-        <!-- Card 2: Completed -->
         <div class="kpi-card done-tasks-card">
           <div class="kpi-icon">✅</div>
           <div class="kpi-details">
@@ -60,8 +52,6 @@
             <span class="kpi-value" id="count-done">0</span>
           </div>
         </div>
-
-        <!-- Card 3: In Progress -->
         <div class="kpi-card progress-tasks-card">
           <div class="kpi-icon">⏳</div>
           <div class="kpi-details">
@@ -70,7 +60,6 @@
           </div>
         </div>
 
-        <!-- Card 4: Pending -->
         <div class="kpi-card pending-tasks-card">
           <div class="kpi-icon">❌</div>
           <div class="kpi-details">
@@ -81,8 +70,6 @@
       </section>
       
     </div>
-
-    <!-- Bottom: Peak hours bar chart -->
     <section class="accessibility-card bar-chart-section" style="margin-top: 1.5rem;">
       <h2 data-translate="chart_bar_title">Horas de mayor registro de tareas</h2>
       <p style="font-size: 0.88rem; opacity: 0.8; margin-top: 0;" data-translate="chart_bar_desc">Representación de las horas del día con mayor volumen de creación.</p>
@@ -94,7 +81,6 @@
           <span>0</span>
         </div>
         <div class="chart-container" id="bar-chart-container">
-          <!-- 24 bars injected dynamically here -->
         </div>
       </div>
     </section>

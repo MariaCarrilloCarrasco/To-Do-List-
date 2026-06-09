@@ -3,7 +3,6 @@
         const section = document.querySelector('.board-intro');
         if (!btn || !section) return;
 
-        // Restore previous state
         const hidden = localStorage.getItem('instructions-hidden') === 'true';
         if (hidden) {
           section.style.display = 'none';
@@ -19,7 +18,6 @@
 
           const isVisible = section.style.display !== 'none';
           if (isVisible) {
-            // Hide with smooth fade
             section.style.transition = 'opacity 0.3s ease, max-height 0.3s ease';
             section.style.opacity = '0';
             setTimeout(() => {
@@ -30,7 +28,6 @@
             btn.style.opacity = '0.5';
             localStorage.setItem('instructions-hidden', 'true');
           } else {
-            // Show with smooth fade
             section.style.display = '';
             section.style.opacity = '0';
             section.style.transition = 'opacity 0.3s ease';
@@ -42,7 +39,6 @@
           }
         });
         
-        // Initialize tooltip based on language
         const lang = localStorage.getItem('app-language') || 'es';
         if (localStorage.getItem('instructions-hidden') === 'true') {
             btn.title = lang === 'en' ? 'Show instructions' : 'Mostrar instrucciones';
