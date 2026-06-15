@@ -643,14 +643,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const labels = getDynamicLabels();
     const lang = localStorage.getItem('app-language') || 'es';
 
-    const formatDate = (dateStr) => {
-      if (!dateStr) return '';
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return dateStr;
-    };
 
     const lists = document.querySelectorAll('.criteria-task-list');
     lists.forEach(list => {
@@ -705,107 +697,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  window.renderTasks = () => {
-    const labels = getDynamicLabels();
-    const lang = localStorage.getItem('app-language') || 'es';
-    const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
-
-    const addBtnTooltip = document.querySelector('.column-add-btn[data-column="not-done"] .add-tooltip-content');
-    if (addBtnTooltip) {
-      addBtnTooltip.innerHTML = dict.add_tooltip || '';
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
+    return dateStr;
+  };
 
-    const formatDate = (dateStr) => {
-      if (!dateStr) return '';
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return dateStr;
-    };
-
-    const columns = document.querySelectorAll('.column[data-column]');
-    
-    columns.forEach(col => {
-      const columnId = col.dataset.column;
-      let list = col.querySelector('ul.task-list');
-      
-      if (!list) {
-        list = col.querySelector('ul');
-        if (list) {
-          list.className = 'task-list';
-        } else {
-          list = document.createElement('ul');
-          list.className = 'task-list';
-          col.appendChild(list);
-        }
-      }
-
-      list.innerHTML = '';
-      
-      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || currentAmbitoFilter === 'todos' || t.ambito === currentAmbitoFilter)));
-
-      columnTasks.forEach(task => {
-        const li = document.createElement('li');
-        li.className = 'task-card';
-        li.dataset.id = task.id;
-
-        if (task.cardColor) {
-          li.style.setProperty('background-color', task.cardColor, 'important');
-        }
-
-        const textColor = task.cardTextColor || (getLuminance(task.cardColor || '#ffffff') < 0.5 ? '#ffffff' : '#1f2937');
-        li.style.setProperty('color', textColor, 'important');
-        li.style.setProperty('--text-color', textColor, 'important');
-
-        if (task.cardColor) {
-          const isDarkText = getLuminance(textColor) < 0.5;
-          li.style.setProperty('border-color', isDarkText ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)', 'important');
-        }
-
-        if (task.fontSize) {
-          const fontSizes = { small: '0.8rem', medium: '0.95rem', large: '1.25rem' };
-          li.style.fontSize = fontSizes[task.fontSize] || fontSizes.medium;
-        }
-
-        if (editingTaskId === task.id) {
-          li.classList.add('editing');
-          
-          li.innerHTML = getFormHtml(task, true);
-          bindFormEvents(li);
-
-          const titleInput = li.querySelector('.task-title-input');
-          const saveBtn = li.querySelector('.save-edit-btn');
-          const cancelBtn = li.querySelector('.cancel-edit-btn');
-
-          const saveEdit = () => {
-            const newText = titleInput.value.trim();
-            if (!newText) {
-              titleInput.style.border = '2px solid #ef4444';
-              titleInput.focus();
-              return;
-            }
-            const meta = getFormData(li);
-            updateTask(task.id, newText, meta);
-            editingTaskId = null;
-            renderTasks();
-          };
-
-          saveBtn.addEventListener('click', saveEdit);
-          titleInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') saveEdit();
-            if (e.key === 'Escape') {
-              editingTaskId = null;
-              renderTasks();
-            }
-          });
-          cancelBtn.addEventListener('click', () => {
-            editingTaskId = null;
-            renderTasks();
-          });
-
-          setTimeout(() => titleInput.focus(), 0);
-        } else {
+  const buildTaskCardHtml = (li, task, columnId, lang, dict) => {
+    let html = '';
           // Render normal card with badges
           const isDone = columnId === 'done';
           if (isDone) {
@@ -1021,7 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
           li.setAttribute('draggable', 'true');
           const deleteTooltip = columnId === 'deleted' ? (dict.task_delete_perm || 'Eliminar permanentemente') : (lang === 'en' ? 'Delete' : 'Eliminar');
           
-          li.innerHTML = `
+          html += `
             <div class="task-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
               <span class="task-text-container" style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
                 ${columnId === 'not-done' || columnId === 'in-progress' ? `<button class="task-btn toggle-done-btn" style="padding: 0; background: none; border: none; cursor: pointer; font-size: 1.1rem; filter: grayscale(100%) opacity(0.5); transition: all 0.2s;" title="${lang==='en'?'Mark as done':'Marcar como hecha'}" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.5)'">✅</button>` : ''}
@@ -1047,6 +949,11 @@ document.addEventListener('DOMContentLoaded', () => {
               ${metadataListHtml}
             </div>
           `;
+
+    return html;
+  };
+
+  const bindTaskCardEvents = (li, task, columnId, lang, dict) => {
           if (columnId === 'deleted') {
             const recoverBtn = li.querySelector('.recover-btn');
             const recoverDropdown = li.querySelector('.recover-dropdown');
@@ -1146,6 +1053,112 @@ document.addEventListener('DOMContentLoaded', () => {
             saveTasksFromDOM();
             renderTasks();
           });
+
+  };
+
+  window.renderTasks = () => {
+    const labels = getDynamicLabels();
+    const lang = localStorage.getItem('app-language') || 'es';
+    const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
+
+    const addBtnTooltip = document.querySelector('.column-add-btn[data-column="not-done"] .add-tooltip-content');
+    if (addBtnTooltip) {
+      addBtnTooltip.innerHTML = dict.add_tooltip || '';
+    }
+
+    const formatDate = (dateStr) => {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    };
+
+    const columns = document.querySelectorAll('.column[data-column]');
+    
+    columns.forEach(col => {
+      const columnId = col.dataset.column;
+      let list = col.querySelector('ul.task-list');
+      
+      if (!list) {
+        list = col.querySelector('ul');
+        if (list) {
+          list.className = 'task-list';
+        } else {
+          list = document.createElement('ul');
+          list.className = 'task-list';
+          col.appendChild(list);
+        }
+      }
+
+      list.innerHTML = '';
+      
+      const columnTasks = sortTasksChronologically(tasks.filter(t => t.column === columnId && (!currentAmbitoFilter || currentAmbitoFilter === 'todos' || t.ambito === currentAmbitoFilter)));
+
+      columnTasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.dataset.id = task.id;
+
+        if (task.cardColor) {
+          li.style.setProperty('background-color', task.cardColor, 'important');
+        }
+
+        const textColor = task.cardTextColor || (getLuminance(task.cardColor || '#ffffff') < 0.5 ? '#ffffff' : '#1f2937');
+        li.style.setProperty('color', textColor, 'important');
+        li.style.setProperty('--text-color', textColor, 'important');
+
+        if (task.cardColor) {
+          const isDarkText = getLuminance(textColor) < 0.5;
+          li.style.setProperty('border-color', isDarkText ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)', 'important');
+        }
+
+        if (task.fontSize) {
+          const fontSizes = { small: '0.8rem', medium: '0.95rem', large: '1.25rem' };
+          li.style.fontSize = fontSizes[task.fontSize] || fontSizes.medium;
+        }
+
+        if (editingTaskId === task.id) {
+          li.classList.add('editing');
+          
+          li.innerHTML = getFormHtml(task, true);
+          bindFormEvents(li);
+
+          const titleInput = li.querySelector('.task-title-input');
+          const saveBtn = li.querySelector('.save-edit-btn');
+          const cancelBtn = li.querySelector('.cancel-edit-btn');
+
+          const saveEdit = () => {
+            const newText = titleInput.value.trim();
+            if (!newText) {
+              titleInput.style.border = '2px solid #ef4444';
+              titleInput.focus();
+              return;
+            }
+            const meta = getFormData(li);
+            updateTask(task.id, newText, meta);
+            editingTaskId = null;
+            renderTasks();
+          };
+
+          saveBtn.addEventListener('click', saveEdit);
+          titleInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveEdit();
+            if (e.key === 'Escape') {
+              editingTaskId = null;
+              renderTasks();
+            }
+          });
+          cancelBtn.addEventListener('click', () => {
+            editingTaskId = null;
+            renderTasks();
+          });
+
+          setTimeout(() => titleInput.focus(), 0);
+        } else {
+          li.innerHTML = buildTaskCardHtml(li, task, columnId, lang, dict);
+          bindTaskCardEvents(li, task, columnId, lang, dict);
         }
 
         list.appendChild(li);
