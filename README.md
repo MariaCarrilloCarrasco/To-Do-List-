@@ -43,7 +43,7 @@ O, si se trata de la versión de HTML/JS Vanilla, puedes servirla de forma senci
 npx http-server . -p 8000
 ```
 Luego, abre tu navegador y accede a:
-👉 **[http://localhost:8000](http://localhost:8000)** (o la URL indicada por tu consola).
+👉 **http://127.0.0.1:5500/index.html**.
 
 ### 5. Compilación para Producción
 Para compilar la aplicación para producción:
