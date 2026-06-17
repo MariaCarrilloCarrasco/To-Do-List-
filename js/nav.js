@@ -16,28 +16,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLarge = document.getElementById('font-size-btn');
   const btnLarger = document.getElementById('font-size-larger-btn');
 
+  const applyFontSize = (size) => {
+    document.documentElement.style.fontSize = size;
+    document.documentElement.style.setProperty('--root-font-size', size);
+    localStorage.setItem('app-font-size', size);
+  };
+
   if (btnReset) {
-    btnReset.addEventListener('click', () => {
-      document.documentElement.style.setProperty('--root-font-size', '16px');
-      localStorage.setItem('app-font-size', '16px');
-    });
+    btnReset.addEventListener('click', () => applyFontSize('16px'));
   }
   if (btnLarge) {
-    btnLarge.addEventListener('click', () => {
-      document.documentElement.style.setProperty('--root-font-size', '20px'); // Aumenta ~25%
-      localStorage.setItem('app-font-size', '20px');
-    });
+    btnLarge.addEventListener('click', () => applyFontSize('20px'));
   }
   if (btnLarger) {
-    btnLarger.addEventListener('click', () => {
-      document.documentElement.style.setProperty('--root-font-size', '24px'); // Aumenta ~50%
-      localStorage.setItem('app-font-size', '24px');
-    });
+    btnLarger.addEventListener('click', () => applyFontSize('24px'));
   }
 
   // Restore saved font size on load
   const savedFontSize = localStorage.getItem('app-font-size');
   if (savedFontSize) {
-    document.documentElement.style.setProperty('--root-font-size', savedFontSize);
+    applyFontSize(savedFontSize);
   }
 });

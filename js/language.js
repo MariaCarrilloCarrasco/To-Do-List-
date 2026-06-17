@@ -2538,12 +2538,12 @@ const showDownloadModal = () => {
   const prefix = isSubPage ? '../../' : '';
 
   overlay.querySelector('#modal-download-pdf').addEventListener('click', () => {
-    window.open(prefix + 'options/tablero.html?print=true', '_blank');
+    window.open(prefix + 'pages/tablero/index.html?print=true', '_blank');
     closeModal();
   });
 
   overlay.querySelector('#modal-download-png').addEventListener('click', () => {
-    window.open(prefix + 'options/tablero.html?png=true', '_blank');
+    window.open(prefix + 'pages/tablero/index.html?png=true', '_blank');
     closeModal();
   });
 

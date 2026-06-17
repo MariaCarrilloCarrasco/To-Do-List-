@@ -383,54 +383,26 @@ main {
 }
 
 .detalles {
-  background: #ffffff;
-  border-radius: 18px;
+  background: rgba(20, 20, 40, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
   margin-top: 1.5rem;
 }
 
 .detalles h2 {
   margin-top: 0;
   font-size: 1.25rem;
+  color: #f59e0b;
 }
 
 .detalles details {
   margin-top: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 0.75rem 1rem;
-  background: #fafbff;
-}
-
-.detalles ul {
-  margin: 0.75rem 0 0;
-  padding-left: 1.2rem;
-}
-
-.detalles li {
-  margin-bottom: 0.5rem;
-}
-
-.detalles {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
-  margin-top: 1.5rem;
-}
-
-.detalles h2 {
-  margin-top: 0;
-  font-size: 1.25rem;
-}
-
-.detalles details {
-  margin-top: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 0.75rem 1rem;
-  background: #fafbff;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .detalles ul {
