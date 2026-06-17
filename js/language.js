@@ -2602,7 +2602,11 @@ const injectLanguageSelector = () => {
     margin-right: 2px;
     user-select: none;
     opacity: 0.9;
+    cursor: pointer;
   `;
+  label.addEventListener('click', () => {
+    select.focus();
+  });
 
   // Select dropdown element
   const select = document.createElement('select');
@@ -2626,6 +2630,9 @@ const injectLanguageSelector = () => {
     { code: 'de', label: 'Deutsch (DE)' },
     { code: 'it', label: 'Italiano (IT)' },
     { code: 'pt', label: 'Português (PT)' },
+    { code: 'ca', label: 'Català (CA)' },
+    { code: 'gl', label: 'Galego (GL)' },
+    { code: 'eu', label: 'Euskara (EU)' },
     { code: 'nl', label: 'Nederlands (NL)' },
     { code: 'pl', label: 'Polski (PL)' },
     { code: 'ro', label: 'Română (RO)' },
@@ -2642,10 +2649,7 @@ const injectLanguageSelector = () => {
     { code: 'ar', label: 'العربية (AR)' },
     { code: 'zh', label: '中文 (ZH)' },
     { code: 'ja', label: '日本語 (JA)' },
-    { code: 'ko', label: '한국어 (KO)' },
-    { code: 'ca', label: 'Català (CA)' },
-    { code: 'gl', label: 'Galego (GL)' },
-    { code: 'eu', label: 'Euskara (EU)' }
+    { code: 'ko', label: '한국어 (KO)' }
   ];
 
   options.forEach(opt => {

@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'hi': 'hi-IN', 'ru': 'ru-RU'
         };
         utterance.lang = langMap[currentLang] || currentLang;
-        utterance.rate = 0.95; // Slightly slower for readability
+        utterance.rate = 0.95; 
         
         utterance.onend = () => {
           stopSpeech();
