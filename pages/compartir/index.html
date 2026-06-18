@@ -18,10 +18,15 @@
             <span class="brand-name">MiiActToDo</span>
         </div>
         <div class="nav-actions">
-            <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_inicio">Inicio</a>
-            <a href="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
-            <a href="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
-            <a href="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+            <a reel="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_inicio">Inicio</a>
+            <a reel="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+            <a reel="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+            <a reel="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+            <a reel="../compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+            <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+            <button type="button" id="font-size-reset-btn" class="nav-btn nav-btn-font-size" title="Volver al tamaño de letra original">A</button>
+            <button type="button" id="font-size-btn" class="nav-btn nav-btn-font-size" title="Aumentar tamaño de letra">A+</button>
+            <button type="button" id="font-size-larger-btn" class="nav-btn nav-btn-font-size" title="Hacer la letra aún más grande">A++</button>
         </div>
     </nav>
 
@@ -119,6 +124,122 @@
                 window.location.href = document.getElementById('share-mail').href;
                 e.preventDefault();
             });
+
+            // Expose triggerPngExport globally to generate and download a beautiful summary card image
+            window.triggerPngExport = () => {
+                const lang = localStorage.getItem('app-language') || 'es';
+                const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
+
+                const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+                const activeTasks = tasks.filter(t => t.column !== 'deleted');
+                const total = activeTasks.length;
+                const completed = activeTasks.filter(t => t.column === 'done').length;
+                const inProgress = activeTasks.filter(t => t.column === 'in-progress').length;
+                const pending = activeTasks.filter(t => t.column === 'not-done').length;
+
+                // Translations or fallbacks
+                const cardTitle = 'MiiActToDo';
+                const cardSubtitle = dict.share_summary_title || 'Resumen de mis tareas:';
+                const totalText = `${dict.kpi_total || 'Total Registradas'}: ${total}`;
+                const completedText = `${dict.col_done || 'Hecho'}: ${completed}`;
+                const inProgressText = `${dict.col_in_progress || 'En progreso'}: ${inProgress}`;
+                const pendingText = `${dict.col_not_done || 'Pendiente'}: ${pending}`;
+                const scanText = lang === 'en' ? 'Scan to view my board' : 'Escanea para ver mi tablero';
+                const footerText = lang === 'en' ? 'Organize your day with MiiActToDo!' : '¡Organiza tu día con MiiActToDo!';
+
+                // Create a canvas to render the card
+                const canvas = document.createElement('canvas');
+                canvas.width = 450;
+                canvas.height = 600;
+                const ctx = canvas.getContext('2d');
+
+                // Draw background gradient (dark premium)
+                const grad = ctx.createLinearGradient(0, 0, 0, 600);
+                grad.addColorStop(0, '#0a051b');
+                grad.addColorStop(1, '#1a0d3f');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 450, 600);
+
+                // Draw border
+                ctx.strokeStyle = 'rgba(0, 245, 155, 0.25)';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(10, 10, 430, 580);
+
+                // Title & Logo
+                ctx.fillStyle = '#00f59b';
+                ctx.font = 'bold 26px Outfit, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(cardTitle, 225, 60);
+
+                ctx.fillStyle = '#f1f5f9';
+                ctx.font = '16px Outfit, sans-serif';
+                ctx.fillText(cardSubtitle, 225, 95);
+
+                // Draw Stats Box
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.fillRect(40, 120, 370, 160);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(40, 120, 370, 160);
+
+                ctx.textAlign = 'left';
+                ctx.font = '16px Outfit, sans-serif';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText(`📋 ${totalText}`, 60, 155);
+                ctx.fillText(`✅ ${completedText}`, 60, 185);
+                ctx.fillText(`⏳ ${inProgressText}`, 60, 215);
+                ctx.fillText(`❌ ${pendingText}`, 60, 245);
+
+                // Draw QR Code
+                const qrImg = document.getElementById('qr-code-img');
+                if (qrImg && qrImg.src) {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous'; // Avoid CORS security exceptions
+                    img.onload = () => {
+                        // Draw white background for QR code
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        if (ctx.roundRect) {
+                            ctx.roundRect(145, 305, 160, 160, 12);
+                        } else {
+                            ctx.rect(145, 305, 160, 160);
+                        }
+                        ctx.fill();
+                        
+                        // Draw QR image
+                        ctx.drawImage(img, 150, 310, 150, 150);
+
+                        // Footer
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = '#00f59b';
+                        ctx.font = 'bold 14px Outfit, sans-serif';
+                        ctx.fillText(scanText, 225, 510);
+                        
+                        ctx.fillStyle = '#8b9bb4';
+                        ctx.font = '12px Outfit, sans-serif';
+                        ctx.fillText(footerText, 225, 540);
+
+                        // Trigger download
+                        const link = document.createElement('a');
+                        link.download = 'miiacttodo-share-card.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    };
+                    img.onerror = () => {
+                        triggerFallbackDownload(canvas);
+                    };
+                    img.src = qrImg.src;
+                } else {
+                    triggerFallbackDownload(canvas);
+                }
+            };
+
+            function triggerFallbackDownload(canvas) {
+                const link = document.createElement('a');
+                link.download = 'miiacttodo-share-card.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
         });
     </script>
 </body>
