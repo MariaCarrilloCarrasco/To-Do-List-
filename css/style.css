@@ -1250,6 +1250,47 @@ main {
     right: 24px !important;
     left: 24px !important;
     bottom: 96px !important;
+    z-index: 100000 !important;
+  }
+}
+
+/* Responsive Navbar and Floating trigger adjustments for Mobile Devices */
+@media (max-width: 768px) {
+  nav {
+    padding: 1rem !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+  
+  .nav-brand {
+    justify-content: center !important;
+  }
+  
+  .nav-actions {
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+  
+  .nav-btn {
+    padding: 0.5rem 0.85rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Make font size buttons compact and aligned */
+  .nav-btn-font-size {
+    padding: 0.5rem 0.65rem !important;
+    font-size: 0.82rem !important;
+    min-width: 32px !important;
+    text-align: center !important;
+  }
+  
+  .theme-trigger-btn {
+    bottom: 20px !important;
+    right: 20px !important;
+    display: flex !important;
+    z-index: 100000 !important;
   }
 }
 
