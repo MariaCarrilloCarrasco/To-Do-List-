@@ -1279,6 +1279,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderCriteriaBreakdowns(); 
+
+    // Filter visibility and open status of scope dropdowns based on currentAmbitoFilter
+    const detailsSections = document.querySelectorAll('details[data-ambito-section]');
+    if (detailsSections.length > 0) {
+      detailsSections.forEach(section => {
+        const sectionAmbito = section.getAttribute('data-ambito-section');
+        if (!currentAmbitoFilter || currentAmbitoFilter === 'todos') {
+          section.style.display = '';
+        } else {
+          if (sectionAmbito === currentAmbitoFilter) {
+            section.style.display = '';
+            section.open = true;
+          } else {
+            section.style.display = 'none';
+          }
+        }
+      });
+    }
   };
 
   
@@ -1365,4 +1383,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   renderTasks();
+
+  // Expose triggerPngExport globally so other pages can invoke it
+  window.triggerPngExport = () => {
+    // Hide non-exportable elements
+    const elementsToHide = document.querySelectorAll('nav, .theme-trigger-btn, .theme-panel, .column-add-btn, .task-btn, .help-toggle-btn, .board-status-footer, .board-intro, .detalles, #toggle-instructions-btn, p:last-of-type');
+    elementsToHide.forEach(el => el.style.setProperty('display', 'none', 'important'));
+
+    const targetElement = document.querySelector('.columns') || document.body;
+    const computedBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() || '#f2f6fb';
+
+    html2canvas(targetElement, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: computedBg,
+      scale: 2 // High resolution scale
+    }).then(canvas => {
+      elementsToHide.forEach(el => el.style.removeProperty('display'));
+
+      const link = document.createElement('a');
+      link.download = 'miiacttodo-board.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(err => {
+      console.error('Error exporting board image:', err);
+      elementsToHide.forEach(el => el.style.removeProperty('display'));
+    });
+  };
+
+  // Handle auto-print or auto-download query params
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('print') === 'true') {
+    setTimeout(() => {
+      window.print();
+    }, 1000);
+  } else if (urlParams.get('png') === 'true') {
+    setTimeout(() => {
+      // Hide non-exportable elements
+      const elementsToHide = document.querySelectorAll('nav, .theme-trigger-btn, .theme-panel, .column-add-btn, .task-btn, .help-toggle-btn, .board-status-footer, .board-intro, .detalles, #toggle-instructions-btn, p:last-of-type');
+      elementsToHide.forEach(el => el.style.setProperty('display', 'none', 'important'));
+
+      const targetElement = document.querySelector('.columns') || document.body;
+      const computedBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() || '#f2f6fb';
+
+      html2canvas(targetElement, {
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: computedBg,
+        scale: 2
+      }).then(canvas => {
+        elementsToHide.forEach(el => el.style.removeProperty('display'));
+
+        const link = document.createElement('a');
+        link.download = 'miiacttodo-board.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // Redirect back to referrer or home
+        setTimeout(() => {
+          if (document.referrer && !document.referrer.includes('/tablero/')) {
+            window.location.href = document.referrer;
+          } else {
+            const isSubPage = window.location.pathname.includes('/pages/');
+            window.location.href = isSubPage ? '../../index.html' : 'index.html';
+          }
+        }, 1000);
+      }).catch(err => {
+        console.error('Error exporting board image:', err);
+        elementsToHide.forEach(el => el.style.removeProperty('display'));
+      });
+    }, 1500);
+  }
 });

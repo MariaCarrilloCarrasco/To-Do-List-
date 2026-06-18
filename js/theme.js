@@ -1,3 +1,4 @@
+// Helper to compute luminance for smart card adjustments
 function getLuminance(hex) {
   let color = hex.replace('#', '');
   if (color.length === 3) {
@@ -13,16 +14,16 @@ function getLuminance(hex) {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
+// Applies custom theme colors by setting CSS Variables on documentElement
 function applyTheme(bgColor, textColor) {
-  let styleEl = document.getElementById('custom-theme-styles');
-  if (!styleEl) {
-    styleEl = document.createElement('style');
-    styleEl.id = 'custom-theme-styles';
-    document.head.appendChild(styleEl);
-  }
-
+  const root = document.documentElement;
   if (!bgColor || !textColor) {
-    styleEl.textContent = '';
+    root.style.removeProperty('--bg-color');
+    root.style.removeProperty('--text-color');
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--card-border');
+    root.style.removeProperty('--card-shadow');
+    root.style.removeProperty('--link-color');
     return;
   }
 
@@ -32,40 +33,17 @@ function applyTheme(bgColor, textColor) {
   const cardBg = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(255, 255, 255, 0.85)';
   const cardBorder = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.06)';
   const cardShadow = isDark ? '0 10px 30px rgba(0, 0, 0, 0.35)' : '0 10px 24px rgba(15, 23, 42, 0.05)';
-  
-  styleEl.textContent = `
-    body {
-      background: ${bgColor} !important;
-      color: ${textColor} !important;
-    }
-    h1:not(.theme-panel *), h2:not(.theme-panel *), h3:not(.theme-panel *), h4:not(.theme-panel *), h5:not(.theme-panel *), h6:not(.theme-panel *), p:not(.theme-panel *), li:not(.theme-panel *):not(.task-card), span:not(.theme-panel *):not(.social-btn *):not(.task-card *), summary:not(.theme-panel *), label:not(.theme-panel *) {
-      color: ${textColor} !important;
-    }
-    main a:not(.nav-btn), .detalles a, .board-intro a {
-      color: ${isDark ? '#60a5fa' : '#2563eb'} !important;
-    }
-    .column, .board-intro, .ambitos, .detalles, nav {
-      background: ${cardBg} !important;
-      color: ${textColor} !important;
-      border: 1px solid ${cardBorder} !important;
-      box-shadow: ${cardShadow} !important;
-    }
-    .ambitos details, .detalles details {
-      background: ${isDark ? 'rgba(255, 255, 255, 0.03)' : '#fafbff'} !important;
-      border: 1px solid ${cardBorder} !important;
-    }
-    .ambitos details[open], .detalles details[open] {
-      background: ${cardBg} !important;
-    }
-    .brand-name:not(.theme-panel *) {
-      color: ${textColor} !important;
-    }
-    .column li {
-      border-bottom: 1px solid ${cardBorder} !important;
-    }
-  `;
+  const linkColor = isDark ? '#60a5fa' : '#2563eb';
+
+  root.style.setProperty('--bg-color', bgColor);
+  root.style.setProperty('--text-color', textColor);
+  root.style.setProperty('--card-bg', cardBg);
+  root.style.setProperty('--card-border', cardBorder);
+  root.style.setProperty('--card-shadow', cardShadow);
+  root.style.setProperty('--link-color', linkColor);
 }
 
+// Early theme application to avoid screen flash
 (function() {
   const savedBg = localStorage.getItem('theme-bg-color');
   const savedText = localStorage.getItem('theme-text-color');
@@ -82,294 +60,21 @@ function applyTheme(bgColor, textColor) {
   }
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
-  const themeControlCss = document.createElement('style');
-  themeControlCss.textContent = `
-    .theme-trigger-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      color: #ffffff;
-      border: none;
-      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      z-index: 9999;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .theme-trigger-btn:hover {
-      transform: scale(1.1) rotate(15deg);
-      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
-    }
-    
-    .theme-trigger-btn:active {
-      transform: scale(0.95);
-    }
-    
-    .theme-panel {
-      position: fixed;
-      bottom: 96px;
-      right: 24px;
-      width: 320px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      z-index: 9998;
-      padding: 20px;
-      transform: scale(0.9) translateY(20px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      color: #1e293b;
-    }
-    
-    .theme-panel.active {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-    
-    .theme-panel.dark-theme-panel {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #f1f5f9;
-    }
-    
-    .theme-panel h3 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      padding-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .theme-panel.dark-theme-panel h3 {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      color: #f1f5f9;
-    }
-    
-    .preset-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    
-    .preset-btn {
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      background: #f8fafc;
-      color: #334155;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    
-    .theme-panel.dark-theme-panel .preset-btn {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .preset-btn:hover {
-      background: #e2e8f0;
-      transform: translateY(-1px);
-    }
-    
-    .theme-panel.dark-theme-panel .preset-btn:hover {
-      background: #334155;
-    }
-    
-    .preset-btn.active {
-      border-color: #4f46e5;
-      background: #eff6ff;
-      color: #1e40af;
-      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-    }
-    
-    .theme-panel.dark-theme-panel .preset-btn.active {
-      border-color: #6366f1;
-      background: rgba(99, 102, 241, 0.15);
-      color: #e0e7ff;
-    }
-    
-    .preset-preview-colors {
-      display: flex;
-      gap: 4px;
-      margin-top: 2px;
-    }
-    
-    .preview-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-    
-    .custom-pickers {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 18px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(0, 0, 0, 0.08);
-    }
-    
-    .theme-panel.dark-theme-panel .custom-pickers {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    
-    .picker-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .picker-row label {
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: inherit;
-    }
-    
-    .color-input-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .color-input-wrapper input[type="color"] {
-      -webkit-appearance: none;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      background: none;
-    }
-    
-    .color-input-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-    
-    .color-input-wrapper input[type="color"]::-webkit-color-swatch {
-      border: 2px solid rgba(0,0,0,0.15);
-      border-radius: 50%;
-    }
-    
-    .color-hex {
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #64748b;
-    }
-    
-    .theme-panel.dark-theme-panel .color-hex {
-      color: #94a3b8;
-    }
-    
-    .reset-theme-btn {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #ef4444;
-      color: #ffffff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 0.9rem;
-    }
-    
-    .reset-theme-btn:hover {
-      background: #dc2626;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-    }
-    
-    /* Injected Ambitos button styles to ensure they always load in color */
-    .ambitos-buttons button {
-      border: none !important;
-      padding: 0.7rem 1.25rem !important;
-      border-radius: 999px !important;
-      cursor: pointer !important;
-      font-weight: 600 !important;
-      color: #ffffff !important;
-      opacity: 0.8 !important;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
-    }
-    
-    .ambitos-buttons button:hover,
-    .ambitos-buttons button.active {
-      opacity: 1 !important;
-      transform: translateY(-2px) !important;
-      box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.15), 0 4px 8px -2px rgba(0, 0, 0, 0.08) !important;
-    }
-    
-    .ambitos-buttons button:active {
-      transform: translateY(0) !important;
-    }
-    
-    .ambitos-buttons button[data-ambito="familia"] {
-      background: linear-gradient(135deg, #ec4899, #db2777) !important;
-    }
-    .ambitos-buttons button[data-ambito="personal"] {
-      background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
-    }
-    .ambitos-buttons button[data-ambito="social"] {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-    }
-    .ambitos-buttons button[data-ambito="laboral"] {
-      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-    }
-    .ambitos-buttons button[data-ambito="ocio"] {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
-    }
-    .ambitos-buttons button[data-ambito="salud"] {
-      background: linear-gradient(135deg, #10b981, #059669) !important;
-    }
-    .ambitos-buttons button[data-ambito="hogar"] {
-      background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
-    }
-    .ambitos-buttons button[data-ambito="finanzas"] {
-      background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
-    }
-    .ambitos-buttons button[data-ambito="otro"] {
-      background: linear-gradient(135deg, #facc15, #ca8a04) !important;
-    }
-    .ambitos-buttons button[data-ambito="todos"] {
-      background: linear-gradient(135deg, #64748b, #475569) !important;
-    }
-  `;
-  document.head.appendChild(themeControlCss);
+// Link theme.css dynamically relative to the script location
+(function() {
+  const scriptUrl = document.currentScript ? document.currentScript.src : '';
+  const themeCssUrl = scriptUrl ? new URL('../css/theme.css', scriptUrl).href : '../../css/theme.css';
   
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = themeCssUrl;
+  
+  const parent = document.head || document.documentElement;
+  parent.appendChild(link);
+})();
+
+// DOM Injections and logic when page loads
+document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   
   const triggerBtn = document.createElement('button');
@@ -569,9 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Full-screen Logo Modal viewer
   const logos = document.querySelectorAll('.logo');
   logos.forEach(logo => {
-    logo.style.cursor = 'zoom-in';
-    logo.style.transition = 'transform 0.2s ease';
-    
     logo.addEventListener('mouseenter', () => {
       logo.style.transform = 'scale(1.08)';
     });

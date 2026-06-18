@@ -35,6 +35,10 @@ const translations = {
     
     about_title: "Manual de Uso y Accesibilidad",
     about_subtitle: "Esta página está diseñada para que todas las personas, sin importar sus capacidades, puedan aprender a utilizar nuestra aplicación.",
+    about_me_title: "Acerca de mí",
+    about_me_p1: "¡Hola! Soy María Carrillo Carrasco. Soy desarrolladora social.",
+    about_me_p2: "Esta es una aplicación web de accesibilidad en la que puedes planificar tus proyectos y organizar tus acciones.",
+    about_me_p3: "Esta web está disponible en múltiples idiomas",
     narrator_title: "Lector por Voz Integrado: Puedes escuchar el manual en audio.",
     narrator_btn_speak: "🔊 Escuchar Manual",
     narrator_btn_speaking: "⏸️ Narrando...",
@@ -55,6 +59,12 @@ const translations = {
     picto_desc: "Pictogramas clave. Escribe palabras en español para buscar más (ej: casa, familia, dinero, trabajo):",
     picto_placeholder: "Buscar pictograma...",
     picto_attribution: "Pictogramas de ARASAAC (BY-NC-SA) de Sergio Palao, Gobierno de Aragón.",
+    
+    dactilo_title: "🔤 Dactilológico (Deletreador manual)",
+    dactilo_desc: "Escribe texto para verlo deletreado en Lengua de Signos Española (LSE):",
+    dactilo_placeholder: "Escribe aquí... (ej: hola)",
+    dactilo_btn_show_card: "📖 Ver Abecedario Completo",
+    dactilo_btn_hide_card: "📖 Ocultar Abecedario",
     
     back_to_board: "← Volver al Tablero Principal",
     back_to_home: "Volver al inicio",
@@ -194,6 +204,10 @@ const translations = {
     
     about_title: "User Manual and Accessibility",
     about_subtitle: "This page is designed so that all people, regardless of their abilities, can learn to use our application.",
+    about_me_title: "About Me",
+    about_me_p1: "Hello! I'm María Carrillo Carrasco. I'm a social developer.",
+    about_me_p2: "This is an accessibility application web in which you can plan your projects and organize your action.",
+    about_me_p3: "This web is available in multiple languages",
     narrator_title: "Integrated Voice Reader: You can listen to the manual in audio.",
     narrator_btn_speak: "🔊 Listen to Manual",
     narrator_btn_speaking: "⏸️ Narrating...",
@@ -214,6 +228,12 @@ const translations = {
     picto_desc: "Key pictograms. Type words in English to search for more (e.g., house, family, money, work):",
     picto_placeholder: "Search pictogram...",
     picto_attribution: "ARASAAC Pictograms (BY-NC-SA) by Sergio Palao, Aragon Government.",
+    
+    dactilo_title: "🔤 Fingerspelling (Manual spelling)",
+    dactilo_desc: "Type text to see it spelled in Spanish Sign Language (LSE):",
+    dactilo_placeholder: "Type here... (e.g., hello)",
+    dactilo_btn_show_card: "📖 View Full Alphabet",
+    dactilo_btn_hide_card: "📖 Hide Alphabet",
     
     back_to_board: "← Back to Main Board",
     back_to_home: "Back to home",
@@ -2533,18 +2553,54 @@ const showDownloadModal = () => {
     }, 250);
   };
 
-  // Resolve current relative path prefix
-  const isSubPage = window.location.pathname.includes('/pages/');
-  const prefix = isSubPage ? '../../' : '';
+  // Resolve absolute path to the pages directory to prevent errors on subfolder-hosted sites (like GitHub Pages)
+  const getAbsoluteBoardUrl = (queryParam) => {
+    const origin = window.location.origin;
+    let pathname = window.location.pathname;
+    
+    if (pathname.includes('/pages/')) {
+      pathname = pathname.substring(0, pathname.indexOf('/pages/'));
+    } else {
+      const lastSlashIdx = pathname.lastIndexOf('/');
+      if (lastSlashIdx !== -1) {
+        const lastPart = pathname.substring(lastSlashIdx + 1);
+        if (lastPart.includes('.')) {
+          pathname = pathname.substring(0, lastSlashIdx);
+        }
+      }
+    }
+    
+    if (!pathname.endsWith('/')) {
+      pathname += '/';
+    }
+    
+    return `${origin}${pathname}pages/tablero/index.html?${queryParam}`;
+  };
+
+  const isBoardPage = document.querySelector('.columns') !== null;
 
   overlay.querySelector('#modal-download-pdf').addEventListener('click', () => {
-    window.open(prefix + 'pages/tablero/index.html?print=true', '_blank');
     closeModal();
+    if (isBoardPage) {
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    } else {
+      window.location.href = getAbsoluteBoardUrl('print=true');
+    }
   });
 
   overlay.querySelector('#modal-download-png').addEventListener('click', () => {
-    window.open(prefix + 'pages/tablero/index.html?png=true', '_blank');
     closeModal();
+    if (isBoardPage) {
+      setTimeout(() => {
+        if (window.triggerPngExport) {
+          window.triggerPngExport();
+        }
+      }, 300);
+    } else {
+      window.location.href = getAbsoluteBoardUrl('png=true');
+    }
   });
 
   overlay.querySelector('#modal-download-cancel').addEventListener('click', closeModal);

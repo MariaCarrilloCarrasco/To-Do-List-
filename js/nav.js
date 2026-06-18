@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLarger = document.getElementById('font-size-larger-btn');
 
   const applyFontSize = (size) => {
-    document.documentElement.style.fontSize = size;
+    document.documentElement.style.setProperty('font-size', size, 'important');
     document.documentElement.style.setProperty('--root-font-size', size);
     localStorage.setItem('app-font-size', size);
   };
@@ -37,4 +37,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedFontSize) {
     applyFontSize(savedFontSize);
   }
+
 });

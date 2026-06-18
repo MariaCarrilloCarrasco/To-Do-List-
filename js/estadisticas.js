@@ -60,11 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const degDone = percentage * 3.6;
       const degProgress = degDone + (inProgressPercentage * 3.6);
       
-      circle.style.background = `conic-gradient(
-        #10b981 0deg ${degDone}deg,
-        #f59e0b ${degDone}deg ${degProgress}deg,
-        #ef4444 ${degProgress}deg 360deg
-      )`;
+      if (total === 0) {
+        circle.style.background = `rgba(120, 120, 120, 0.15)`;
+      } else {
+        circle.style.background = `conic-gradient(
+          #10b981 0deg ${degDone}deg,
+          #f59e0b ${degDone}deg ${degProgress}deg,
+          #ef4444 ${degProgress}deg 360deg
+        )`;
+      }
       
       const dict = window.translations ? (window.translations[lang] || window.translations.es) : {};
       const labelDone = dict.col_done || 'Hecho';
@@ -86,18 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const hourlyCounts = new Array(24).fill(0);
 
       activeTasks.forEach(task => {
-        if (seededTaskHours[task.id] !== undefined) {
-
-          const hour = seededTaskHours[task.id];
+        if (!task || !task.id) return;
+        const idStr = String(task.id);
+        if (seededTaskHours[idStr] !== undefined) {
+          const hour = seededTaskHours[idStr];
           hourlyCounts[hour]++;
-        } else if (task.id && task.id.startsWith('task-')) {
-
-          const tsStr = task.id.replace('task-', '');
+        } else if (idStr.startsWith('task-')) {
+          const tsStr = idStr.replace('task-', '');
           const ts = parseInt(tsStr, 10);
-          
           if (!isNaN(ts) && ts > 1000000) {
             const hour = new Date(ts).getHours();
-          
+            if (hour >= 0 && hour < 24) {
+              hourlyCounts[hour]++;
+            }
+          }
+        } else {
+          const ts = parseInt(idStr, 10);
+          if (!isNaN(ts) && ts > 1000000) {
+            const hour = new Date(ts).getHours();
             if (hour >= 0 && hour < 24) {
               hourlyCounts[hour]++;
             }

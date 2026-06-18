@@ -1,3 +1,12 @@
+:root {
+  --bg-color: #0a051b;
+  --text-color: #f1f5f9;
+  --card-bg: #130c2c;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 10px 24px rgba(0, 0, 0, 0.20);
+  --link-color: #3b82f6;
+}
+
 html {
   font-size: var(--root-font-size, 16px);
 }
@@ -7,8 +16,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #0a051b;
-  color: #f1f5f9;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
 nav {
@@ -18,9 +27,9 @@ nav {
   flex-wrap: wrap;
   gap: 1.75rem;
   padding: 1.5rem 2rem;
-  background: #130c2c;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 .nav-brand {
@@ -47,7 +56,7 @@ nav {
 .brand-name {
   font-weight: 700;
   font-size: 1.1rem;
-  color: #111827;
+  color: var(--text-color);
 }
 
 .nav-actions {
@@ -160,10 +169,10 @@ main {
 .board-intro {
   margin-bottom: 1.5rem;
   padding: 1.5rem;
-  background: #130c2c;
+  background: var(--card-bg);
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 .intro-instructions {
@@ -210,11 +219,11 @@ main {
 }
 
 .column {
-  background: #130c2c;
+  background: var(--card-bg);
   border-radius: 18px;
   padding: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.20);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 .column h2 {
@@ -259,7 +268,7 @@ main {
 
 .column li {
   padding: 0.7rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--card-border);
 }
 
 .column li:last-child {
@@ -267,10 +276,11 @@ main {
 }
 
 .ambitos {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 18px;
   padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 .ambitos h2 {
@@ -356,21 +366,21 @@ main {
 
 .ambitos details {
   margin-top: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--card-border);
   border-radius: 14px;
   padding: 0.75rem 1rem;
-  background: #fafbff;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .ambitos summary {
   cursor: pointer;
   font-weight: 700;
-  color: #111827;
+  color: inherit;
   outline: none;
 }
 
 .ambitos details[open] {
-  background: #ffffff;
+  background: var(--card-bg);
 }
 
 .ambitos ul {
@@ -383,11 +393,11 @@ main {
 }
 
 .detalles {
-  background: rgba(20, 20, 40, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-shadow);
   margin-top: 1.5rem;
 }
 
@@ -399,7 +409,7 @@ main {
 
 .detalles details {
   margin-top: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.03);
@@ -438,9 +448,9 @@ main {
 
 /* Base Card Style */
 .task-card {
-  background: #170e30 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: var(--card-bg, #170e30) !important;
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)) !important;
+  border-bottom: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)) !important;
   border-radius: 14px;
   padding: 1.1rem 1.25rem !important;
   cursor: grab;
@@ -1068,6 +1078,91 @@ main {
   width: 260px;
   bottom: 140%;
   font-family: 'Outfit', sans-serif;
+}
+
+/* ==========================================================================
+   Print Styles for Board Download
+   ========================================================================== */
+@media print {
+  /* Hide interactive elements, buttons, and navigation */
+  nav,
+  .theme-trigger-btn,
+  .theme-panel,
+  .column-add-btn,
+  .task-actions,
+  .help-toggle-btn,
+  .board-status-footer,
+  .board-intro,
+  .detalles,
+  #toggle-instructions-btn {
+    display: none !important;
+  }
+
+  /* Reset layout for document printing */
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: sans-serif !important;
+  }
+
+  main {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+  }
+
+  .main-board-title {
+    color: #000000 !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Grid layout to Flex row for print layout columns */
+  .columns {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1rem !important;
+    width: 100% !important;
+  }
+
+  .column {
+    flex: 1 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    padding: 1rem !important;
+    page-break-inside: avoid;
+  }
+
+  .column h2 {
+    color: #000000 !important;
+    font-size: 1.1rem !important;
+    border-bottom: 2px solid #334155 !important;
+    padding-bottom: 6px !important;
+  }
+
+  .column li {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Card element style adjustment */
+  .task-card {
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    padding: 0.75rem 1rem !important;
+    page-break-inside: avoid !important;
+  }
+
+  .task-card-title {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
 }
 
 /* Clean end of stylesheet */

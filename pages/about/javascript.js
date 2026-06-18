@@ -137,6 +137,58 @@ document.addEventListener('DOMContentLoaded', () => {
         brailleOutput.innerHTML = transliterateToBraille(val) || '⠠';
       });
 
+      // 3b. Dactilológico (Fingerspelling) Transliterator
+      const dactiloInput = document.getElementById('dactilo-input-field');
+      const dactiloOutput = document.getElementById('dactilo-output-text');
+      const dactiloShowCardBtn = document.getElementById('dactilo-show-card-btn');
+      const dactiloCardBox = document.getElementById('dactilo-card-box');
+
+      const dactiloMap = {
+        'a': '✊', 'b': '✋', 'c': '🤏', 'd': '☝️', 'e': '✊', 'f': '👌', 'g': '👈', 'h': '👉', 'i': '☝️', 'j': '☝️',
+        'k': '✌️', 'l': '🤙', 'm': '✊', 'n': '✊', 'o': '👌', 'p': '👎', 'q': '🤏', 'r': '🤞', 's': '✊', 't': '✊',
+        'u': '🤘', 'v': '✌️', 'w': '🖐️', 'x': '☝️', 'y': '🤙', 'z': '☝️',
+        'á': '✊', 'é': '✊', 'í': '☝️', 'ó': '👌', 'ú': '🤘', 'ñ': '✊',
+        ' ': ' '
+      };
+
+      const transliterateToDactilo = (text) => {
+        return text.toLowerCase().split('').map(char => {
+          const emoji = dactiloMap[char];
+          if (emoji === ' ') {
+            return '<span style="display:inline-block; width: 1rem;"></span>';
+          }
+          if (emoji) {
+            return `<span style="display:inline-flex; flex-direction:column; align-items:center; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.2); padding:6px 10px; border-radius:8px; margin:2px;"><span style="font-size:1.8rem; line-height:1.2;">${emoji}</span><span style="font-size:0.68rem; font-weight:800; color:var(--text-color); margin-top:2px; text-transform:uppercase;">${char}</span></span>`;
+          }
+          return `<span style="display:inline-flex; flex-direction:column; align-items:center; background:rgba(120,120,120,0.1); border:1px solid rgba(120,120,120,0.2); padding:6px 10px; border-radius:8px; margin:2px;"><span style="font-size:1.8rem; line-height:1.2;">❓</span><span style="font-size:0.68rem; font-weight:800; color:var(--text-color); margin-top:2px; text-transform:uppercase;">${char}</span></span>`;
+        }).join('');
+      };
+
+      // Set initial value
+      if (dactiloInput && dactiloOutput) {
+        dactiloOutput.innerHTML = transliterateToDactilo(dactiloInput.value);
+        
+        dactiloInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+          dactiloOutput.innerHTML = transliterateToDactilo(val) || '⠠';
+        });
+      }
+
+      if (dactiloShowCardBtn && dactiloCardBox) {
+        dactiloShowCardBtn.addEventListener('click', () => {
+          const isHidden = dactiloCardBox.style.display === 'none';
+          dactiloCardBox.style.display = isHidden ? 'block' : 'none';
+          
+          const currentLang = localStorage.getItem('app-language') || 'es';
+          const dict = window.translations && window.translations[currentLang] ? window.translations[currentLang] : (window.translations ? window.translations.es : null);
+          if (isHidden) {
+            dactiloShowCardBtn.textContent = dict && dict.dactilo_btn_hide_card ? dict.dactilo_btn_hide_card : (currentLang === 'en' ? '📖 Hide Alphabet' : '📖 Ocultar Abecedario');
+          } else {
+            dactiloShowCardBtn.textContent = dict && dict.dactilo_btn_show_card ? dict.dactilo_btn_show_card : (currentLang === 'en' ? '📖 View Full Alphabet' : '📖 Ver Abecedario Completo');
+          }
+        });
+      }
+
       const pictoSearch = document.getElementById('picto-search-field');
       const pictoGrid = document.getElementById('picto-results-grid');
 
