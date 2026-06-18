@@ -7,9 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css?v=4">
-    <script src="../../js/theme.js?v=6"></script>
-    <script src="../../js/language.js?v=6" defer></script>
+    <link rel="stylesheet" href="../../css/style.css?v=7">
+    <script src="../../js/theme.js?v=7"></script>
+    <script src="../../js/language.js?v=7" defer></script>
 </head>
 <body>
     <nav>
@@ -62,34 +62,14 @@
                 <h2 style="color: #00f59b; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; width: 100%;" data-translate="share_qr_title">🔳 Código QR</h2>
                 <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 0.5rem;" data-translate="share_qr_desc">Escanea el código QR desde un móvil para abrir el tablero al instante:</p>
                 
-                <!-- SVG QR Code Mockup (Clean, customizable, no external image required) -->
+                <!-- Dynamic QR Code (Scannable from phone code reader/camera) -->
                 <div style="background: #ffffff; padding: 12px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-                    <svg width="150" height="150" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
-                        <!-- QR code pattern -->
-                        <path d="M0 0h7v7H0V0zm1 1v5h5V1H1zM2 2h3v3H2V2z" fill="#000"/>
-                        <path d="M22 0h7v7h-7V0zm1 1v5h5V1h-5zm1 1h3v3h-3V2z" fill="#000"/>
-                        <path d="M0 22h7v7H0v-7zm1 1v5h5v-5H1zm1 1h3v3H2v-3z" fill="#000"/>
-                        <path d="M9 0h2v2H9V0zm4 0h1v4h-1V0zm2 0h3v1h-3V0zm4 0h1v2h-1V0z" fill="#000"/>
-                        <path d="M9 3h3v1H9V3zm5 2h1v1h-1V5zm-2 1h1v1h-1V6zm4 0h3v1h-3V6z" fill="#000"/>
-                        <path d="M10 8h1v3h-1V8zm3 0h1v1h-1V8zm3 0h2v1h-2V8zm3 0h2v3h-2V8z" fill="#000"/>
-                        <path d="M0 9h2v2H0V9zm3 0h3v1H3V9zm7 2h1v3h-1v-3zm3 0h3v1h-3v-1z" fill="#000"/>
-                        <path d="M18 10h1v4h-1v-4zm2 2h3v1h-3v-1zm4 0h1v3h-1v-3z" fill="#000"/>
-                        <path d="M9 13h2v2H9v-2zm3 0h2v2h-2v-2zm5 1h1v3h-1v-3z" fill="#000"/>
-                        <path d="M0 16h3v1H0v-1zm5 0h1v2H5v-2zm3 0h1v3H8v-3zm4 0h2v1h-2v-1z" fill="#000"/>
-                        <path d="M15 16h2v3h-2v-3zm4 0h4v1h-4v-1zm5 0h2v2h-2v-2z" fill="#000"/>
-                        <path d="M1 18h1v3H1v-3zm3 0h1v2H4v-2zm5 1h2v2H9v-2zm4 0h1v1h-1v-1z" fill="#000"/>
-                        <path d="M17 19h1v3h-1v-3zm3 0h3v1h-3v-1zm4 0h2v2h-2v-2z" fill="#000"/>
-                        <path d="M10 22h1v2h-1v-2zm2 0h2v2h-2v-2zm5 0h2v1h-2v-1z" fill="#000"/>
-                        <path d="M9 25h3v1H9v-1zm5 0h1v2h-1v-2zm2 0h2v1h-2v-1z" fill="#000"/>
-                        <path d="M20 23h3v1h-3v-1zm2 2h4v1h-4v-1z" fill="#000"/>
-                        <path d="M12 27h3v1h-3v-1zm5 0h2v1h-2v-1zm4 0h2v1h-2v-1z" fill="#000"/>
-                    </svg>
+                    <img id="qr-code-img" src="" width="150" height="150" alt="Código QR para acceder a la aplicación" style="display: block; border-radius: 8px; border: none;">
                 </div>
             </article>
         </section>
     </main>
 
-    <script src="../../js/nav.js?v=6" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Set input value to the current URL of the website
@@ -97,6 +77,12 @@
             const shareInput = document.getElementById('share-link-input');
             if (shareInput) {
                 shareInput.value = currentUrl;
+            }
+
+            // Generate scannable QR code dynamically
+            const qrImg = document.getElementById('qr-code-img');
+            if (qrImg) {
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}`;
             }
 
             // Copy Link Button Functionality
