@@ -60,21 +60,54 @@ function applyTheme(bgColor, textColor) {
   }
 })();
 
-// Link theme.css dynamically relative to the script location
-(function() {
-  const scriptUrl = document.currentScript ? document.currentScript.src : '';
-  const themeCssUrl = scriptUrl ? new URL('../css/theme.css', scriptUrl).href : '../../css/theme.css';
-  
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = themeCssUrl;
-  
-  const parent = document.head || document.documentElement;
-  parent.appendChild(link);
-})();
-
 // DOM Injections and logic when page loads
 document.addEventListener('DOMContentLoaded', () => {
+  // Navigation Links Click Handler
+  const navTargets = document.querySelectorAll('nav [reel], nav button[data-target]');
+  navTargets.forEach((element) => {
+    element.style.cursor = 'pointer';
+    element.addEventListener('click', () => {
+      const target = element.getAttribute('reel') || element.dataset.target;
+      if (target) {
+        window.location.href = target;
+      }
+    });
+  });
+
+  // Font Size Scaling Control
+  const btnReset = document.getElementById('font-size-reset-btn');
+  const btnLarge = document.getElementById('font-size-btn');
+  const btnLarger = document.getElementById('font-size-larger-btn');
+
+  const applyFontSize = (size) => {
+    document.documentElement.style.setProperty('font-size', size, 'important');
+    document.documentElement.style.setProperty('--root-font-size', size);
+    localStorage.setItem('app-font-size', size);
+  };
+
+  if (btnReset) btnReset.addEventListener('click', () => applyFontSize('16px'));
+  if (btnLarge) btnLarge.addEventListener('click', () => applyFontSize('20px'));
+  if (btnLarger) btnLarger.addEventListener('click', () => applyFontSize('24px'));
+
+  const savedFontSize = localStorage.getItem('app-font-size');
+  if (savedFontSize) applyFontSize(savedFontSize);
+
+  // Ambitos Smooth Scroll Trigger
+  const ambitoButtons = document.querySelectorAll('button[data-ambito]');
+  ambitoButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const target = button.dataset.ambito;
+      if (target && target !== 'todos') {
+        setTimeout(() => {
+          const targetSection = document.querySelector(`details[data-ambito-section="${target}"]`);
+          if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 50);
+      }
+    });
+  });
+
   const body = document.body;
   
   const triggerBtn = document.createElement('button');
