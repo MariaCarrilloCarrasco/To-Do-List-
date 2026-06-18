@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compartir Tablero - MiiActToDo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css?v=4">
+    <script src="../../js/theme.js?v=6"></script>
+    <script src="../../js/language.js?v=6" defer></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+            <span class="brand-name">MiiActToDo</span>
+        </div>
+        <div class="nav-actions">
+            <a href="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_inicio">Inicio</a>
+            <a href="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+            <a href="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+            <a href="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="board-intro" style="text-align: center;">
+            <h1 style="color: #00f59b; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;" data-translate="share_title">Compartir Tablero</h1>
+            <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 0;" data-translate="share_subtitle">Comparte tus listas de tareas y proyectos con tus amigos, familiares o compañeros de trabajo.</p>
+        </section>
+
+        <section class="columns" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <!-- Card 1: Enlace Compartible -->
+            <article class="column" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <h2 style="color: #00f59b; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;" data-translate="share_link_title">🔗 Enlace de Compartición</h2>
+                <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;" data-translate="share_link_desc">Copia el siguiente enlace para dar acceso directo a tu tablero de tareas en tiempo real:</p>
+                
+                <div style="display: flex; gap: 0.5rem; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 12px; border: 1px solid var(--card-border);">
+                    <input type="text" id="share-link-input" readonly value="" style="flex: 1; background: transparent; border: none; color: #ffffff; font-family: monospace; font-size: 0.85rem; outline: none; padding: 4px 8px;">
+                    <button type="button" id="copy-link-btn" style="background: #00f59b; border: none; border-radius: 8px; color: #0a051b; font-weight: 700; padding: 6px 16px; cursor: pointer; transition: all 0.2s ease;">Copiar</button>
+                </div>
+                <div id="copy-success-msg" style="color: #00f59b; font-size: 0.85rem; font-weight: 600; display: none; text-align: center; margin-top: -8px;">¡Copiado con éxito! 🎉</div>
+            </article>
+
+            <!-- Card 2: Redes Sociales -->
+            <article class="column" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <h2 style="color: #00f59b; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;" data-translate="share_social_title">📲 Compartir en Redes</h2>
+                <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;" data-translate="share_social_desc">Envía tu tablero directamente a través de tus aplicaciones sociales favoritas:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <a id="share-wa" target="_blank" class="nav-btn" style="background: linear-gradient(135deg, #25D366, #128C7E); text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">🟢 WhatsApp</a>
+                    <a id="share-tg" target="_blank" class="nav-btn" style="background: linear-gradient(135deg, #0088cc, #006699); text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">🔵 Telegram</a>
+                    <a id="share-tw" target="_blank" class="nav-btn" style="background: linear-gradient(135deg, #1DA1F2, #0d8ddb); text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">🐦 Twitter</a>
+                    <a id="share-mail" class="nav-btn" style="background: linear-gradient(135deg, #ea4335, #c5221f); text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">📧 Email</a>
+                </div>
+            </article>
+
+            <!-- Card 3: Código QR -->
+            <article class="column" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center;">
+                <h2 style="color: #00f59b; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; width: 100%;" data-translate="share_qr_title">🔳 Código QR</h2>
+                <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 0.5rem;" data-translate="share_qr_desc">Escanea el código QR desde un móvil para abrir el tablero al instante:</p>
+                
+                <!-- SVG QR Code Mockup (Clean, customizable, no external image required) -->
+                <div style="background: #ffffff; padding: 12px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <svg width="150" height="150" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+                        <!-- QR code pattern -->
+                        <path d="M0 0h7v7H0V0zm1 1v5h5V1H1zM2 2h3v3H2V2z" fill="#000"/>
+                        <path d="M22 0h7v7h-7V0zm1 1v5h5V1h-5zm1 1h3v3h-3V2z" fill="#000"/>
+                        <path d="M0 22h7v7H0v-7zm1 1v5h5v-5H1zm1 1h3v3H2v-3z" fill="#000"/>
+                        <path d="M9 0h2v2H9V0zm4 0h1v4h-1V0zm2 0h3v1h-3V0zm4 0h1v2h-1V0z" fill="#000"/>
+                        <path d="M9 3h3v1H9V3zm5 2h1v1h-1V5zm-2 1h1v1h-1V6zm4 0h3v1h-3V6z" fill="#000"/>
+                        <path d="M10 8h1v3h-1V8zm3 0h1v1h-1V8zm3 0h2v1h-2V8zm3 0h2v3h-2V8z" fill="#000"/>
+                        <path d="M0 9h2v2H0V9zm3 0h3v1H3V9zm7 2h1v3h-1v-3zm3 0h3v1h-3v-1z" fill="#000"/>
+                        <path d="M18 10h1v4h-1v-4zm2 2h3v1h-3v-1zm4 0h1v3h-1v-3z" fill="#000"/>
+                        <path d="M9 13h2v2H9v-2zm3 0h2v2h-2v-2zm5 1h1v3h-1v-3z" fill="#000"/>
+                        <path d="M0 16h3v1H0v-1zm5 0h1v2H5v-2zm3 0h1v3H8v-3zm4 0h2v1h-2v-1z" fill="#000"/>
+                        <path d="M15 16h2v3h-2v-3zm4 0h4v1h-4v-1zm5 0h2v2h-2v-2z" fill="#000"/>
+                        <path d="M1 18h1v3H1v-3zm3 0h1v2H4v-2zm5 1h2v2H9v-2zm4 0h1v1h-1v-1z" fill="#000"/>
+                        <path d="M17 19h1v3h-1v-3zm3 0h3v1h-3v-1zm4 0h2v2h-2v-2z" fill="#000"/>
+                        <path d="M10 22h1v2h-1v-2zm2 0h2v2h-2v-2zm5 0h2v1h-2v-1z" fill="#000"/>
+                        <path d="M9 25h3v1H9v-1zm5 0h1v2h-1v-2zm2 0h2v1h-2v-1z" fill="#000"/>
+                        <path d="M20 23h3v1h-3v-1zm2 2h4v1h-4v-1z" fill="#000"/>
+                        <path d="M12 27h3v1h-3v-1zm5 0h2v1h-2v-1zm4 0h2v1h-2v-1z" fill="#000"/>
+                    </svg>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="../../js/nav.js?v=6" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set input value to the current URL of the website
+            const currentUrl = window.location.origin + window.location.pathname.replace('pages/compartir/index.html', 'index.html');
+            const shareInput = document.getElementById('share-link-input');
+            if (shareInput) {
+                shareInput.value = currentUrl;
+            }
+
+            // Copy Link Button Functionality
+            const copyBtn = document.getElementById('copy-link-btn');
+            const copyMsg = document.getElementById('copy-success-msg');
+            if (copyBtn && shareInput) {
+                copyBtn.addEventListener('click', () => {
+                    shareInput.select();
+                    shareInput.setSelectionRange(0, 99999); // For mobile devices
+                    navigator.clipboard.writeText(shareInput.value).then(() => {
+                        if (copyMsg) {
+                            copyMsg.style.display = 'block';
+                            setTimeout(() => {
+                                copyMsg.style.display = 'none';
+                            }, 3000);
+                        }
+                    }).catch(err => {
+                        console.error('Error copying link: ', err);
+                    });
+                });
+            }
+
+            // Social Sharing Links
+            const textToShare = encodeURIComponent("¡Echa un vistazo a mi tablero de tareas en MiiActToDo! ");
+            const shareUrl = encodeURIComponent(currentUrl);
+
+            document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${textToShare}${shareUrl}`;
+            document.getElementById('share-tg').href = `https://t.me/share/url?url=${shareUrl}&text=${textToShare}`;
+            document.getElementById('share-tw').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${textToShare}`;
+            document.getElementById('share-mail').href = `mailto:?subject=Tablero%20de%20Tareas%20MiiActToDo&body=${textToShare}%0A${shareUrl}`;
+            
+            // Mail sharing click event to trigger mailto
+            document.getElementById('share-mail').addEventListener('click', (e) => {
+                window.location.href = document.getElementById('share-mail').href;
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>

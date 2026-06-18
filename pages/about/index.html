@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="about_title">Acerca de... - Accesibilidad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css?v=7">
+  <link rel="stylesheet" href="./style.css">
+  <script src="../../js/theme.js?v=7"></script>
+  <script src="../../js/language.js?v=7" defer></script>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a reel="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_home">Inicio</a>
+      <a reel="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+      <a reel="../estadisticasymejoras/index.html" class="nav-btn nav-btn-stats" data-translate="nav_stats">Estadísticas y mejoras</a>
+      <a reel="../compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+      <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="accessibility-card" style="max-width: 650px; margin: 0 auto 2rem auto; text-align: center; display: flex; flex-direction: column; gap: 1.5rem; padding: 2.5rem;">
+      <h1 data-translate="about_me_title" style="color: #00f59b; font-size: 2rem; font-weight: 800; margin: 0;">Acerca de mí</h1>
+      
+      <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #00f59b, #3b82f6); margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 10px 25px rgba(0, 245, 155, 0.25);">
+        👩‍💻
+      </div>
+      
+      <p data-translate="about_me_p1" style="font-size: 1.15rem; line-height: 1.6; font-weight: 600; color: var(--text-color, #1f2937); margin: 0;">
+        ¡Hola! Soy María Carrillo Carrasco. Soy desarrolladora social.
+      </p>
+      
+      <p data-translate="about_me_p2" style="font-size: 1rem; line-height: 1.65; opacity: 0.9; margin: 0;">
+        Esta es una aplicación web de accesibilidad en la que puedes planificar tus proyectos y organizar tus acciones.
+      </p>
+      
+      <p style="font-size: 0.95rem; opacity: 0.85; margin: 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span data-translate="about_me_p3">Esta web está disponible en múltiples idiomas</span> 🌐
+      </p>
+    </section>
+
+    <!-- Narrator Control Panel -->
+    <div class="narrator-section">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span>🔊</span>
+        <strong data-translate="narrator_title">Lector por Voz Integrado: Puedes escuchar el manual en audio.</strong>
+      </div>
+      <div>
+        <button id="audio-speak-btn" class="narrate-btn" data-translate="narrator_btn_speak">🔊 Escuchar Manual</button>
+        <button id="audio-stop-btn" class="narrate-btn active" style="display:none; background:#ef4444;" data-translate="narrator_btn_stop">⏹️ Detener</button>
+      </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="accessibility-container">
+      
+      <!-- Left Column: Lectura Facil Instructions -->
+      <section class="accessibility-card">
+        <h2 data-translate="easy_title">📖 Instrucciones Sencillas (Lectura Fácil)</h2>
+        <p style="opacity:0.8; font-size:0.9rem;" data-translate="easy_subtitle">(Haz clic en cada paso para reproducir la voz y ver la interpretación en Lengua de Signos LSE)</p>
+        
+        <ul class="easy-instructions" id="steps-list">
+          <li class="easy-step active" data-step="1" data-text="">
+            <span class="step-number">➕</span>
+            <div class="step-details">
+              <h3>Añadir Tarea (Crear)</h3>
+              <p>Pulsa el botón <strong>"+ Añadir tarea"</strong> en cualquier columna. Escribe lo que quieres hacer y haz clic en <strong>Añadir</strong>.</p>
+            </div>
+          </li>
+          
+          <li class="easy-step" data-step="2" data-text="">
+            <span class="step-number">🔄</span>
+            <div class="step-details">
+              <h3>Mover Tarea (Organizar)</h3>
+              <p>Arrastra la tarea a otra columna con el ratón. O abre el <strong>desplegable</strong> en la tarjeta y selecciona otra columna.</p>
+            </div>
+          </li>
+          
+          <li class="easy-step" data-step="3" data-text="">
+            <span class="step-number">✏️</span>
+            <div class="step-details">
+              <h3>Modificar Tarea (Editar)</h3>
+              <p>Haz clic en el lápiz <strong>✏️</strong> o doble clic en el texto. Cambia el texto o categorías y haz clic en el disquete <strong>💾</strong>.</p>
+            </div>
+          </li>
+ 
+          <li class="easy-step" data-step="4" data-text="">
+            <span class="step-number">✅</span>
+            <div class="step-details">
+              <h3>Marcar Tarea (Tick y Cruz)</h3>
+              <p>Haz clic en la cruz <strong>❌</strong> para completarla (se moverá a Hecho). Pulsa el tick verde <strong>✅</strong> para volver a activarla.</p>
+            </div>
+          </li>
+ 
+          <li class="easy-step" data-step="5" data-text="">
+            <span class="step-number">🗑️</span>
+            <div class="step-details">
+              <h3>Eliminar Tarea (Borrar)</h3>
+              <p>Haz clic en la papelera <strong>🗑️</strong> para borrar la tarea si ya no la necesitas.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Right Column: Interactive Accessibility widgets -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Sign Language Player simulation -->
+        <section class="accessibility-card">
+          <h2 data-translate="lse_title">🧏 Lengua de Signos (LSE)</h2>
+          <div class="lse-widget">
+            <div class="lse-video-box">
+              <div class="lse-avatar-container">
+                <span class="lse-avatar" id="lse-avatar-emoji">👋</span>
+                <span class="lse-status" id="lse-status-text" data-translate="lse_status_init">¡Hola! Selecciona un paso</span>
+              </div>
+              <div class="lse-video-controls">
+                <span data-translate="lse_interpreter">Intérprete LSE</span>
+                <span class="lse-badge" id="lse-chapter-badge" data-translate="lse_chapter_init">Capítulo: Inicio</span>
+              </div>
+            </div>
+            <p style="font-size:0.8rem; margin:0; opacity:0.8; line-height:1.4;" data-translate="lse_desc">El asistente virtual LSE muestra los movimientos corporales para cada paso de las instrucciones seleccionadas.</p>
+          </div>
+        </section>
+
+        <!-- Braille Transliterator widget -->
+        <section class="accessibility-card">
+          <h2 data-translate="braille_title">⠃ Braille (Visualizador táctil)</h2>
+          <div class="braille-widget">
+            <p style="font-size:0.88rem; margin:0 0 0.5rem 0;" data-translate="braille_desc">Escribe texto aquí abajo para verlo traducido al sistema Braille:</p>
+            <input type="text" class="braille-input" id="braille-input-field" placeholder="Escribe aquí... (ej: hola)" data-translate="braille_placeholder" value="hola">
+            <div class="braille-output-box">
+              <span class="braille-text" id="braille-output-text">⠓⠕⠇⠁</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Dactilológico Transliterator widget -->
+        <section class="accessibility-card">
+          <h2 data-translate="dactilo_title">🔤 Dactilológico (Deletreador manual)</h2>
+          <div class="dactilo-widget">
+            <p style="font-size:0.88rem; margin:0 0 0.5rem 0;" data-translate="dactilo_desc">Escribe texto para verlo deletreado en Lengua de Signos Española (LSE):</p>
+            <input type="text" class="dactilo-input" id="dactilo-input-field" placeholder="Escribe aquí... (ej: hola)" data-translate="dactilo_placeholder" value="hola">
+            <div class="dactilo-output-box">
+              <span class="dactilo-text" id="dactilo-output-text">✊👌🤙✊</span>
+            </div>
+            <button type="button" class="narrate-btn" id="dactilo-show-card-btn" style="margin-top: 0.5rem; background: rgba(120,120,120,0.15); border: 1px solid rgba(120,120,120,0.25); color: inherit;" data-translate="dactilo_btn_show_card">📖 Ver Abecedario Completo</button>
+            <div class="dactilo-card-container" id="dactilo-card-box" style="display:none; margin-top: 1rem; text-align: center;">
+              <img src="../../img/lse_fingerspelling_alphabet.png" alt="Abecedario Dactilológico LSE" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--card-border, rgba(0,0,0,0.15));">
+            </div>
+          </div>
+        </section>
+
+        <!-- Pictograms widget -->
+        <section class="accessibility-card">
+          <h2 data-translate="picto_title">🖼️ Pictogramas (Buscador cognitivo)</h2>
+          <div class="pictograms-widget">
+            <p style="font-size:0.88rem; margin:0 0 0.5rem 0;" data-translate="picto_desc">Pictogramas clave. Escribe palabras para buscar más (ej: casa, familia, dinero, trabajo):</p>
+            <div class="picto-search-container">
+              <input type="text" class="picto-search-input" id="picto-search-field" placeholder="Buscar pictograma..." data-translate="picto_placeholder">
+            </div>
+            <div class="picto-grid" id="picto-results-grid">
+              <!-- Dynamically populated from ARASAAC API / fallback -->
+            </div>
+            <div class="picto-attribution" style="font-size:0.68rem; opacity:0.6; text-align:right; margin-top:0.4rem;" data-translate="picto_attribution">
+              Pictogramas de ARASAAC (BY-NC-SA) de Sergio Palao, Gobierno de Aragón.
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <p style="margin-top: 2rem;"><a href="../../index.html" data-translate="back_to_board">← Volver al Tablero Principal</a></p>
+
+    <footer class="board-status-footer" style="margin-top: 3.5rem; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 1rem; font-size: 0.85rem; line-height: 1.6; text-align: left; width: 100%;">
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #cbd5e1; font-weight: 500;">
+        <span>ℹ️</span>
+        <p data-translate="footer_reminder" style="margin: 0;">Por favor, no olvide mover las tareas a la columna de "Hecho" cuando estén realizadas. Gracias.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #00f59b; font-weight: 600;">
+        <span>🟢</span>
+        <p data-translate="footer_save_success" style="margin: 0;">Los cambios realizados se han guardado automáticamente, de manera, exitosa.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #ef4444; font-weight: 600;">
+        <span>🔴</span>
+        <p data-translate="footer_save_error" style="margin: 0;">ERROR: El sistema ha detectado un problema para guardar, automáticamente, su resultado.<br>Por favor, espere a que nuestros agentes puedan terminar de resolverlo. Antes de seguir modificando.<br>Espere unos minutos y vuelva en un rato. Sentimos las molestias.</p>
+      </div>
+    </footer>
+  </main>
+  
+  <script src="./javascript.js?v=7" defer></script>
+</body>
+</html>

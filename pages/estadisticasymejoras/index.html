@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="stats_title">Estadísticas y Mejoras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css?v=7">
+  <link rel="stylesheet" href="./style.css">
+  <script src="../../js/theme.js?v=7"></script>
+  <script src="../../js/language.js?v=7" defer></script>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img src="../../img/logo.jpeg" alt="App logo" class="logo">
+      <span class="brand-name">MiiActToDo</span>
+    </div>
+    <div class="nav-actions">
+      <a reel="../../index.html" class="nav-btn nav-btn-inicio" data-translate="nav_home">Inicio</a>
+      <a reel="../tablero/index.html" class="nav-btn nav-btn-tablero" data-translate="nav_board">Tablero</a>
+      <a reel="../about/index.html" class="nav-btn nav-btn-about" data-translate="nav_about">Acerca de...</a>
+      <a reel="../compartir/index.html" class="nav-btn nav-btn-share" data-translate="nav_share">Compartir</a>
+      <button type="button" class="nav-btn nav-btn-download" data-action="download-board" data-translate="nav_download">Descargar</button>
+    </div>
+  </nav>
+
+  <main>
+    <h1 data-translate="stats_title">Estadísticas y Mejoras</h1>
+    <p data-translate="stats_desc" style="text-align: center; max-width: 600px; margin: 0 auto 2rem auto;">Aquí puedes encontrar el resumen y métricas de tus tareas.</p>
+
+    <div class="circle-container" style="display: flex; justify-content: center; margin: 3rem 0;">
+      <div class="progress-circle" id="progress">
+        <span id="progressValue">0%</span>
+      </div>
+    </div>
+
+    <section class="accessibility-card bar-chart-section" style="max-width: 800px; margin: 2rem auto 0 auto;">
+      <h2 data-translate="chart_bar_title" style="color: #00f59b; font-size: 1.25rem; font-weight: 800; margin-top: 0; margin-bottom: 0.5rem; text-align: center;">Horas de mayor registro de tareas</h2>
+      <p style="font-size: 0.88rem; opacity: 0.8; margin-top: 0; text-align: center; margin-bottom: 1.5rem;" data-translate="chart_bar_desc">Representación de las horas del día con mayor volumen de creación.</p>
+      
+      <div class="chart-wrapper">
+        <div class="chart-y-axis">
+          <span>Max</span>
+          <span>50%</span>
+          <span>0</span>
+        </div>
+        <div class="chart-container" id="bar-chart-container">
+        </div>
+      </div>
+    </section>
+
+    <p style="text-align: center; margin-top: 2rem;">
+      <a href="../../index.html" class="nav-btn" data-translate="back_to_home" style="display: inline-block; padding: 10px 24px; font-weight: 700; background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff; border-radius: 999px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); text-decoration: none; transition: transform 0.2s ease;">
+        Volver al inicio
+      </a>
+    </p>
+
+    <footer class="board-status-footer" style="margin-top: 3.5rem; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 1rem; font-size: 0.85rem; line-height: 1.6; text-align: left; width: 100%;">
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #cbd5e1; font-weight: 500;">
+        <span>ℹ️</span>
+        <p data-translate="footer_reminder" style="margin: 0;">Por favor, no olvide mover las tareas a la columna de "Hecho" cuando estén realizadas. Gracias.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #00f59b; font-weight: 600;">
+        <span>🟢</span>
+        <p data-translate="footer_save_success" style="margin: 0;">Los cambios realizados se han guardado automáticamente, de manera, exitosa.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: flex-start; color: #ef4444; font-weight: 600;">
+        <span>🔴</span>
+        <p data-translate="footer_save_error" style="margin: 0;">ERROR: El sistema ha detectado un problema para guardar, automáticamente, su resultado.<br>Por favor, espere a que nuestros agentes puedan terminar de resolverlo. Antes de seguir modificando.<br>Espere unos minutos y vuelva en un rato. Sentimos las molestias.</p>
+      </div>
+    </footer>
+  </main>
+
+  <script src="../../js/estadisticas.js?v=7" defer></script>
+</body>
+</html>
