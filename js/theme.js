@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Font Size Scaling Control
+  const btnDecrease = document.getElementById('font-size-decrease-btn');
   const btnReset = document.getElementById('font-size-reset-btn');
   const btnLarge = document.getElementById('font-size-btn');
   const btnLarger = document.getElementById('font-size-larger-btn');
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('app-font-size', size);
   };
 
+  if (btnDecrease) btnDecrease.addEventListener('click', () => applyFontSize('13px'));
   if (btnReset) btnReset.addEventListener('click', () => applyFontSize('16px'));
   if (btnLarge) btnLarge.addEventListener('click', () => applyFontSize('20px'));
   if (btnLarger) btnLarger.addEventListener('click', () => applyFontSize('24px'));
@@ -142,68 +144,76 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>Modo Oscuro</span>
         <div class="preset-preview-colors">
           <div class="preview-dot" style="background: #0f172a;"></div>
-          <div class="preview-dot" style="background: #f8fafc;"></div>
-        </div>
-      </button>
+          <div class="preset-preview-colors">
+            <div class="preview-dot" style="background: #f8fafc;"></div>
+          </div>
+        </button>
+        
+        <button class="preset-btn" data-preset="sepia">
+          <span>Sepia</span>
+          <div class="preset-preview-colors">
+            <div class="preview-dot" style="background: #fdf6e3;"></div>
+            <div class="preview-dot" style="background: #5c4033;"></div>
+          </div>
+        </button>
+        
+        <button class="preset-btn" data-preset="high-contrast" style="grid-column: span 2;">
+          <span>Alto Contraste</span>
+          <div class="preset-preview-colors">
+            <div class="preview-dot" style="background: #000000;"></div>
+            <div class="preview-dot" style="background: #ffff00;"></div>
+          </div>
+        </button>
+      </div>
       
-      <button class="preset-btn" data-preset="sepia">
-        <span>Sepia</span>
-        <div class="preset-preview-colors">
-          <div class="preview-dot" style="background: #fdf6e3;"></div>
-          <div class="preview-dot" style="background: #5c4033;"></div>
+      <div class="custom-pickers">
+        <div class="picker-row">
+          <label>🖼️ Fondo:</label>
+          <div class="color-input-wrapper">
+            <span class="color-hex" id="bg-hex">#F2F6FB</span>
+            <input type="color" id="bg-color-picker" value="#f2f6fb">
+          </div>
         </div>
-      </button>
-      
-      <button class="preset-btn" data-preset="high-contrast" style="grid-column: span 2;">
-        <span>Alto Contraste</span>
-        <div class="preset-preview-colors">
-          <div class="preview-dot" style="background: #000000;"></div>
-          <div class="preview-dot" style="background: #ffff00;"></div>
-        </div>
-      </button>
-    </div>
-    
-    <div class="custom-pickers">
-      <div class="picker-row">
-        <label>🖼️ Fondo:</label>
-        <div class="color-input-wrapper">
-          <span class="color-hex" id="bg-hex">#F2F6FB</span>
-          <input type="color" id="bg-color-picker" value="#f2f6fb">
+        
+        <div class="picker-row">
+          <label>✍️ Letras:</label>
+          <div class="color-input-wrapper">
+            <span class="color-hex" id="text-hex">#1F2937</span>
+            <input type="color" id="text-color-picker" value="#1f2937">
+          </div>
         </div>
       </div>
       
-      <div class="picker-row">
-        <label>✍️ Letras:</label>
-        <div class="color-input-wrapper">
-          <span class="color-hex" id="text-hex">#1F2937</span>
-          <input type="color" id="text-color-picker" value="#1f2937">
-        </div>
-      </div>
-    </div>
+      <button class="reset-theme-btn" id="reset-theme">
+        🔄 Restablecer original
+      </button>
+    `;
+    body.appendChild(panel);
     
-    <button class="reset-theme-btn" id="reset-theme">
-      🔄 Restablecer original
-    </button>
-  `;
-  body.appendChild(panel);
+    const bgPicker = document.getElementById('bg-color-picker');
+    const textPicker = document.getElementById('text-color-picker');
+    const bgHex = document.getElementById('bg-hex');
+    const textHex = document.getElementById('text-hex');
+    const resetBtn = document.getElementById('reset-theme');
+    const presetBtns = panel.querySelectorAll('.preset-btn');
+    const navThemeBtn = document.getElementById('nav-theme-btn');
   
-  const bgPicker = document.getElementById('bg-color-picker');
-  const textPicker = document.getElementById('text-color-picker');
-  const bgHex = document.getElementById('bg-hex');
-  const textHex = document.getElementById('text-hex');
-  const resetBtn = document.getElementById('reset-theme');
-  const presetBtns = panel.querySelectorAll('.preset-btn');
+    const togglePanel = (e) => {
+      e.stopPropagation();
+      panel.classList.toggle('active');
+    };
   
-  triggerBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    panel.classList.toggle('active');
-  });
-  
-  document.addEventListener('click', (e) => {
-    if (!panel.contains(e.target) && e.target !== triggerBtn) {
-      panel.classList.remove('active');
+    triggerBtn.addEventListener('click', togglePanel);
+    if (navThemeBtn) {
+      navThemeBtn.addEventListener('click', togglePanel);
     }
-  });
+    
+    document.addEventListener('click', (e) => {
+      const isNavThemeClick = navThemeBtn && navThemeBtn.contains(e.target);
+      if (!panel.contains(e.target) && e.target !== triggerBtn && !isNavThemeClick) {
+        panel.classList.remove('active');
+      }
+    });
   
   const presets = {
     'default': { bg: '#f2f6fb', text: '#1f2937' },
