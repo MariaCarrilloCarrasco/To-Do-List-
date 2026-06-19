@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - MiiActToDo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #cbd5e1;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .error-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      width: 90%;
+      max-width: 550px;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .error-icon {
+      font-size: 4rem;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .error-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ef4444;
+      margin: 0;
+    }
+
+    .error-message {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      opacity: 0.9;
+      text-align: justify;
+      margin: 0;
+    }
+
+    .back-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      outline: none;
+      margin-top: 1rem;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="error-icon">🔴</div>
+    <h1 class="error-title">ERROR</h1>
+    <p class="error-message">
+      ERROR: El sistema ha detectado un problema para guardar, automáticamente, su resultado. Por favor, espere a que nuestros agentes puedan terminar de resolverlo. Antes de seguir modificando. Espere unos minutos y vuelva en un rato. Sentimos las molestias.
+    </p>
+    <a href="/" class="back-btn">Volver al Inicio</a>
+  </div>
+</body>
+</html>
