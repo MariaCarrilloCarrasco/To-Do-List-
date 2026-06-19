@@ -2499,7 +2499,7 @@ const showDownloadModal = () => {
     return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
   };
 
-  // Generate Braille Canvas
+  // Generate Braille Canvas for Acerca de
   const generateBrailleCanvas = () => {
     const canvas = document.createElement('canvas');
     canvas.width = 600;
@@ -2511,44 +2511,40 @@ const showDownloadModal = () => {
     ctx.fillRect(0, 0, 600, 800);
 
     // Border
-    ctx.strokeStyle = '#1e293b';
+    ctx.strokeStyle = '#2563eb';
     ctx.lineWidth = 4;
     ctx.strokeRect(15, 15, 570, 770);
 
     // Header
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Traducción Braille', 40, 60);
+    ctx.fillText('MiiActToDo - Acerca de (Braille)', 40, 60);
 
-    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
-    const activeTasks = tasks.filter(t => t.column !== 'deleted').slice(0, 8);
+    const linesText = [
+      "¡Hola! Soy María Carrillo Carrasco.",
+      "Soy desarrolladora social.",
+      "Esta es una aplicación de accesibilidad",
+      "donde puedes planificar tus proyectos",
+      "y organizar tus acciones."
+    ];
 
-    let y = 120;
-    ctx.font = '16px sans-serif';
-    ctx.fillStyle = '#334155';
+    let y = 130;
+    linesText.forEach(lineText => {
+      ctx.fillStyle = '#334155';
+      ctx.font = '16px sans-serif';
+      ctx.fillText(lineText, 40, y);
+      
+      ctx.fillStyle = '#2563eb';
+      ctx.font = '24px sans-serif';
+      const brailleText = transliterateToBraille(lineText);
+      ctx.fillText(brailleText, 40, y + 35);
+      y += 95;
+    });
 
-    if (activeTasks.length === 0) {
-      ctx.fillText('No hay tareas registradas.', 40, y);
-      ctx.font = '28px sans-serif';
-      ctx.fillText(transliterateToBraille('No hay tareas registradas.'), 40, y + 40);
-    } else {
-      activeTasks.forEach((task, index) => {
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 15px sans-serif';
-        const truncatedText = task.text.length > 30 ? task.text.substring(0, 30) + '...' : task.text;
-        ctx.fillText(`${index + 1}. ${truncatedText} (${task.column})`, 40, y);
-        
-        ctx.fillStyle = '#2563eb';
-        ctx.font = '22px sans-serif';
-        const brailleText = transliterateToBraille(truncatedText);
-        ctx.fillText(brailleText, 40, y + 35);
-        y += 80;
-      });
-    }
     return canvas;
   };
 
-  // Generate LSE Fingerspelling Canvas
+  // Generate LSE Fingerspelling Canvas for Acerca de
   const generateLseCanvas = () => {
     const canvas = document.createElement('canvas');
     canvas.width = 600;
@@ -2567,34 +2563,36 @@ const showDownloadModal = () => {
     // Header
     ctx.fillStyle = '#4c1d95';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Lengua de Signos (LSE)', 40, 60);
+    ctx.fillText('Acerca de - Lengua de Signos (LSE)', 40, 60);
 
-    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
-    const activeTasks = tasks.filter(t => t.column !== 'deleted').slice(0, 6);
+    const linesLSE = [
+      { label: "MARIA", text: "maria" },
+      { label: "CARRILLO", text: "carrillo" },
+      { label: "CARRASCO", text: "carrasco" }
+    ];
 
-    let y = 120;
-    if (activeTasks.length === 0) {
+    let y = 140;
+    linesLSE.forEach(item => {
       ctx.fillStyle = '#1e293b';
-      ctx.font = '16px sans-serif';
-      ctx.fillText('No hay tareas registradas.', 40, y);
-    } else {
-      activeTasks.forEach((task, index) => {
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 14px sans-serif';
-        const truncatedText = task.text.length > 25 ? task.text.substring(0, 25) + '...' : task.text;
-        ctx.fillText(`${index + 1}. ${truncatedText}`, 40, y);
-        
-        ctx.fillStyle = '#7c3aed';
-        ctx.font = '22px sans-serif';
-        const dactiloText = truncatedText.toLowerCase().split('').map(char => dactiloMap[char] || '').join(' ');
-        ctx.fillText(dactiloText, 40, y + 30);
-        y += 110;
-      });
-    }
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(item.label, 40, y);
+      
+      ctx.fillStyle = '#7c3aed';
+      ctx.font = '26px sans-serif';
+      const dactiloText = item.text.split('').map(char => dactiloMap[char] || '').join(' ');
+      ctx.fillText(dactiloText, 40, y + 35);
+      y += 105;
+    });
+
+    // Subtext explanation
+    ctx.fillStyle = '#475569';
+    ctx.font = 'italic 13px sans-serif';
+    ctx.fillText("Deletreo dactilológico del nombre de la desarrolladora", 40, y + 25);
+
     return canvas;
   };
 
-  // Generate Pictograms Canvas
+  // Generate Pictograms Canvas for Acerca de
   const generatePictoCanvas = () => {
     const canvas = document.createElement('canvas');
     canvas.width = 600;
@@ -2613,52 +2611,36 @@ const showDownloadModal = () => {
     // Header
     ctx.fillStyle = '#065f46';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Pictogramas de Tareas', 40, 60);
+    ctx.fillText('Acerca de - Pictogramas cognitivos', 40, 60);
 
-    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
-    const activeTasks = tasks.filter(t => t.column !== 'deleted');
+    const items = [
+      { symbol: '👋', title: "Saludo / Hola", desc: "Presentación inicial del manual de usuario." },
+      { symbol: '👩‍💻', title: "Desarrolladora Social", desc: "María Carrillo Carrasco, creadora de la aplicación." },
+      { symbol: '♿', title: "Accesibilidad", desc: "Diseño inclusivo para personas con discapacidad o diversidad." },
+      { symbol: '📋', title: "Planificar Acciones", desc: "Tablero para crear, editar y organizar tareas." },
+      { symbol: '🌐', title: "Multiidioma", desc: "Disponible en varios idiomas para facilitar el uso global." }
+    ];
 
-    const categories = {
-      familia: { symbol: '👪', name: dict.ambitos_familia || 'Familia', count: 0 },
-      personal: { symbol: '👤', name: dict.ambitos_personal || 'Personal', count: 0 },
-      social: { symbol: '👥', name: dict.ambitos_social || 'Social', count: 0 },
-      laboral: { symbol: '💼', name: dict.ambitos_laboral || 'Laboral', count: 0 },
-      ocio: { symbol: '🎭', name: dict.ambitos_ocio || 'Ocio', count: 0 },
-      salud: { symbol: '❤️', name: dict.ambitos_salud || 'Salud', count: 0 },
-      hogar: { symbol: '🏠', name: dict.ambitos_hogar || 'Hogar', count: 0 },
-      finanzas: { symbol: '💰', name: dict.ambitos_finanzas || 'Finanzas', count: 0 }
-    };
-
-    activeTasks.forEach(task => {
-      if (categories[task.ambito]) {
-        categories[task.ambito].count++;
-      }
-    });
-
-    let y = 130;
-    Object.values(categories).forEach(cat => {
+    let y = 120;
+    items.forEach(item => {
       ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
-      ctx.fillRect(40, y, 520, 60);
+      ctx.fillRect(40, y, 520, 80);
       ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
       ctx.lineWidth = 1;
-      ctx.strokeRect(40, y, 520, 60);
+      ctx.strokeRect(40, y, 520, 80);
 
-      ctx.font = '32px sans-serif';
-      ctx.fillText(cat.symbol, 60, y + 42);
-
-      // Clean name from emoji prefix if present
-      const cleanName = cat.name.replace(/^[^\w\s\u00C0-\u00FF]+/g, '').trim();
+      ctx.font = '36px sans-serif';
+      ctx.fillText(item.symbol, 60, y + 54);
 
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(cleanName, 120, y + 37);
+      ctx.fillText(item.title, 130, y + 36);
 
-      ctx.fillStyle = '#047857';
-      ctx.font = '14px sans-serif';
-      const taskWord = lang === 'en' ? 'tasks' : 'tareas';
-      ctx.fillText(`${cat.count} ${taskWord}`, 440, y + 37);
+      ctx.fillStyle = '#475569';
+      ctx.font = '13px sans-serif';
+      ctx.fillText(item.desc, 130, y + 58);
 
-      y += 75;
+      y += 95;
     });
 
     return canvas;
@@ -2811,7 +2793,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="braille" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">⠃</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Braille</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (Braille)</strong>
           </div>
           <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem; color: #3b82f6; font-family: monospace;">
             ⠁ ⠃ ⠉ ⠙ ⠑
@@ -2822,7 +2804,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="lse" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">🧏</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Lengua de Signos</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (LSE)</strong>
           </div>
           <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem;">
             ✊ ✋ 🤏 ☝️
@@ -2833,10 +2815,10 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="picto" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; grid-column: span 2;">
           <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
             <span style="font-size: 1.5rem;">🖼️</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Pictogramas correspondientes</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (Pictogramas)</strong>
           </div>
           <div style="display: flex; gap: 12px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1.15rem;">
-            👪 💼 🏠 🎭 ❤️ 💰
+            👋 👩‍💻 ♿ 📋 🌐
           </div>
         </div>
       </div>
@@ -2972,11 +2954,11 @@ const showDownloadModal = () => {
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-braille.png';
+          link.download = 'miiacttodo-acercade-braille.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-braille.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-acercade-braille.pdf');
         }
       } 
       
@@ -2985,11 +2967,11 @@ const showDownloadModal = () => {
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-lse.png';
+          link.download = 'miiacttodo-acercade-lse.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-lse.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-acercade-lse.pdf');
         }
       } 
       
@@ -2998,11 +2980,11 @@ const showDownloadModal = () => {
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-pictogramas.png';
+          link.download = 'miiacttodo-acercade-pictogramas.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-pictogramas.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-acercade-pictogramas.pdf');
         }
       }
     } catch (err) {
