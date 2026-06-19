@@ -2499,34 +2499,134 @@ const showDownloadModal = () => {
     return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
   };
 
-  // Generate Braille Canvas for Acerca de
-  const generateBrailleCanvas = () => {
+  const wrapText = (text, maxChars) => {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+    
+    words.forEach(word => {
+      if ((currentLine + ' ' + word).trim().length <= maxChars) {
+        currentLine = (currentLine + ' ' + word).trim();
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+    return lines;
+  };
+
+  const parseTextToPictoItems = (text) => {
+    const cleanText = text.toLowerCase().replace(/[^a-z0-9ñáéíóú\s]/g, "");
+    const words = cleanText.split(/\s+/).filter(w => w.length > 0);
+    
+    const dictionary = {
+      'hola': { symbol: '👋', title: 'Hola / Saludo', desc: 'Greeting / Hello' },
+      'saludo': { symbol: '👋', title: 'Hola / Saludo', desc: 'Greeting / Hello' },
+      'casa': { symbol: '🏠', title: 'Casa / Hogar', desc: 'Home / House' },
+      'hogar': { symbol: '🏠', title: 'Casa / Hogar', desc: 'Home / House' },
+      'trabajo': { symbol: '💼', title: 'Trabajo / Empleo', desc: 'Work / Job' },
+      'empleo': { symbol: '💼', title: 'Trabajo / Empleo', desc: 'Work / Job' },
+      'tarea': { symbol: '📋', title: 'Tarea / Lista', desc: 'Task / Todo' },
+      'tareas': { symbol: '📋', title: 'Tarea / Lista', desc: 'Task / Todo' },
+      'lista': { symbol: '📋', title: 'Tarea / Lista', desc: 'Task / Todo' },
+      'estudiar': { symbol: '📚', title: 'Estudiar / Leer', desc: 'Study / Learn' },
+      'leer': { symbol: '📚', title: 'Estudiar / Leer', desc: 'Study / Learn' },
+      'colegio': { symbol: '🏫', title: 'Colegio / Escuela', desc: 'School / College' },
+      'escuela': { symbol: '🏫', title: 'Colegio / Escuela', desc: 'School / College' },
+      'familia': { symbol: '👪', title: 'Familia', desc: 'Family' },
+      'amigo': { symbol: '🧑‍🤝‍🧑', title: 'Amigo / Amistad', desc: 'Friend / Friendship' },
+      'amigos': { symbol: '🧑‍🤝‍🧑', title: 'Amigo / Amistad', desc: 'Friend / Friendship' },
+      'feliz': { symbol: '😊', title: 'Feliz / Contento', desc: 'Happy / Glad' },
+      'alegre': { symbol: '😊', title: 'Feliz / Contento', desc: 'Happy / Glad' },
+      'triste': { symbol: '😢', title: 'Triste / Apenado', desc: 'Sad / Sorry' },
+      'bien': { symbol: '👍', title: 'Bien / Correcto', desc: 'Good / OK' },
+      'mal': { symbol: '👎', title: 'Mal / Incorrecto', desc: 'Bad / Wrong' },
+      'comer': { symbol: '🍎', title: 'Comer / Alimento', desc: 'Eat / Food' },
+      'comida': { symbol: '🍎', title: 'Comer / Alimento', desc: 'Eat / Food' },
+      'beber': { symbol: '💧', title: 'Beber / Agua', desc: 'Drink / Water' },
+      'agua': { symbol: '💧', title: 'Beber / Agua', desc: 'Drink / Water' },
+      'dormir': { symbol: '🛏️', title: 'Dormir / Descanso', desc: 'Sleep / Rest' },
+      'cama': { symbol: '🛏️', title: 'Dormir / Descanso', desc: 'Sleep / Rest' },
+      'tiempo': { symbol: '⏰', title: 'Tiempo / Hora', desc: 'Time / Clock' },
+      'reloj': { symbol: '⏰', title: 'Tiempo / Hora', desc: 'Time / Clock' },
+      'deporte': { symbol: '⚽', title: 'Deporte / Juego', desc: 'Sport / Game' },
+      'jugar': { symbol: '⚽', title: 'Deporte / Juego', desc: 'Sport / Game' },
+      'musica': { symbol: '🎵', title: 'Música / Sonido', desc: 'Music / Sound' },
+      'cantar': { symbol: '🎵', title: 'Música / Sonido', desc: 'Music / Sound' },
+      'sol': { symbol: '☀️', title: 'Sol / Día', desc: 'Sun / Day' },
+      'luna': { symbol: '🌙', title: 'Luna / Noche', desc: 'Moon / Night' },
+      'amor': { symbol: '❤️', title: 'Amor / Cariño', desc: 'Love / Affection' },
+      'gracias': { symbol: '🙏', title: 'Gracias', desc: 'Thanks / Gratitude' },
+      'salud': { symbol: '🏥', title: 'Salud / Médico', desc: 'Health / Medical' },
+      'medico': { symbol: '🏥', title: 'Salud / Médico', desc: 'Health / Medical' },
+      'dinero': { symbol: '💵', title: 'Dinero / Pago', desc: 'Money / Payment' },
+      'comprar': { symbol: '🛒', title: 'Comprar / Tienda', desc: 'Buy / Shop' },
+      'tienda': { symbol: '🛒', title: 'Comprar / Tienda', desc: 'Buy / Shop' },
+      'computadora': { symbol: '💻', title: 'Ordenador / PC', desc: 'Computer / PC' },
+      'ordenador': { symbol: '💻', title: 'Ordenador / PC', desc: 'Computer / PC' },
+      'telefono': { symbol: '📱', title: 'Teléfono / Móvil', desc: 'Phone / Mobile' },
+      'movil': { symbol: '📱', title: 'Teléfono / Móvil', desc: 'Phone / Mobile' },
+      'escribir': { symbol: '✍️', title: 'Escribir / Nota', desc: 'Write / Note' },
+      'idea': { symbol: '💡', title: 'Idea / Pensar', desc: 'Idea / Think' },
+      'semana': { symbol: '📆', title: 'Semana', desc: 'Week' },
+      'proyecto': { symbol: '🚀', title: 'Proyecto', desc: 'Project' },
+      'meta': { symbol: '🎯', title: 'Meta / Objetivo', desc: 'Goal / Target' },
+      'objetivo': { symbol: '🎯', title: 'Meta / Objetivo', desc: 'Goal / Target' },
+      'exito': { symbol: '🏆', title: 'Éxito / Logro', desc: 'Success / Trophy' },
+      'desarrollo': { symbol: '👩‍💻', title: 'Desarrollo / Programación', desc: 'Development / Coding' },
+      'desarrolladora': { symbol: '👩‍💻', title: 'Desarrolladora', desc: 'Developer' },
+      'accesibilidad': { symbol: '♿', title: 'Accesibilidad', desc: 'Accessibility' },
+      'tablero': { symbol: '📋', title: 'Tablero', desc: 'Board' },
+      'estadisticas': { symbol: '📊', title: 'Estadísticas', desc: 'Statistics' }
+    };
+
+    if (words.length === 0) {
+      return [{ symbol: '👋', title: 'Hola / Saludo', desc: 'Greeting / Hello (Default)' }];
+    }
+
+    return words.map(w => {
+      const normalized = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      if (dictionary[normalized]) {
+        return dictionary[normalized];
+      }
+      return {
+        symbol: '💬',
+        title: w.toUpperCase(),
+        desc: 'Representación del texto: "' + w + '"'
+      };
+    });
+  };
+
+  // Generate Braille Canvas for Custom Text
+  const generateBrailleCanvas = (customText) => {
+    const textToTranslate = customText || 'hola';
+    const linesText = wrapText(textToTranslate, 28);
+    
     const canvas = document.createElement('canvas');
     canvas.width = 600;
-    canvas.height = 800;
+    const height = Math.max(800, 160 + linesText.length * 95);
+    canvas.height = height;
     const ctx = canvas.getContext('2d');
 
     // Background
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 600, 800);
+    ctx.fillRect(0, 0, 600, height);
 
     // Border
     ctx.strokeStyle = '#2563eb';
     ctx.lineWidth = 4;
-    ctx.strokeRect(15, 15, 570, 770);
+    ctx.strokeRect(15, 15, 570, height - 30);
 
     // Header
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Acerca de (Braille)', 40, 60);
+    ctx.fillText('MiiActToDo - Traducción (Braille)', 40, 60);
 
-    const linesText = [
-      "¡Hola! Soy María Carrillo Carrasco.",
-      "Soy desarrolladora social.",
-      "Esta es una aplicación de accesibilidad",
-      "donde puedes planificar tus proyectos",
-      "y organizar tus acciones."
-    ];
+    // Subtitle
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Texto original y su equivalente en Braille', 40, 90);
 
     let y = 130;
     linesText.forEach(lineText => {
@@ -2544,32 +2644,40 @@ const showDownloadModal = () => {
     return canvas;
   };
 
-  // Generate LSE Fingerspelling Canvas for Acerca de
-  const generateLseCanvas = () => {
+  // Generate LSE Fingerspelling Canvas for Custom Text
+  const generateLseCanvas = (customText) => {
+    const textToTranslate = customText || 'hola';
+    const words = textToTranslate.toUpperCase().replace(/[^A-ZÑÁÉÍÓÚ\s]/gi, '').split(/\s+/).filter(w => w.length > 0);
+    
+    const linesLSE = words.length > 0 ? words.map(w => ({
+      label: w,
+      text: w.toLowerCase()
+    })) : [{ label: "HOLA", text: "hola" }];
+
     const canvas = document.createElement('canvas');
     canvas.width = 600;
-    canvas.height = 800;
+    const height = Math.max(800, 160 + linesLSE.length * 105);
+    canvas.height = height;
     const ctx = canvas.getContext('2d');
 
     // Background
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 600, 800);
+    ctx.fillRect(0, 0, 600, height);
 
     // Border
     ctx.strokeStyle = '#8b5cf6';
     ctx.lineWidth = 4;
-    ctx.strokeRect(15, 15, 570, 770);
+    ctx.strokeRect(15, 15, 570, height - 30);
 
     // Header
     ctx.fillStyle = '#4c1d95';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('Acerca de - Lengua de Signos (LSE)', 40, 60);
+    ctx.fillText('Traducción - Lengua de Signos (LSE)', 40, 60);
 
-    const linesLSE = [
-      { label: "MARIA", text: "maria" },
-      { label: "CARRILLO", text: "carrillo" },
-      { label: "CARRASCO", text: "carrasco" }
-    ];
+    // Subtitle
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Deletreo dactilológico para: "' + textToTranslate + '"', 40, 90);
 
     let y = 140;
     linesLSE.forEach(item => {
@@ -2584,42 +2692,38 @@ const showDownloadModal = () => {
       y += 105;
     });
 
-    // Subtext explanation
-    ctx.fillStyle = '#475569';
-    ctx.font = 'italic 13px sans-serif';
-    ctx.fillText("Deletreo dactilológico del nombre de la desarrolladora", 40, y + 25);
-
     return canvas;
   };
 
-  // Generate Pictograms Canvas for Acerca de
-  const generatePictoCanvas = () => {
+  // Generate Pictograms Canvas for Custom Text
+  const generatePictoCanvas = (customText) => {
+    const items = parseTextToPictoItems(customText || 'hola');
     const canvas = document.createElement('canvas');
     canvas.width = 600;
-    canvas.height = 800;
+    
+    const height = Math.max(800, 160 + items.length * 95);
+    canvas.height = height;
+    
     const ctx = canvas.getContext('2d');
 
     // Background
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 600, 800);
+    ctx.fillRect(0, 0, 600, height);
 
     // Border
     ctx.strokeStyle = '#059669';
     ctx.lineWidth = 4;
-    ctx.strokeRect(15, 15, 570, 770);
+    ctx.strokeRect(15, 15, 570, height - 30);
 
     // Header
     ctx.fillStyle = '#065f46';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('Acerca de - Pictogramas cognitivos', 40, 60);
-
-    const items = [
-      { symbol: '👋', title: "Saludo / Hola", desc: "Presentación inicial del manual de usuario." },
-      { symbol: '👩‍💻', title: "Desarrolladora Social", desc: "María Carrillo Carrasco, creadora de la aplicación." },
-      { symbol: '♿', title: "Accesibilidad", desc: "Diseño inclusivo para personas con discapacidad o diversidad." },
-      { symbol: '📋', title: "Planificar Acciones", desc: "Tablero para crear, editar y organizar tareas." },
-      { symbol: '🌐', title: "Multiidioma", desc: "Disponible en varios idiomas para facilitar el uso global." }
-    ];
+    ctx.fillText('MiiActToDo - Pictogramas cognitivos', 40, 60);
+    
+    // Subtitle
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Traducción para: "' + (customText || 'hola') + '"', 40, 90);
 
     let y = 120;
     items.forEach(item => {
@@ -2645,6 +2749,7 @@ const showDownloadModal = () => {
 
     return canvas;
   };
+
 
   const getAbsoluteBoardUrl = (queryParam) => {
     const origin = window.location.origin;
@@ -2855,11 +2960,29 @@ const showDownloadModal = () => {
 
   // Render Step 2
   const renderStep2 = (option) => {
+    let inputHtml = '';
+    if (option === 'braille' || option === 'picto' || option === 'lse') {
+      let labelText = 'Escribe el texto a traducir:';
+      if (option === 'braille') labelText = 'Escribe el texto a traducir a Braille:';
+      if (option === 'picto') labelText = 'Escribe el texto a traducir a Pictogramas:';
+      if (option === 'lse') labelText = 'Escribe el texto a traducir a Lengua de Signos (LSE):';
+      
+      inputHtml = `
+        <div style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+          <label for="translation-text" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">${labelText}</label>
+          <textarea id="translation-text" rows="3" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, rgba(120, 120, 120, 0.2)); background: var(--bg-card, #ffffff); color: var(--text-color, #1f2937); font-size: 0.9rem; resize: vertical; width: 100%; box-sizing: border-box; outline: none; font-family: inherit;" placeholder="hola"></textarea>
+          <span style="font-size: 0.72rem; opacity: 0.7; color: var(--text-color);">Si lo dejas vacío, por defecto se traducirá "hola".</span>
+        </div>
+      `;
+    }
+
     card.innerHTML = `
       <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">❓ ¿Cómo lo quieres ver?</h3>
-      <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Elige el formato de descarga para la opción seleccionada:</p>
+      <p style="margin: 0 0 1rem 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Elige el formato de descarga para la opción seleccionada:</p>
       
-      <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+      ${inputHtml}
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
         <button type="button" id="format-png" style="background: #10b981; color: #fff; width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">
           🖼️ Formato Imagen (PNG)
         </button>
@@ -2884,19 +3007,23 @@ const showDownloadModal = () => {
 
     // PNG Download Action
     card.querySelector('#format-png').addEventListener('click', () => {
+      const inputEl = card.querySelector('#translation-text');
+      const customText = inputEl ? inputEl.value.trim() : '';
       closeModal();
-      handleAction(option, 'png');
+      handleAction(option, 'png', customText);
     });
 
     // PDF Download Action
     card.querySelector('#format-pdf').addEventListener('click', () => {
+      const inputEl = card.querySelector('#translation-text');
+      const customText = inputEl ? inputEl.value.trim() : '';
       closeModal();
-      handleAction(option, 'pdf');
+      handleAction(option, 'pdf', customText);
     });
   };
 
   // Action dispatcher
-  const handleAction = (option, format) => {
+  const handleAction = (option, format, customText) => {
     try {
       const isBoardPage = document.querySelector('.columns') !== null && !window.location.pathname.includes('/compartir/');
       const isStatsPage = window.location.pathname.includes('/estadisticasymejoras/');
@@ -2950,41 +3077,41 @@ const showDownloadModal = () => {
       } 
       
       else if (option === 'braille') {
-        const canvas = generateBrailleCanvas();
+        const canvas = generateBrailleCanvas(customText);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-acercade-braille.png';
+          link.download = 'miiacttodo-traduccion-braille.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-acercade-braille.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-traduccion-braille.pdf');
         }
       } 
       
       else if (option === 'lse') {
-        const canvas = generateLseCanvas();
+        const canvas = generateLseCanvas(customText);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-acercade-lse.png';
+          link.download = 'miiacttodo-traduccion-lse.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-acercade-lse.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-traduccion-lse.pdf');
         }
       } 
       
       else if (option === 'picto') {
-        const canvas = generatePictoCanvas();
+        const canvas = generatePictoCanvas(customText);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
-          link.download = 'miiacttodo-acercade-pictogramas.png';
+          link.download = 'miiacttodo-traduccion-pictogramas.png';
           link.href = dataUrl;
           link.click();
         } else { // pdf
-          downloadAsPdf(dataUrl, 'miiacttodo-acercade-pictogramas.pdf');
+          downloadAsPdf(dataUrl, 'miiacttodo-traduccion-pictogramas.pdf');
         }
       }
     } catch (err) {
@@ -2995,6 +3122,7 @@ const showDownloadModal = () => {
       }, 300);
     }
   };
+
 
   const downloadAsPdf = (dataUrl, filename) => {
     try {
