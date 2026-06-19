@@ -1268,6 +1268,9 @@ main {
   }
   
   .nav-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
     justify-content: center !important;
     gap: 0.5rem !important;
     width: 100% !important;
@@ -1276,6 +1279,19 @@ main {
   .nav-btn {
     padding: 0.5rem 0.85rem !important;
     font-size: 0.82rem !important;
+  }
+
+  /* Page links show after the action buttons */
+  .nav-actions a.nav-btn {
+    order: 2 !important;
+  }
+
+  /* Action buttons (Download, Color, Font Zoom) show first at the top */
+  .nav-actions button.nav-btn,
+  .nav-actions .nav-btn-download,
+  .nav-actions .nav-btn-theme,
+  .nav-actions .nav-btn-font-size {
+    order: 1 !important;
   }
 
   /* Make font size buttons compact and aligned */
