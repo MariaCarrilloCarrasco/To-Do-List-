@@ -1216,10 +1216,52 @@ main {
   transform: scale(0.95);
 }
 
+/* Floating Voice Reader Button */
+.voice-trigger-btn {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 9999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.voice-trigger-btn:hover {
+  transform: scale(1.1) rotate(-15deg);
+  box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5);
+}
+
+.voice-trigger-btn:active {
+  transform: scale(0.95);
+}
+
+.voice-trigger-btn.speaking {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4) !important;
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 /* Theme Panel Drawer */
 .theme-panel {
   position: fixed;
-  bottom: 96px;
+  bottom: 168px; /* shifted up to fit voice button */
   right: 24px;
   width: 320px;
   background: rgba(255, 255, 255, 0.85);
@@ -1249,7 +1291,7 @@ main {
     width: calc(100% - 48px) !important;
     right: 24px !important;
     left: 24px !important;
-    bottom: 96px !important;
+    bottom: 152px !important; /* shifted up on mobile */
     z-index: 100000 !important;
   }
 }
@@ -1304,6 +1346,13 @@ main {
   
   .theme-trigger-btn {
     bottom: 20px !important;
+    right: 20px !important;
+    display: flex !important;
+    z-index: 100000 !important;
+  }
+
+  .voice-trigger-btn {
+    bottom: 86px !important;
     right: 20px !important;
     display: flex !important;
     z-index: 100000 !important;

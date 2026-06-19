@@ -74,6 +74,28 @@
                     <img id="qr-code-img" src="" width="150" height="150" alt="Código QR para acceder a la aplicación" style="display: block; border-radius: 8px; border: none;">
                 </div>
             </article>
+
+            <!-- Card 4: Traducción a Braille -->
+            <article class="column" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <h2 style="color: #00f59b; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;" data-translate="braille_title">⠃ Braille (Visualizador táctil)</h2>
+                <p id="braille-desc" style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0;">Traducción de tus tareas al sistema Braille. Puedes editar el texto y compartir los caracteres Braille:</p>
+                
+                <textarea id="braille-input-field" style="width: 100%; height: 80px; background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); border-radius: 12px; color: #ffffff; padding: 10px; font-family: inherit; font-size: 0.9rem; resize: none; outline: none; box-sizing: border-box;"></textarea>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); min-height: 48px; display: flex; align-items: center; justify-content: center;">
+                    <div id="braille-output-text" style="font-size: 1.3rem; color: #00f59b; word-break: break-all; font-family: system-ui; font-weight: 500; text-align: center; letter-spacing: 2px;"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button type="button" id="copy-braille-btn" class="nav-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 0.85rem; padding: 8px 12px;">📋 Copiar Braille</button>
+                    <button type="button" id="download-braille-btn" class="nav-btn" style="background: linear-gradient(135deg, #1e293b, #0f172a); font-size: 0.85rem; padding: 8px 12px;">🖼️ Descargar PNG</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <a id="share-braille-wa" target="_blank" class="nav-btn" style="background: linear-gradient(135deg, #25D366, #128C7E); text-align: center; font-size: 0.85rem; padding: 8px 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #ffffff;">🟢 WhatsApp</a>
+                    <a id="share-braille-tg" target="_blank" class="nav-btn" style="background: linear-gradient(135deg, #0088cc, #006699); text-align: center; font-size: 0.85rem; padding: 8px 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #ffffff;">🔵 Telegram</a>
+                </div>
+                <div id="braille-copy-success" style="color: #00f59b; font-size: 0.85rem; font-weight: 600; display: none; text-align: center; margin-top: -8px;">¡Braille copiado! 🎉</div>
+            </article>
         </section>
     </main>
 
@@ -242,6 +264,162 @@
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             }
+
+            // Braille translator setup
+            const brailleInput = document.getElementById('braille-input-field');
+            const brailleOutput = document.getElementById('braille-output-text');
+            const copyBrailleBtn = document.getElementById('copy-braille-btn');
+            const downloadBrailleBtn = document.getElementById('download-braille-btn');
+            const brailleCopySuccess = document.getElementById('braille-copy-success');
+            const shareBrailleWa = document.getElementById('share-braille-wa');
+            const shareBrailleTg = document.getElementById('share-braille-tg');
+
+            const brailleMap = {
+                'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+                'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+                'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+                'á': '⠷', 'é': '⠮', 'í': '⠊', 'ó': '⠬', 'ú': '⠾', 'ñ': '⠻',
+                '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔', '0': '⠴',
+                ' ': '⠠', '.': '⠤', ',': '⠠', '?': '⠦', '!': '⠮', '-': '⠤'
+            };
+
+            const translateToBraille = (text) => {
+                return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
+            };
+
+            const updateBrailleDisplay = () => {
+                const text = brailleInput.value;
+                const braille = translateToBraille(text);
+                brailleOutput.textContent = braille || '⠠';
+
+                // Update share links dynamically
+                const shareText = encodeURIComponent(`Traducción a Braille en MiiActToDo:\n${braille}\n\n`);
+                shareBrailleWa.href = `https://api.whatsapp.com/send?text=${shareText}`;
+                shareBrailleTg.href = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${shareText}`;
+            };
+
+            const updateLanguageSpecificUI = () => {
+                const lang = localStorage.getItem('app-language') || 'es';
+                const isEn = lang === 'en';
+                copyBrailleBtn.textContent = isEn ? "📋 Copy Braille" : "📋 Copiar Braille";
+                downloadBrailleBtn.textContent = isEn ? "🖼️ Download PNG" : "🖼️ Descargar PNG";
+                
+                const desc = document.getElementById('braille-desc');
+                if (desc) {
+                    desc.textContent = isEn 
+                        ? "Translate your tasks into the Braille system. You can edit the text and share the Braille characters:"
+                        : "Traducción de tus tareas al sistema Braille. Puedes editar el texto y compartir los caracteres Braille:";
+                }
+            };
+
+            // Initial population of tasks summary
+            const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+            const activeTasks = tasks.filter(t => t.column !== 'deleted');
+            const total = activeTasks.length;
+            const completed = activeTasks.filter(t => t.column === 'done').length;
+            const inProgress = activeTasks.filter(t => t.column === 'in-progress').length;
+            const pending = activeTasks.filter(t => t.column === 'not-done').length;
+            
+            brailleInput.value = `Resumen MiiActToDo: Total: ${total}, Hecho: ${completed}, En progreso: ${inProgress}, Pendientes: ${pending}.`;
+            
+            updateBrailleDisplay();
+            updateLanguageSpecificUI();
+
+            brailleInput.addEventListener('input', updateBrailleDisplay);
+            window.addEventListener('languagechanged', updateLanguageSpecificUI);
+
+            copyBrailleBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(brailleOutput.textContent).then(() => {
+                    brailleCopySuccess.style.display = 'block';
+                    setTimeout(() => {
+                        brailleCopySuccess.style.display = 'none';
+                    }, 2000);
+                });
+            });
+
+            // Generate and download Braille image card
+            downloadBrailleBtn.addEventListener('click', () => {
+                const textVal = brailleInput.value;
+                const brailleVal = brailleOutput.textContent;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 450;
+                canvas.height = 450;
+                const ctx = canvas.getContext('2d');
+
+                // Premium Gradient background
+                const grad = ctx.createLinearGradient(0, 0, 0, 450);
+                grad.addColorStop(0, '#0a051b');
+                grad.addColorStop(1, '#1a0d3f');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 450, 450);
+
+                // Border
+                ctx.strokeStyle = 'rgba(0, 245, 155, 0.25)';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(10, 10, 430, 430);
+
+                // Title
+                ctx.fillStyle = '#00f59b';
+                ctx.font = 'bold 22px Outfit, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('MiiActToDo - Braille', 225, 50);
+
+                // Original Text Label
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = 'bold 14px Outfit, sans-serif';
+                ctx.fillText('Texto Original:', 225, 100);
+
+                // Wrap and draw original text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '14px Outfit, sans-serif';
+                const words = textVal.split(' ');
+                let line = '';
+                let y = 125;
+                for (let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > 380 && n > 0) {
+                        ctx.fillText(line, 225, y);
+                        line = words[n] + ' ';
+                        y += 20;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, 225, y);
+
+                // Braille Label
+                y += 40;
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = 'bold 14px Outfit, sans-serif';
+                ctx.fillText('Sistema Braille:', 225, y);
+
+                // Wrap and draw Braille text
+                y += 25;
+                ctx.fillStyle = '#00f59b';
+                ctx.font = '20px system-ui, sans-serif';
+                const brailleWords = brailleVal.split(' ');
+                let bLine = '';
+                for (let n = 0; n < brailleWords.length; n++) {
+                    let testLine = bLine + brailleWords[n] + ' ';
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > 380 && n > 0) {
+                        ctx.fillText(bLine, 225, y);
+                        bLine = brailleWords[n] + ' ';
+                        y += 26;
+                    } else {
+                        bLine = testLine;
+                    }
+                }
+                ctx.fillText(bLine, 225, y);
+
+                // Trigger download
+                const link = document.createElement('a');
+                link.download = 'miiacttodo-braille.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         });
     </script>
 </body>
