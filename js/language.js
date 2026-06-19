@@ -2390,9 +2390,89 @@ const stepsTranslations = {
 // Expose globally so other scripts can access translations and active language
 window.translations = translations;
 
+window.getSpecialTranslationFn = (lang) => {
+  if (lang === 'braille') {
+    const brailleMap = {
+      'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+      'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+      'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+      'á': '⠷', 'é': '⠮', 'í': '⠊', 'ó': '⠬', 'ú': '⠾', 'ñ': '⠻',
+      '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔', '0': '⠴',
+      ' ': '⠠', '.': '⠤', ',': '⠠', '?': '⠦', '!': '⠮', '-': '⠤'
+    };
+    return (text) => text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
+  } else if (lang === 'lse') {
+    const dactiloMap = {
+      'a': '✊', 'b': '✋', 'c': '🤏', 'd': '☝️', 'e': '✊', 'f': '👌', 'g': '👈', 'h': '👉', 'i': '☝️', 'j': '☝️',
+      'k': '✌️', 'l': '🤙', 'm': '✊', 'n': '✊', 'o': '👌', 'p': '👎', 'q': '🤏', 'r': '🤞', 's': '✊', 't': '✊',
+      'u': '🤘', 'v': '✌️', 'w': '🖐️', 'x': '☝️', 'y': '🤙', 'z': '☝️',
+      'á': '✊', 'é': '✊', 'í': '☝️', 'ó': '👌', 'ú': '🤘', 'ñ': '✊',
+      ' ': ' '
+    };
+    return (text) => text.toLowerCase().split('').map(char => dactiloMap[char] || char).join('');
+  } else if (lang === 'picto') {
+    const dictionary = {
+      'hola': '👋', 'saludo': '👋', 'casa': '🏠', 'hogar': '🏠', 'trabajo': '💼', 'empleo': '💼',
+      'tarea': '📋', 'tareas': '📋', 'lista': '📋', 'estudiar': '📚', 'leer': '📚', 'colegio': '🏫',
+      'escuela': '🏫', 'familia': '👪', 'amigo': '🧑‍🤝‍🧑', 'amigos': '🧑‍🤝‍🧑', 'feliz': '😊', 'alegre': '😊',
+      'triste': '😢', 'bien': '👍', 'mal': '👎', 'comer': '🍎', 'comida': '🍎', 'beber': '💧',
+      'agua': '💧', 'dormir': '🛏️', 'cama': '🛏️', 'tiempo': '⏰', 'reloj': '⏰', 'deporte': '⚽',
+      'jugar': '⚽', 'musica': '🎵', 'cantar': '🎵', 'sol': '☀️', 'luna': '🌙', 'amor': '❤️',
+      'gracias': '🙏', 'salud': '🏥', 'medico': '🏥', 'dinero': '💵', 'comprar': '🛒', 'tienda': '🛒',
+      'computadora': '💻', 'ordenador': '💻', 'telefono': '📱', 'movil': '📱', 'escribir': '✍️',
+      'idea': '💡', 'semana': '📆', 'proyecto': '🚀', 'meta': '🎯', 'objetivo': '🎯', 'exito': '🏆',
+      'desarrollo': '👩‍💻', 'desarrolladora': '👩‍💻', 'accesibilidad': '♿', 'tablero': '📋', 'estadisticas': '📊',
+      'inicio': '🏠', 'acerca': 'ℹ️', 'compartir': '🔗', 'descargar': '📥', 'pendiente': '⏳', 'proceso': '⚙️',
+      'hecho': '✅', 'hechas': '✅', 'eliminadas': '🗑️', 'original': '🔄', 'color': '🎨', 'colores': '🎨',
+      'letra': '🔤', 'tamaño': '🔤', 'aumentar': '➕', 'disminuir': '➖', 'restaurar': '🔄', 'manual': '📖',
+      'lector': '🔊', 'audio': '🔊', 'asistente': '🤖', 'virtual': '🤖', 'urgencia': '🚨', 'importancia': '⭐',
+      'dificultad': '⚙️', 'guardar': '💾', 'cancelar': '❌', 'error': '🔴', 'enhorabuena': '👏', 'traduccion': '🌐',
+      'traducir': '🌐', 'traductor': '🌐'
+    };
+    return (text) => {
+      return text.split(/(\b\w+\b)/g).map(part => {
+        const clean = part.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (dictionary[clean]) {
+          return `${dictionary[clean]} ${part}`;
+        }
+        return part;
+      }).join('');
+    };
+  }
+  return null;
+};
+
+// Walk text nodes of an element and apply a function
+window.walkTextNodesAndTransform = (element, transform) => {
+  const walk = (node) => {
+    if (node.nodeType === 3) { // Text node
+      const trimmed = node.nodeValue.trim();
+      if (trimmed.length > 0) {
+        node.nodeValue = transform(node.nodeValue);
+      }
+    } else if (node.nodeType === 1) { // Element node
+      const tagName = node.tagName.toUpperCase();
+      if (node.id === 'lang-selector-container') {
+        return;
+      }
+      if (tagName !== 'SCRIPT' && tagName !== 'STYLE' && tagName !== 'TEXTAREA' && tagName !== 'INPUT' && tagName !== 'SELECT') {
+        for (let child of node.childNodes) {
+          walk(child);
+        }
+      }
+    }
+  };
+  walk(element);
+};
+
 window.updateUIForLanguage = (lang) => {
-  const dict = translations[lang] || translations.es;
+  const isSpecial = (lang === 'braille' || lang === 'lse' || lang === 'picto');
+  const baseLang = isSpecial ? 'es' : lang;
+  const dict = translations[baseLang] || translations.es;
   
+  // Define transform function based on language
+  const transformFn = window.getSpecialTranslationFn(lang);
+
   // Update elements with data-translate attribute
   const elements = document.querySelectorAll('[data-translate]');
   elements.forEach(el => {
@@ -2408,7 +2488,7 @@ window.updateUIForLanguage = (lang) => {
 
   // Specifically handle translating Steps in Manual (About page)
   const steps = document.querySelectorAll('.easy-step');
-  const langSteps = stepsTranslations[lang] || stepsTranslations.es;
+  const langSteps = stepsTranslations[baseLang] || stepsTranslations.es;
   
   steps.forEach(step => {
     const stepId = step.getAttribute('data-step');
@@ -2462,6 +2542,11 @@ window.updateUIForLanguage = (lang) => {
     window.renderStats();
   }
 
+  // Apply transform if special language mode
+  if (transformFn) {
+    walkTextNodesAndTransform(document.body, transformFn);
+  }
+
   // Sync select element value
   const select = document.getElementById('lang-select');
   if (select) {
@@ -2476,6 +2561,219 @@ window.updateUIForLanguage = (lang) => {
 const showDownloadModal = () => {
   const lang = localStorage.getItem('app-language') || 'es';
   const dict = translations[lang] || translations.es;
+  let selectedTranslationLang = null;
+
+  const modalDicts = {
+    es: {
+      step1Title: '📥 ¿Qué deseas descargar?',
+      step1Desc: 'Selecciona una de las opciones de exportación:',
+      optTablero: 'Tablero',
+      optStats: 'Estadísticas y mejoras',
+      optBraille: 'Acerca de (Braille)',
+      optLse: 'Acerca de (LSE)',
+      optPicto: 'Acerca de (Pictogramas)',
+      optTraducir: 'Traducir / Traductor',
+      step1Congrats: '¡Enhorabuena por el trabajo realizado! Muchas gracias por confiar en nostrxs para este proceso. Esperamos que haya sido una semana productiva y hayas cumplido con tus expectativas y te sientas orgullosx y satisfechx con el trabajo realizado. Nos vemos pronto. Estaremos encantados de acompañarte en la siguiente aventura. Gracias 👏🎉',
+      btnClose: 'Cerrar',
+      step2Title: '❓ ¿Cómo lo quieres ver?',
+      step2Desc: 'Elige el formato de descarga para la opción seleccionada:',
+      lblTranslateText: 'Escribe el texto a traducir:',
+      lblTranslateBraille: 'Escribe el texto a traducir a Braille:',
+      lblTranslatePicto: 'Escribe el texto a traducir a Pictogramas:',
+      lblTranslateLse: 'Escribe el texto a traducir a Lengua de Signos (LSE):',
+      lblTranslateGeneral: 'Escribe el texto que deseas traducir:',
+      textareaPlaceholder: 'hola',
+      textareaHelper: 'Si lo dejas vacío, por defecto se traducirá "hola".',
+      lblSelectFormat: 'Selecciona el formato de traducción:',
+      formatBraille: '⠃ Braille',
+      formatLse: '🧏 Lengua de Signos (LSE)',
+      formatPicto: '🖼️ Pictogramas cognitivos',
+      btnPng: '🖼️ Formato Imagen (PNG)',
+      btnPdf: '📄 Formato Documento (PDF)',
+      btnBack: '⬅️ Atrás',
+      lblTranslateTo: 'Traducir a:',
+      btnTranslate: '🌐 Traducir',
+      narratorTitle: 'Escuchar instrucciones del narrador',
+      narratorStopTitle: 'Detener narración',
+      optNamesSpoken: {
+        'tablero': 'Tablero',
+        'stats': 'Estadísticas y mejoras',
+        'braille': 'Braille',
+        'lse': 'Lengua de Signos Española',
+        'picto': 'Pictogramas',
+        'traducir': 'Traductor'
+      },
+      narratorStep1: '¿Qué quieres descargar? Selecciona una de estas opciones tablero, estadísticas y mejoras, acerca de (Braille), Acerca de (Lengua de Signos Española) o Acerca de (Pictogramas). ¡Enhorabuena por el trabajo realizado! Muchas gracias por confiar en nosotros y nosotras para este proceso. Esperamos que haya sido una semana productiva y hayas cumplido con tus expectativas y te sientas orgulloso u orgullosa y satisfecho o satisfecha con el trabajo realizado. Nos vemos pronto. Estaremos encantados de acompañarte en la siguiente aventura. Gracias. Una vez haya acabado del proceso seleccione la opción de cerrar',
+      narratorInstruction: (opt) => `¿cómo lo quieres ver? Elige el formato de texto a traducir a ${opt} y ponga Formato imagen (PNG) O FORMATO Documento (PDF) o WORD, ¿desea retroceder un paso más en la aplicación y elegir otro sistema o contenido de traducción o cancelar la descarga`,
+      narratorTextIntro: (txt) => `El texto escrito es: ${txt}. `,
+      narratorTextEmpty: 'Si lo dejas en vacío, por defecto, se traducirá hola. '
+    },
+    en: {
+      step1Title: '📥 What do you want to download?',
+      step1Desc: 'Select one of the export options:',
+      optTablero: 'Board',
+      optStats: 'Statistics and improvements',
+      optBraille: 'About (Braille)',
+      optLse: 'About (LSE)',
+      optPicto: 'About (Pictograms)',
+      optTraducir: 'Translate / Translator',
+      step1Congrats: 'Congratulations on the work done! Thank you very much for trusting us for this process. We hope it has been a productive week and you have met your expectations and feel proud and satisfied with the work done. See you soon. We will be happy to accompany you in the next adventure. Thank you! 👏🎉',
+      btnClose: 'Close',
+      step2Title: '❓ How do you want to see it?',
+      step2Desc: 'Choose the download format for the selected option:',
+      lblTranslateText: 'Write the text to translate:',
+      lblTranslateBraille: 'Write the text to translate to Braille:',
+      lblTranslatePicto: 'Write the text to translate to Pictograms:',
+      lblTranslateLse: 'Write the text to translate to Sign Language (LSE):',
+      lblTranslateGeneral: 'Write the text you wish to translate:',
+      textareaPlaceholder: 'hello',
+      textareaHelper: 'If you leave it empty, by default "hello" will be translated.',
+      lblSelectFormat: 'Select translation format:',
+      formatBraille: '⠃ Braille',
+      formatLse: '🧏 Sign Language (LSE)',
+      formatPicto: '🖼️ Cognitive Pictograms',
+      btnPng: '🖼️ Image Format (PNG)',
+      btnPdf: '📄 Document Format (PDF)',
+      btnBack: '⬅️ Back',
+      lblTranslateTo: 'Translate to:',
+      btnTranslate: '🌐 Translate',
+      narratorTitle: 'Listen to narrator instructions',
+      narratorStopTitle: 'Stop narration',
+      optNamesSpoken: {
+        'tablero': 'Board',
+        'stats': 'Statistics and improvements',
+        'braille': 'Braille',
+        'lse': 'Spanish Sign Language',
+        'picto': 'Pictograms',
+        'traducir': 'Translator'
+      },
+      narratorStep1: 'What do you want to download? Select one of these options: board, statistics and improvements, about (Braille), about (Spanish Sign Language) or about (Pictograms). Congratulations on the work done! Thank you very much for trusting us for this process. We hope it has been a productive week and you have met your expectations and feel proud and satisfied with the work done. See you soon. We will be happy to accompany you in the next adventure. Thank you. Once the process is finished, select the close option',
+      narratorInstruction: (opt) => `How do you want to see it? Choose the text format to translate to ${opt} and set Image Format (PNG) or Document Format (PDF) or WORD. Do you want to go back one step in the application and choose another translation system or content or cancel the download?`,
+      narratorTextIntro: (txt) => `The written text is: ${txt}. `,
+      narratorTextEmpty: 'If you leave it empty, by default "hello" will be translated. '
+    },
+    fr: {
+      step1Title: '📥 Que souhaitez-vous télécharger ?',
+      step1Desc: 'Sélectionnez une des options d\'exportation :',
+      optTablero: 'Tableau',
+      optStats: 'Statistiques et améliorations',
+      optBraille: 'À propos (Braille)',
+      optLse: 'À propos (LSE)',
+      optPicto: 'À propos (Pictogrammes)',
+      optTraducir: 'Traduire / Traducteur',
+      step1Congrats: 'Félicitations pour le travail accompli ! Merci beaucoup de nous avoir fait confiance pour ce processus. Nous espérons que cela a été une semaine productive, que vous avez répondu à vos attentes et que vous vous sentez fier et satisfait du travail accompli. À bientôt. Nous serons ravis de vous accompagner dans la prochaine aventure. Merci ! 👏🎉',
+      btnClose: 'Fermer',
+      step2Title: '❓ Comment voulez-vous le voir ?',
+      step2Desc: 'Choisissez le format de téléchargement pour l\'option sélectionnée :',
+      lblTranslateText: 'Écrivez le texte à traduire :',
+      lblTranslateBraille: 'Écrivez le texte à traduire en Braille :',
+      lblTranslatePicto: 'Écrivez le texte à traduire en Pictogrammes :',
+      lblTranslateLse: 'Écrivez le texte à traduire en Langue des Signes (LSE) :',
+      lblTranslateGeneral: 'Écrivez le texte que vous souhaitez traduire :',
+      textareaPlaceholder: 'bonjour',
+      textareaHelper: 'Si vous le laissez vide, par défaut "bonjour" sera traduit.',
+      lblSelectFormat: 'Sélectionnez le format de traduction :',
+      formatBraille: '⠃ Braille',
+      formatLse: '🧏 Langue des Signes (LSE)',
+      formatPicto: '🖼️ Pictogrammes cognitifs',
+      btnPng: '🖼️ Format Image (PNG)',
+      btnPdf: '📄 Format Document (PDF)',
+      btnBack: '⬅️ Retour',
+      lblTranslateTo: 'Traduire en :',
+      btnTranslate: '🌐 Traduire',
+      narratorTitle: 'Écouter les instructions du narrateur',
+      narratorStopTitle: 'Arrêter la narration',
+      optNamesSpoken: {
+        'tablero': 'Tableau',
+        'stats': 'Statistiques et améliorations',
+        'braille': 'Braille',
+        'lse': 'Langue des Signes Française',
+        'picto': 'Pictogrammes',
+        'traducir': 'Traducteur'
+      },
+      narratorStep1: 'Que souhaitez-vous télécharger ? Sélectionnez l\'une de ces options : tableau, statistiques et améliorations, à propos (Braille), à propos (Langue des Signes Espagnole) ou à propos (Pictogrammes). Félicitations pour le travail accompli ! Merci beaucoup de nous avoir fait confiance pour ce processus. Nous espérons que cela a été une semaine productive, que vous avez répondu à vos attentes et que vous vous sentez fier et satisfait du travail accompli. À bientôt. Nous serons ravis de vous accompagner dans la prochaine aventure. Merci. Une fois le processus terminé, sélectionnez l\'option fermer',
+      narratorInstruction: (opt) => `Comment voulez-vous le voir ? Choisissez le format de texte à traduire en ${opt} et mettez Format Image (PNG) OU Format Document (PDF) ou WORD. Voulez-vous reculer d\'un pas dans l\'application et choisir un autre système ou contenu de traduction ou annuler le téléchargement ?`,
+      narratorTextIntro: (txt) => `Le texte écrit est : ${txt}. `,
+      narratorTextEmpty: 'Si vous le laissez vide, par défaut "bonjour" sera traduit. '
+    }
+  };
+
+  const mDict = modalDicts[lang] || modalDicts.en;
+
+  const cardTranslations = {
+    es: {
+      pictoHeader: 'MiiActToDo - Pictogramas cognitivos',
+      pictoSubtitle: 'Traducción para: ',
+      brailleHeader: 'MiiActToDo - Traducción (Braille)',
+      brailleSubtitle: 'Texto original y su equivalente en Braille',
+      lseHeader: 'Traducción - Lengua de Signos (LSE)',
+      lseSubtitle: 'Deletreo dactilológico para: '
+    },
+    en: {
+      pictoHeader: 'MiiActToDo - Cognitive Pictograms',
+      pictoSubtitle: 'Translation for: ',
+      brailleHeader: 'MiiActToDo - Translation (Braille)',
+      brailleSubtitle: 'Original text and its equivalent in Braille',
+      lseHeader: 'Translation - Sign Language (LSE)',
+      lseSubtitle: 'Fingerspelling for: '
+    },
+    fr: {
+      pictoHeader: 'MiiActToDo - Pictogrammes cognitifs',
+      pictoSubtitle: 'Traduction pour : ',
+      brailleHeader: 'MiiActToDo - Traduction (Braille)',
+      brailleSubtitle: 'Texte original et son équivalent en Braille',
+      lseHeader: 'Traduction - Langue des Signes (LSE)',
+      lseSubtitle: 'Épellation dactylologique pour : '
+    },
+    de: {
+      pictoHeader: 'MiiActToDo - Kognitive Piktogramme',
+      pictoSubtitle: 'Übersetzung für: ',
+      brailleHeader: 'MiiActToDo - Übersetzung (Braille)',
+      brailleSubtitle: 'Originaltext und seine Braille-Entsprechung',
+      lseHeader: 'Übersetzung - Gebärdensprache (LSE)',
+      lseSubtitle: 'Fingeralphabet für: '
+    },
+    it: {
+      pictoHeader: 'MiiActToDo - Pittogrammi cognitivi',
+      pictoSubtitle: 'Traduzione per: ',
+      brailleHeader: 'MiiActToDo - Traduzione (Braille)',
+      brailleSubtitle: 'Testo orignale e il suo equivalente in Braille',
+      lseHeader: 'Traduzione - Lingua dei Segni (LSE)',
+      lseSubtitle: 'Dattilologia per: '
+    },
+    pt: {
+      pictoHeader: 'MiiActToDo - Pictogramas cognitivos',
+      pictoSubtitle: 'Tradução para: ',
+      brailleHeader: 'MiiActToDo - Tradução (Braille)',
+      brailleSubtitle: 'Texto original e o seu equivalente em Braille',
+      lseHeader: 'Tradução - Língua de Sinais (LSE)',
+      lseSubtitle: 'Datilologia para: '
+    },
+    ca: {
+      pictoHeader: 'MiiActToDo - Pictogrames cognitius',
+      pictoSubtitle: 'Traducció per a: ',
+      brailleHeader: 'MiiActToDo - Traducció (Braille)',
+      brailleSubtitle: 'Text original i el seu equivalent en Braille',
+      lseHeader: 'Traducció - Llengua de Signes (LSE)',
+      lseSubtitle: 'Deletreig dactilològic per a: '
+    },
+    gl: {
+      pictoHeader: 'MiiActToDo - Pictogramas cognitivos',
+      pictoSubtitle: 'Tradución para: ',
+      brailleHeader: 'MiiActToDo - Tradución (Braille)',
+      brailleSubtitle: 'Texto orixinal e o seu equivalente en Braille',
+      lseHeader: 'Tradución - Lingua de Signos (LSE)',
+      lseSubtitle: 'Deletreo dactilolóxico para: '
+    },
+    eu: {
+      pictoHeader: 'MiiActToDo - Piktograma kognitiboak',
+      pictoSubtitle: 'Hontarako itzulpena: ',
+      brailleHeader: 'MiiActToDo - Itzulpena (Braille)',
+      brailleSubtitle: 'Jatorrizko testua eta bere baliokidea Braillez',
+      lseHeader: 'Itzulpena - Keinu Hizkuntza (LSE)',
+      lseSubtitle: 'Hatz-deletrea honetarako: '
+    }
+  };
 
   // Braille & LSE maps
   const brailleMap = {
@@ -2599,9 +2897,11 @@ const showDownloadModal = () => {
   };
 
   // Generate Braille Canvas for Custom Text
-  const generateBrailleCanvas = (customText) => {
+  const generateBrailleCanvas = (customText, targetLang) => {
     const textToTranslate = customText || 'hola';
     const linesText = wrapText(textToTranslate, 28);
+    const langKey = cardTranslations[targetLang] ? targetLang : 'es';
+    const cardDict = cardTranslations[langKey];
     
     const canvas = document.createElement('canvas');
     canvas.width = 600;
@@ -2621,12 +2921,12 @@ const showDownloadModal = () => {
     // Header
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Traducción (Braille)', 40, 60);
+    ctx.fillText(cardDict.brailleHeader, 40, 60);
 
     // Subtitle
     ctx.fillStyle = '#4b5563';
     ctx.font = '14px sans-serif';
-    ctx.fillText('Texto original y su equivalente en Braille', 40, 90);
+    ctx.fillText(cardDict.brailleSubtitle, 40, 90);
 
     let y = 130;
     linesText.forEach(lineText => {
@@ -2645,9 +2945,11 @@ const showDownloadModal = () => {
   };
 
   // Generate LSE Fingerspelling Canvas for Custom Text
-  const generateLseCanvas = (customText) => {
+  const generateLseCanvas = (customText, targetLang) => {
     const textToTranslate = customText || 'hola';
     const words = textToTranslate.toUpperCase().replace(/[^A-ZÑÁÉÍÓÚ\s]/gi, '').split(/\s+/).filter(w => w.length > 0);
+    const langKey = cardTranslations[targetLang] ? targetLang : 'es';
+    const cardDict = cardTranslations[langKey];
     
     const linesLSE = words.length > 0 ? words.map(w => ({
       label: w,
@@ -2672,12 +2974,12 @@ const showDownloadModal = () => {
     // Header
     ctx.fillStyle = '#4c1d95';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('Traducción - Lengua de Signos (LSE)', 40, 60);
+    ctx.fillText(cardDict.lseHeader, 40, 60);
 
     // Subtitle
     ctx.fillStyle = '#4b5563';
     ctx.font = '14px sans-serif';
-    ctx.fillText('Deletreo dactilológico para: "' + textToTranslate + '"', 40, 90);
+    ctx.fillText(cardDict.lseSubtitle + '"' + textToTranslate + '"', 40, 90);
 
     let y = 140;
     linesLSE.forEach(item => {
@@ -2695,13 +2997,67 @@ const showDownloadModal = () => {
     return canvas;
   };
 
-  // Generate Pictograms Canvas for Custom Text
-  const generatePictoCanvas = (customText) => {
+  // Helper to load image with CORS settings
+  const loadImage = (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  };
+
+  // Helper to fetch ARASAAC pictogram ID and keyword in target language
+  const fetchPictoData = async (word, lang) => {
+    try {
+      const supportedLangs = ['es', 'en', 'ca', 'gl', 'eu', 'fr', 'de', 'it', 'pt'];
+      const apiLang = supportedLangs.includes(lang) ? lang : 'es';
+      const res = await fetch(`https://api.arasaac.org/api/pictograms/${apiLang}/search/${encodeURIComponent(word)}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const id = data[0]._id || data[0].idPictogram || null;
+        const keyword = data[0].keywords && data[0].keywords[0] ? data[0].keywords[0].keyword : data[0].keyword || word;
+        return { id, keyword };
+      }
+    } catch (e) {
+      console.warn('ARASAAC fetch error for word: ' + word, e);
+    }
+    return null;
+  };
+
+  // Generate Pictograms Canvas for Custom Text using ARASAAC images with Emoji fallback
+  const generatePictoCanvas = async (customText, targetLang) => {
+    const langKey = cardTranslations[targetLang] ? targetLang : 'es';
+    const cardDict = cardTranslations[langKey];
     const items = parseTextToPictoItems(customText || 'hola');
+    
+    // Resolve ARASAAC image or fallback emoji for each item
+    const resolvedItems = await Promise.all(items.map(async (item) => {
+      const cleanWord = item.title.toLowerCase().trim();
+      const pictoData = await fetchPictoData(cleanWord, langKey);
+      let img = null;
+      let title = item.title;
+      let desc = item.desc;
+      
+      if (pictoData && pictoData.id) {
+        img = await loadImage(`https://api.arasaac.org/api/pictograms/${pictoData.id}`);
+        title = pictoData.keyword.toUpperCase();
+        desc = langKey === 'es' ? `Pictograma para: "${pictoData.keyword}"` : `Pictogram for: "${pictoData.keyword}"`;
+      }
+      return {
+        ...item,
+        title: title,
+        desc: desc,
+        img: img
+      };
+    }));
+
     const canvas = document.createElement('canvas');
     canvas.width = 600;
     
-    const height = Math.max(800, 160 + items.length * 95);
+    const height = Math.max(800, 160 + resolvedItems.length * 95);
     canvas.height = height;
     
     const ctx = canvas.getContext('2d');
@@ -2718,23 +3074,28 @@ const showDownloadModal = () => {
     // Header
     ctx.fillStyle = '#065f46';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('MiiActToDo - Pictogramas cognitivos', 40, 60);
+    ctx.fillText(cardDict.pictoHeader, 40, 60);
     
     // Subtitle
     ctx.fillStyle = '#4b5563';
     ctx.font = '14px sans-serif';
-    ctx.fillText('Traducción para: "' + (customText || 'hola') + '"', 40, 90);
+    ctx.fillText(cardDict.pictoSubtitle + '"' + (customText || 'hola') + '"', 40, 90);
 
     let y = 120;
-    items.forEach(item => {
+    resolvedItems.forEach(item => {
       ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
       ctx.fillRect(40, y, 520, 80);
       ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
       ctx.lineWidth = 1;
       ctx.strokeRect(40, y, 520, 80);
 
-      ctx.font = '36px sans-serif';
-      ctx.fillText(item.symbol, 60, y + 54);
+      // Draw ARASAAC image if loaded, otherwise fall back to emoji symbol
+      if (item.img) {
+        ctx.drawImage(item.img, 50, y + 10, 60, 60);
+      } else {
+        ctx.font = '36px sans-serif';
+        ctx.fillText(item.symbol, 60, y + 54);
+      }
 
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 16px sans-serif';
@@ -2852,11 +3213,74 @@ const showDownloadModal = () => {
     card.querySelector('#modal-error-ok').addEventListener('click', closeModal);
   };
 
+  let modalUtterance = null;
+  let isModalNarrating = false;
+
+  const stopModalNarrator = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    isModalNarrating = false;
+    const btn = card.querySelector('#modal-narrator-btn');
+    if (btn) {
+      btn.textContent = '🔊';
+      btn.title = mDict.narratorTitle;
+      btn.style.color = '#00f59b';
+    }
+    const btn2 = card.querySelector('#modal-narrator-btn-step2');
+    if (btn2) {
+      btn2.textContent = '🔊';
+      btn2.title = mDict.narratorTitle;
+      btn2.style.color = '#00f59b';
+    }
+  };
+
+  const startModalNarrator = () => {
+    if (!window.speechSynthesis) return;
+    stopModalNarrator();
+
+    const textToSpeak = mDict.narratorStep1;
+
+    modalUtterance = new SpeechSynthesisUtterance(textToSpeak);
+    const localeMap = {
+      'es': 'es-ES',
+      'en': 'en-US',
+      'fr': 'fr-FR',
+      'de': 'de-DE',
+      'it': 'it-IT',
+      'pt': 'pt-PT',
+      'ca': 'ca-ES',
+      'gl': 'gl-ES',
+      'eu': 'eu-ES'
+    };
+    modalUtterance.lang = localeMap[lang] || 'en-US';
+    modalUtterance.rate = 0.95;
+
+    modalUtterance.onend = () => {
+      stopModalNarrator();
+    };
+    modalUtterance.onerror = () => {
+      stopModalNarrator();
+    };
+
+    isModalNarrating = true;
+    const btn = card.querySelector('#modal-narrator-btn');
+    if (btn) {
+      btn.textContent = '⏸️';
+      btn.title = mDict.narratorStopTitle;
+      btn.style.color = '#ef4444';
+    }
+    window.speechSynthesis.speak(modalUtterance);
+  };
+
   // Render Step 1
   const renderStep1 = () => {
     card.innerHTML = `
-      <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">📥 ¿Qué deseas descargar?</h3>
-      <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Selecciona una de las opciones de exportación:</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">${mDict.step1Title}</h3>
+        <button type="button" id="modal-narrator-btn" style="background: rgba(120, 120, 120, 0.15); border: 1px solid rgba(120, 120, 120, 0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: #00f59b; transition: all 0.25s ease;" title="Escuchar instrucciones del narrador">🔊</button>
+      </div>
+      <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">${mDict.step1Desc}</p>
       
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; max-height: 48vh; overflow-y: auto; padding: 4px;">
         
@@ -2864,7 +3288,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="tablero" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">📋</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Tablero</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optTablero}</strong>
           </div>
           <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: stretch; margin-top: 4px;">
             <div style="flex: 1; background: rgba(239, 68, 68, 0.2); border-radius: 3px; display: flex; flex-direction: column; gap: 2px; padding: 2px;">
@@ -2884,7 +3308,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="stats" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">📊</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Estadísticas y mejoras</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optStats}</strong>
           </div>
           <div style="display: flex; gap: 6px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: flex-end; justify-content: space-around; margin-top: 4px;">
             <div style="width: 6px; height: 15px; background: #ef4444; border-radius: 1px 1px 0 0;"></div>
@@ -2898,7 +3322,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="braille" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">⠃</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (Braille)</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optBraille}</strong>
           </div>
           <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem; color: #3b82f6; font-family: monospace;">
             ⠁ ⠃ ⠉ ⠙ ⠑
@@ -2909,7 +3333,7 @@ const showDownloadModal = () => {
         <div class="download-option-card" data-option="lse" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">🧏</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (LSE)</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optLse}</strong>
           </div>
           <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem;">
             ✊ ✋ 🤏 ☝️
@@ -2917,26 +3341,54 @@ const showDownloadModal = () => {
         </div>
 
         <!-- Pictogramas Card -->
-        <div class="download-option-card" data-option="picto" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; grid-column: span 2;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+        <div class="download-option-card" data-option="picto" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span style="font-size: 1.5rem;">🖼️</span>
-            <strong style="font-size: 0.88rem; color: var(--text-color);">Acerca de (Pictogramas)</strong>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optPicto}</strong>
           </div>
           <div style="display: flex; gap: 12px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1.15rem;">
-            👋 👩‍💻 ♿ 📋 🌐
+            👋 🏠 💼 📋 🌐
+          </div>
+        </div>
+
+        <!-- Traducir Card -->
+        <div class="download-option-card" data-option="traducir" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">🔤</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">${mDict.optTraducir}</strong>
+          </div>
+          <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 0.95rem; color: #10b981; font-weight: 700;">
+            🌐 Traducir Texto
           </div>
         </div>
       </div>
 
       <!-- Enhorabuena message -->
       <div style="margin-top: 0.5rem; padding: 0.85rem 1rem; background: rgba(0, 245, 155, 0.08); border: 1px solid rgba(0, 245, 155, 0.2); border-radius: 12px; font-size: 0.76rem; line-height: 1.45; text-align: justify; color: var(--text-color);">
-        ¡Enhorabuena por el trabajo realizado! Muchas gracias por confiar en nostrxs para este proceso. Esperamos que haya sido una semana productiva y hayas cumplido con tus expectativas y te sientas orgullosx y satisfechx con el trabajo realizado. Nos vemos pronto. Estaremos encantados de acompañarte en la siguiente aventura. Gracias 👏🎉
+        ${mDict.step1Congrats}
       </div>
 
       <button type="button" id="modal-download-cancel" style="background: rgba(120, 120, 120, 0.15); color: inherit; width: 100%; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.88rem; transition: all 0.2s ease; margin-top: 4px; outline: none;">
-        ${dict.form_cancel || 'Cancelar'}
+        ${mDict.btnClose}
       </button>
     `;
+
+    // Bind narrator button
+    const narrBtn = card.querySelector('#modal-narrator-btn');
+    if (narrBtn) {
+      if (isModalNarrating) {
+        narrBtn.textContent = '⏸️';
+        narrBtn.title = mDict.narratorStopTitle;
+        narrBtn.style.color = '#ef4444';
+      }
+      narrBtn.addEventListener('click', () => {
+        if (isModalNarrating) {
+          stopModalNarrator();
+        } else {
+          startModalNarrator();
+        }
+      });
+    }
 
     // Add selection styling and events
     const optionCards = card.querySelectorAll('.download-option-card');
@@ -2956,77 +3408,274 @@ const showDownloadModal = () => {
     });
 
     card.querySelector('#modal-download-cancel').addEventListener('click', closeModal);
+    
+    // Apply accessibility transform if active
+    const currentLang = localStorage.getItem('app-language') || 'es';
+    const transformFn = window.getSpecialTranslationFn(currentLang);
+    if (transformFn) {
+      window.walkTextNodesAndTransform(card, transformFn);
+    }
   };
 
   // Render Step 2
   const renderStep2 = (option) => {
     let inputHtml = '';
-    if (option === 'braille' || option === 'picto' || option === 'lse') {
-      let labelText = 'Escribe el texto a traducir:';
-      if (option === 'braille') labelText = 'Escribe el texto a traducir a Braille:';
-      if (option === 'picto') labelText = 'Escribe el texto a traducir a Pictogramas:';
-      if (option === 'lse') labelText = 'Escribe el texto a traducir a Lengua de Signos (LSE):';
+    if (option === 'braille' || option === 'picto' || option === 'lse' || option === 'traducir') {
+      let labelText = mDict.lblTranslateText;
+      if (option === 'braille') labelText = mDict.lblTranslateBraille;
+      if (option === 'picto') labelText = mDict.lblTranslatePicto;
+      if (option === 'lse') labelText = mDict.lblTranslateLse;
+      if (option === 'traducir') labelText = mDict.lblTranslateGeneral;
+      
+      let formatSelectorHtml = '';
+      if (option === 'traducir') {
+        formatSelectorHtml = `
+          <div style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+            <label for="translation-format" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">${mDict.lblSelectFormat}</label>
+            <select id="translation-format" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, rgba(120, 120, 120, 0.2)); background: var(--bg-card, #ffffff); color: var(--text-color, #1f2937); font-size: 0.9rem; width: 100%; outline: none; font-family: inherit; font-weight: 600;">
+              <option value="braille">${mDict.formatBraille}</option>
+              <option value="lse">${mDict.formatLse}</option>
+              <option value="picto">${mDict.formatPicto}</option>
+            </select>
+          </div>
+        `;
+      }
       
       inputHtml = `
         <div style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
           <label for="translation-text" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">${labelText}</label>
-          <textarea id="translation-text" rows="3" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, rgba(120, 120, 120, 0.2)); background: var(--bg-card, #ffffff); color: var(--text-color, #1f2937); font-size: 0.9rem; resize: vertical; width: 100%; box-sizing: border-box; outline: none; font-family: inherit;" placeholder="hola"></textarea>
-          <span style="font-size: 0.72rem; opacity: 0.7; color: var(--text-color);">Si lo dejas vacío, por defecto se traducirá "hola".</span>
+          <textarea id="translation-text" rows="3" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, rgba(120, 120, 120, 0.2)); background: var(--bg-card, #ffffff); color: var(--text-color, #1f2937); font-size: 0.9rem; resize: vertical; width: 100%; box-sizing: border-box; outline: none; font-family: inherit;" placeholder="${mDict.textareaPlaceholder}"></textarea>
+          
+          <!-- Translate option next to the text -->
+          <div style="display: flex; gap: 8px; margin-top: 4px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-color); opacity: 0.8;">${mDict.lblTranslateTo}</span>
+            <select id="modal-translate-lang" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color, rgba(120, 120, 120, 0.2)); background: var(--bg-card, #ffffff); color: var(--text-color, #1f2937); font-size: 0.78rem; font-weight: 600; outline: none; cursor: pointer;">
+              <option value="en">English (EN)</option>
+              <option value="fr">Français (FR)</option>
+              <option value="de">Deutsch (DE)</option>
+              <option value="it">Italiano (IT)</option>
+              <option value="pt">Português (PT)</option>
+              <option value="ca">Català (CA)</option>
+              <option value="gl">Galego (GL)</option>
+              <option value="eu">Euskara (EU)</option>
+            </select>
+            <button type="button" id="modal-translate-btn" style="background: #3b82f6; color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">${mDict.btnTranslate}</button>
+          </div>
+
+          <span style="font-size: 0.72rem; opacity: 0.7; color: var(--text-color); margin-top: 4px;">${mDict.textareaHelper}</span>
         </div>
+        ${formatSelectorHtml}
       `;
     }
 
     card.innerHTML = `
-      <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">❓ ¿Cómo lo quieres ver?</h3>
-      <p style="margin: 0 0 1rem 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Elige el formato de descarga para la opción seleccionada:</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">${mDict.step2Title}</h3>
+        <button type="button" id="modal-narrator-btn-step2" style="background: rgba(120, 120, 120, 0.15); border: 1px solid rgba(120, 120, 120, 0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: #00f59b; transition: all 0.25s ease;" title="Escuchar instrucciones del narrador">🔊</button>
+      </div>
+      <p style="margin: 0 0 1rem 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">${mDict.step2Desc}</p>
       
       ${inputHtml}
 
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <button type="button" id="format-png" style="background: #10b981; color: #fff; width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">
-          🖼️ Formato Imagen (PNG)
+          ${mDict.btnPng}
         </button>
         
         <button type="button" id="format-pdf" style="background: #2563eb; color: #fff; width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);">
-          📄 Formato Documento (PDF)
+          ${mDict.btnPdf}
         </button>
       </div>
 
       <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
         <button type="button" id="modal-back-btn" style="flex: 1; background: rgba(120, 120, 120, 0.15); color: inherit; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none;">
-          ⬅️ Atrás
+          ${mDict.btnBack}
         </button>
         <button type="button" id="modal-download-cancel" style="flex: 1; background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none;">
-          ${dict.form_cancel || 'Cancelar'}
+          ${mDict.btnClose}
         </button>
       </div>
     `;
 
-    card.querySelector('#modal-back-btn').addEventListener('click', renderStep1);
+    // Bind narrator button for step 2
+    const narrBtn2 = card.querySelector('#modal-narrator-btn-step2');
+    if (narrBtn2) {
+      if (isModalNarrating) {
+        narrBtn2.textContent = '⏸️';
+        narrBtn2.title = mDict.narratorStopTitle;
+        narrBtn2.style.color = '#ef4444';
+      }
+      narrBtn2.addEventListener('click', () => {
+        if (isModalNarrating) {
+          stopModalNarrator();
+        } else {
+          if (!window.speechSynthesis) return;
+          stopModalNarrator();
+
+          const inputEl = card.querySelector('#translation-text');
+          const customText = inputEl ? inputEl.value.trim() : '';
+          
+          const formatSelect = card.querySelector('#translation-format');
+          const currentOption = (option === 'traducir' && formatSelect) ? formatSelect.value : option;
+
+          const spokenOption = mDict.optNamesSpoken[currentOption] || currentOption;
+
+          const localeMap = {
+            'es': 'es-ES',
+            'en': 'en-US',
+            'fr': 'fr-FR',
+            'de': 'de-DE',
+            'it': 'it-IT',
+            'pt': 'pt-PT',
+            'ca': 'ca-ES',
+            'gl': 'gl-ES',
+            'eu': 'eu-ES'
+          };
+          const activeLocale = localeMap[lang] || 'en-US';
+
+          if (customText && selectedTranslationLang) {
+            // First utterance for translated text using local voice
+            const targetLocale = localeMap[selectedTranslationLang] || 'es-ES';
+            
+            const utter1 = new SpeechSynthesisUtterance(customText);
+            utter1.lang = targetLocale;
+            utter1.rate = 0.95;
+            
+            // Second utterance for the instructions in the active language
+            const instructionText = mDict.narratorInstruction(spokenOption);
+            const utter2 = new SpeechSynthesisUtterance(instructionText);
+            utter2.lang = activeLocale;
+            utter2.rate = 0.95;
+            
+            utter1.onend = () => {
+              if (isModalNarrating) {
+                window.speechSynthesis.speak(utter2);
+              }
+            };
+            
+            utter2.onend = () => {
+              stopModalNarrator();
+            };
+            utter1.onerror = utter2.onerror = () => {
+              stopModalNarrator();
+            };
+            
+            modalUtterance = utter1;
+            isModalNarrating = true;
+            narrBtn2.textContent = '⏸️';
+            narrBtn2.title = mDict.narratorStopTitle;
+            narrBtn2.style.color = '#ef4444';
+            window.speechSynthesis.speak(utter1);
+          } else {
+            let textToSpeak = '';
+            if (customText) {
+              textToSpeak += mDict.narratorTextIntro(customText);
+            } else if (option === 'braille' || option === 'picto' || option === 'lse' || option === 'traducir') {
+              textToSpeak += mDict.narratorTextEmpty;
+            }
+            textToSpeak += mDict.narratorInstruction(spokenOption);
+
+            modalUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            modalUtterance.lang = activeLocale;
+            modalUtterance.rate = 0.95;
+
+            modalUtterance.onend = () => {
+              stopModalNarrator();
+            };
+            modalUtterance.onerror = () => {
+              stopModalNarrator();
+            };
+
+            isModalNarrating = true;
+            narrBtn2.textContent = '⏸️';
+            narrBtn2.title = mDict.narratorStopTitle;
+            narrBtn2.style.color = '#ef4444';
+            window.speechSynthesis.speak(modalUtterance);
+          }
+        }
+      });
+    }
+
+    // Bind translate button if present
+    const transBtn = card.querySelector('#modal-translate-btn');
+    if (transBtn) {
+      transBtn.addEventListener('click', () => {
+        const inputEl = card.querySelector('#translation-text');
+        const selectEl = card.querySelector('#modal-translate-lang');
+        if (!inputEl || !selectEl) return;
+        
+        const sourceLang = localStorage.getItem('app-language') || 'es';
+        const targetLang = selectEl.value;
+        const textVal = inputEl.value.trim() || 'hola';
+        
+        transBtn.textContent = '...';
+        transBtn.disabled = true;
+        
+        fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textVal)}&langpair=${sourceLang}|${targetLang}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.responseData && data.responseData.translatedText) {
+              inputEl.value = data.responseData.translatedText;
+              selectedTranslationLang = targetLang;
+            }
+          })
+          .catch(err => {
+            console.error('Translation error:', err);
+          })
+          .finally(() => {
+            transBtn.textContent = mDict.btnTranslate;
+            transBtn.disabled = false;
+          });
+      });
+    }
+
+    const inputEl = card.querySelector('#translation-text');
+    if (inputEl) {
+      inputEl.addEventListener('input', () => {
+        selectedTranslationLang = null;
+      });
+    }
+
+    card.querySelector('#modal-back-btn').addEventListener('click', () => {
+      stopModalNarrator();
+      renderStep1();
+    });
     card.querySelector('#modal-download-cancel').addEventListener('click', closeModal);
 
     // PNG Download Action
     card.querySelector('#format-png').addEventListener('click', () => {
       const inputEl = card.querySelector('#translation-text');
       const customText = inputEl ? inputEl.value.trim() : '';
+      const formatSelect = card.querySelector('#translation-format');
+      const selectedFormat = formatSelect ? formatSelect.value : option;
       closeModal();
-      handleAction(option, 'png', customText);
+      handleAction(selectedFormat, 'png', customText);
     });
 
     // PDF Download Action
     card.querySelector('#format-pdf').addEventListener('click', () => {
       const inputEl = card.querySelector('#translation-text');
       const customText = inputEl ? inputEl.value.trim() : '';
+      const formatSelect = card.querySelector('#translation-format');
+      const selectedFormat = formatSelect ? formatSelect.value : option;
       closeModal();
-      handleAction(option, 'pdf', customText);
+      handleAction(selectedFormat, 'pdf', customText);
     });
+
+    // Apply accessibility transform if active
+    const currentLang = localStorage.getItem('app-language') || 'es';
+    const transformFn = window.getSpecialTranslationFn(currentLang);
+    if (transformFn) {
+      window.walkTextNodesAndTransform(card, transformFn);
+    }
   };
 
   // Action dispatcher
-  const handleAction = (option, format, customText) => {
+  const handleAction = async (option, format, customText) => {
     try {
       const isBoardPage = document.querySelector('.columns') !== null && !window.location.pathname.includes('/compartir/');
       const isStatsPage = window.location.pathname.includes('/estadisticasymejoras/');
+      const targetLang = selectedTranslationLang || localStorage.getItem('app-language') || 'es';
 
       if (option === 'tablero') {
         if (format === 'png') {
@@ -3077,7 +3726,7 @@ const showDownloadModal = () => {
       } 
       
       else if (option === 'braille') {
-        const canvas = generateBrailleCanvas(customText);
+        const canvas = generateBrailleCanvas(customText, targetLang);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
@@ -3090,7 +3739,7 @@ const showDownloadModal = () => {
       } 
       
       else if (option === 'lse') {
-        const canvas = generateLseCanvas(customText);
+        const canvas = generateLseCanvas(customText, targetLang);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
@@ -3103,7 +3752,7 @@ const showDownloadModal = () => {
       } 
       
       else if (option === 'picto') {
-        const canvas = generatePictoCanvas(customText);
+        const canvas = await generatePictoCanvas(customText, targetLang);
         const dataUrl = canvas.toDataURL('image/png');
         if (format === 'png') {
           const link = document.createElement('a');
@@ -3171,6 +3820,7 @@ const showDownloadModal = () => {
   }, 10);
 
   const closeModal = () => {
+    stopModalNarrator();
     overlay.style.opacity = '0';
     card.style.transform = 'translateY(10px)';
     setTimeout(() => {
@@ -3258,6 +3908,9 @@ const injectLanguageSelector = () => {
   // All supported languages
   const options = [
     { code: 'es', label: 'Español (ES)' },
+    { code: 'braille', label: '⠃ Braille (ES)' },
+    { code: 'lse', label: '🧏 Lengua de Signos (LSE)' },
+    { code: 'picto', label: '🖼️ Pictogramas cognitivos' },
     { code: 'en', label: 'English (EN)' },
     { code: 'fr', label: 'Français (FR)' },
     { code: 'de', label: 'Deutsch (DE)' },
