@@ -2476,84 +2476,194 @@ window.updateUIForLanguage = (lang) => {
 const showDownloadModal = () => {
   const lang = localStorage.getItem('app-language') || 'es';
   const dict = translations[lang] || translations.es;
-  
-  const modalTitle = dict.download_modal_title || 'Descargar / Guardar Tablero';
-  const modalDesc = dict.download_modal_desc || 'Selecciona cómo deseas guardar o imprimir la información de tus tareas:';
-  const pdfBtnText = dict.download_pdf_btn || '📄 Guardar como PDF / Imprimir';
-  const pngBtnText = dict.download_png_btn || '🖼️ Descargar como Imagen (PNG)';
-  const cancelBtnText = dict.form_cancel || 'Cancelar';
 
-  // Create Modal Overlay
-  const overlay = document.createElement('div');
-  overlay.id = 'download-modal-overlay';
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(8px);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  `;
-
-  const card = document.createElement('div');
-  card.style.cssText = `
-    background: var(--bg-card, #ffffff);
-    color: var(--text-color, #1f2937);
-    border: 1px solid var(--border-color, rgba(0,0,0,0.08));
-    border-radius: 16px;
-    padding: 1.75rem 2rem;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    transform: translateY(10px);
-    transition: transform 0.25s ease;
-  `;
-
-  card.innerHTML = `
-    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; text-align: center;">${modalTitle}</h3>
-    <p style="margin: 0; font-size: 0.88rem; opacity: 0.8; text-align: center; line-height: 1.4;">${modalDesc}</p>
-    
-    <button type="button" id="modal-download-pdf" style="background: #2563eb; color: #fff; width: 100%; padding: 12px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);">
-      ${pdfBtnText}
-    </button>
-    
-    <button type="button" id="modal-download-png" style="background: #10b981; color: #fff; width: 100%; padding: 12px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">
-      ${pngBtnText}
-    </button>
-    
-    <button type="button" id="modal-download-cancel" style="background: rgba(120,120,120,0.15); color: inherit; width: 100%; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; margin-top: 4px; outline: none;">
-      ${cancelBtnText}
-    </button>
-  `;
-
-  overlay.appendChild(card);
-  document.body.appendChild(overlay);
-
-  // Trigger modal animations
-  setTimeout(() => {
-    overlay.style.opacity = '1';
-    card.style.transform = 'translateY(0)';
-  }, 10);
-
-  const closeModal = () => {
-    overlay.style.opacity = '0';
-    card.style.transform = 'translateY(10px)';
-    setTimeout(() => {
-      overlay.remove();
-    }, 250);
+  // Braille & LSE maps
+  const brailleMap = {
+    'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+    'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+    'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+    'á': '⠷', 'é': '⠮', 'í': '⠊', 'ó': '⠬', 'ú': '⠾', 'ñ': '⠻',
+    '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔', '0': '⠴',
+    ' ': '⠠', '.': '⠤', ',': '⠠', '?': '⠦', '!': '⠮', '-': '⠤'
   };
 
-  // Resolve absolute path to the pages directory to prevent errors on subfolder-hosted sites (like GitHub Pages)
+  const dactiloMap = {
+    'a': '✊', 'b': '✋', 'c': '🤏', 'd': '☝️', 'e': '✊', 'f': '👌', 'g': '👈', 'h': '👉', 'i': '☝️', 'j': '☝️',
+    'k': '✌️', 'l': '🤙', 'm': '✊', 'n': '✊', 'o': '👌', 'p': '👎', 'q': '🤏', 'r': '🤞', 's': '✊', 't': '✊',
+    'u': '🤘', 'v': '✌️', 'w': '🖐️', 'x': '☝️', 'y': '🤙', 'z': '☝️',
+    'á': '✊', 'é': '✊', 'í': '☝️', 'ó': '👌', 'ú': '🤘', 'ñ': '✊',
+    ' ': ' '
+  };
+
+  const transliterateToBraille = (text) => {
+    return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
+  };
+
+  // Generate Braille Canvas
+  const generateBrailleCanvas = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 600, 800);
+
+    // Border
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(15, 15, 570, 770);
+
+    // Header
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('MiiActToDo - Traducción Braille', 40, 60);
+
+    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+    const activeTasks = tasks.filter(t => t.column !== 'deleted').slice(0, 8);
+
+    let y = 120;
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = '#334155';
+
+    if (activeTasks.length === 0) {
+      ctx.fillText('No hay tareas registradas.', 40, y);
+      ctx.font = '28px sans-serif';
+      ctx.fillText(transliterateToBraille('No hay tareas registradas.'), 40, y + 40);
+    } else {
+      activeTasks.forEach((task, index) => {
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 15px sans-serif';
+        const truncatedText = task.text.length > 30 ? task.text.substring(0, 30) + '...' : task.text;
+        ctx.fillText(`${index + 1}. ${truncatedText} (${task.column})`, 40, y);
+        
+        ctx.fillStyle = '#2563eb';
+        ctx.font = '22px sans-serif';
+        const brailleText = transliterateToBraille(truncatedText);
+        ctx.fillText(brailleText, 40, y + 35);
+        y += 80;
+      });
+    }
+    return canvas;
+  };
+
+  // Generate LSE Fingerspelling Canvas
+  const generateLseCanvas = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 600, 800);
+
+    // Border
+    ctx.strokeStyle = '#8b5cf6';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(15, 15, 570, 770);
+
+    // Header
+    ctx.fillStyle = '#4c1d95';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('MiiActToDo - Lengua de Signos (LSE)', 40, 60);
+
+    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+    const activeTasks = tasks.filter(t => t.column !== 'deleted').slice(0, 6);
+
+    let y = 120;
+    if (activeTasks.length === 0) {
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '16px sans-serif';
+      ctx.fillText('No hay tareas registradas.', 40, y);
+    } else {
+      activeTasks.forEach((task, index) => {
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 14px sans-serif';
+        const truncatedText = task.text.length > 25 ? task.text.substring(0, 25) + '...' : task.text;
+        ctx.fillText(`${index + 1}. ${truncatedText}`, 40, y);
+        
+        ctx.fillStyle = '#7c3aed';
+        ctx.font = '22px sans-serif';
+        const dactiloText = truncatedText.toLowerCase().split('').map(char => dactiloMap[char] || '').join(' ');
+        ctx.fillText(dactiloText, 40, y + 30);
+        y += 110;
+      });
+    }
+    return canvas;
+  };
+
+  // Generate Pictograms Canvas
+  const generatePictoCanvas = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 600, 800);
+
+    // Border
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(15, 15, 570, 770);
+
+    // Header
+    ctx.fillStyle = '#065f46';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('MiiActToDo - Pictogramas de Tareas', 40, 60);
+
+    const tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+    const activeTasks = tasks.filter(t => t.column !== 'deleted');
+
+    const categories = {
+      familia: { symbol: '👪', name: dict.ambitos_familia || 'Familia', count: 0 },
+      personal: { symbol: '👤', name: dict.ambitos_personal || 'Personal', count: 0 },
+      social: { symbol: '👥', name: dict.ambitos_social || 'Social', count: 0 },
+      laboral: { symbol: '💼', name: dict.ambitos_laboral || 'Laboral', count: 0 },
+      ocio: { symbol: '🎭', name: dict.ambitos_ocio || 'Ocio', count: 0 },
+      salud: { symbol: '❤️', name: dict.ambitos_salud || 'Salud', count: 0 },
+      hogar: { symbol: '🏠', name: dict.ambitos_hogar || 'Hogar', count: 0 },
+      finanzas: { symbol: '💰', name: dict.ambitos_finanzas || 'Finanzas', count: 0 }
+    };
+
+    activeTasks.forEach(task => {
+      if (categories[task.ambito]) {
+        categories[task.ambito].count++;
+      }
+    });
+
+    let y = 130;
+    Object.values(categories).forEach(cat => {
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
+      ctx.fillRect(40, y, 520, 60);
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(40, y, 520, 60);
+
+      ctx.font = '32px sans-serif';
+      ctx.fillText(cat.symbol, 60, y + 42);
+
+      // Clean name from emoji prefix if present
+      const cleanName = cat.name.replace(/^[^\w\s\u00C0-\u00FF]+/g, '').trim();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(cleanName, 120, y + 37);
+
+      ctx.fillStyle = '#047857';
+      ctx.font = '14px sans-serif';
+      const taskWord = lang === 'en' ? 'tasks' : 'tareas';
+      ctx.fillText(`${cat.count} ${taskWord}`, 440, y + 37);
+
+      y += 75;
+    });
+
+    return canvas;
+  };
+
   const getAbsoluteBoardUrl = (queryParam) => {
     const origin = window.location.origin;
     let pathname = window.location.pathname;
@@ -2577,49 +2687,406 @@ const showDownloadModal = () => {
     return `${origin}${pathname}pages/tablero/index.html?${queryParam}`;
   };
 
-  const isBoardPage = document.querySelector('.columns') !== null;
-
-  overlay.querySelector('#modal-download-pdf').addEventListener('click', () => {
-    closeModal();
-    if (isBoardPage) {
-      setTimeout(() => {
-        window.print();
-      }, 300);
+  const getAbsoluteStatsUrl = (queryParam) => {
+    const origin = window.location.origin;
+    let pathname = window.location.pathname;
+    
+    if (pathname.includes('/pages/')) {
+      pathname = pathname.substring(0, pathname.indexOf('/pages/'));
     } else {
-      window.location.href = getAbsoluteBoardUrl('print=true');
-    }
-  });
-
-  overlay.querySelector('#modal-download-png').addEventListener('click', () => {
-    closeModal();
-    if (isBoardPage) {
-      setTimeout(() => {
-        if (window.triggerPngExport) {
-          window.triggerPngExport();
+      const lastSlashIdx = pathname.lastIndexOf('/');
+      if (lastSlashIdx !== -1) {
+        const lastPart = pathname.substring(lastSlashIdx + 1);
+        if (lastPart.includes('.')) {
+          pathname = pathname.substring(0, lastSlashIdx);
         }
-      }, 300);
-    } else {
-      window.location.href = getAbsoluteBoardUrl('png=true');
+      }
     }
-  });
+    
+    if (!pathname.endsWith('/')) {
+      pathname += '/';
+    }
+    
+    return `${origin}${pathname}pages/estadisticasymejoras/index.html?${queryParam}`;
+  };
 
-  overlay.querySelector('#modal-download-cancel').addEventListener('click', closeModal);
+  // Create Modal Overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'download-modal-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  `;
+
+  const card = document.createElement('div');
+  card.className = 'download-modal-card';
+  card.style.cssText = `
+    background: var(--bg-card, #ffffff);
+    color: var(--text-color, #1f2937);
+    border: 1px solid var(--border-color, rgba(0,0,0,0.08));
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transform: translateY(10px);
+    transition: transform 0.25s ease;
+    max-height: 92vh;
+    overflow-y: auto;
+  `;
+
+  const showError = () => {
+    card.innerHTML = `
+      <div style="text-align: center; padding: 1rem 0;">
+        <span style="font-size: 3rem; color: #ef4444; display: block; margin-bottom: 1rem;">🔴</span>
+        <h3 style="margin: 0 0 0.75rem 0; font-size: 1.15rem; font-weight: 800; color: #ef4444;">ERROR</h3>
+        <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text-color); text-align: justify; opacity: 0.9;">
+          ERROR: El sistema ha detectado un problema para guardar, automáticamente, su resultado. Por favor, espere a que nuestros agentes puedan terminar de resolverlo. Antes de seguir modificando. Espere unos minutos y vuelva en un rato. Sentimos las molestias.
+        </p>
+        <button type="button" id="modal-error-ok" style="background: rgba(120, 120, 120, 0.15); color: inherit; width: 100%; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.88rem; transition: all 0.2s ease; margin-top: 1.5rem; outline: none;">
+          Entendido
+        </button>
+      </div>
+    `;
+    card.querySelector('#modal-error-ok').addEventListener('click', closeModal);
+  };
+
+  // Render Step 1
+  const renderStep1 = () => {
+    card.innerHTML = `
+      <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">📥 ¿Qué deseas descargar?</h3>
+      <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Selecciona una de las opciones de exportación:</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; max-height: 48vh; overflow-y: auto; padding: 4px;">
+        
+        <!-- Tablero Card -->
+        <div class="download-option-card" data-option="tablero" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">📋</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Tablero</strong>
+          </div>
+          <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: stretch; margin-top: 4px;">
+            <div style="flex: 1; background: rgba(239, 68, 68, 0.2); border-radius: 3px; display: flex; flex-direction: column; gap: 2px; padding: 2px;">
+              <div style="height: 4px; background: #ef4444; border-radius: 1px;"></div>
+              <div style="height: 4px; background: #ef4444; border-radius: 1px; width: 60%;"></div>
+            </div>
+            <div style="flex: 1; background: rgba(245, 158, 11, 0.2); border-radius: 3px; display: flex; flex-direction: column; gap: 2px; padding: 2px;">
+              <div style="height: 4px; background: #f59e0b; border-radius: 1px;"></div>
+            </div>
+            <div style="flex: 1; background: rgba(16, 185, 129, 0.2); border-radius: 3px; display: flex; flex-direction: column; gap: 2px; padding: 2px;">
+              <div style="height: 4px; background: #10b981; border-radius: 1px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estadisticas Card -->
+        <div class="download-option-card" data-option="stats" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">📊</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Estadísticas y mejoras</strong>
+          </div>
+          <div style="display: flex; gap: 6px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: flex-end; justify-content: space-around; margin-top: 4px;">
+            <div style="width: 6px; height: 15px; background: #ef4444; border-radius: 1px 1px 0 0;"></div>
+            <div style="width: 6px; height: 25px; background: #f59e0b; border-radius: 1px 1px 0 0;"></div>
+            <div style="width: 6px; height: 35px; background: #10b981; border-radius: 1px 1px 0 0;"></div>
+            <div style="width: 6px; height: 20px; background: #6366f1; border-radius: 1px 1px 0 0;"></div>
+          </div>
+        </div>
+
+        <!-- Braille Card -->
+        <div class="download-option-card" data-option="braille" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">⠃</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Braille</strong>
+          </div>
+          <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem; color: #3b82f6; font-family: monospace;">
+            ⠁ ⠃ ⠉ ⠙ ⠑
+          </div>
+        </div>
+
+        <!-- LSE Card -->
+        <div class="download-option-card" data-option="lse" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">🧏</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Lengua de Signos</strong>
+          </div>
+          <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1rem;">
+            ✊ ✋ 🤏 ☝️
+          </div>
+        </div>
+
+        <!-- Pictogramas Card -->
+        <div class="download-option-card" data-option="picto" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem; background: rgba(120,120,120,0.06); border: 1px solid rgba(120,120,120,0.15); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; grid-column: span 2;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+            <span style="font-size: 1.5rem;">🖼️</span>
+            <strong style="font-size: 0.88rem; color: var(--text-color);">Pictogramas correspondientes</strong>
+          </div>
+          <div style="display: flex; gap: 12px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 6px; height: 40px; align-items: center; justify-content: center; margin-top: 4px; font-size: 1.15rem;">
+            👪 💼 🏠 🎭 ❤️ 💰
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhorabuena message -->
+      <div style="margin-top: 0.5rem; padding: 0.85rem 1rem; background: rgba(0, 245, 155, 0.08); border: 1px solid rgba(0, 245, 155, 0.2); border-radius: 12px; font-size: 0.76rem; line-height: 1.45; text-align: justify; color: var(--text-color);">
+        ¡Enhorabuena por el trabajo realizado! Muchas gracias por confiar en nostrxs para este proceso. Esperamos que haya sido una semana productiva y hayas cumplido con tus expectativas y te sientas orgullosx y satisfechx con el trabajo realizado. Nos vemos pronto. Estaremos encantados de acompañarte en la siguiente aventura. Gracias 👏🎉
+      </div>
+
+      <button type="button" id="modal-download-cancel" style="background: rgba(120, 120, 120, 0.15); color: inherit; width: 100%; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.88rem; transition: all 0.2s ease; margin-top: 4px; outline: none;">
+        ${dict.form_cancel || 'Cancelar'}
+      </button>
+    `;
+
+    // Add selection styling and events
+    const optionCards = card.querySelectorAll('.download-option-card');
+    optionCards.forEach(opt => {
+      opt.addEventListener('mouseenter', () => {
+        opt.style.background = 'rgba(0, 245, 155, 0.08)';
+        opt.style.borderColor = 'rgba(0, 245, 155, 0.3)';
+      });
+      opt.addEventListener('mouseleave', () => {
+        opt.style.background = 'rgba(120,120,120,0.06)';
+        opt.style.borderColor = 'rgba(120,120,120,0.15)';
+      });
+      opt.addEventListener('click', () => {
+        const choice = opt.getAttribute('data-option');
+        renderStep2(choice);
+      });
+    });
+
+    card.querySelector('#modal-download-cancel').addEventListener('click', closeModal);
+  };
+
+  // Render Step 2
+  const renderStep2 = (option) => {
+    card.innerHTML = `
+      <h3 style="margin: 0; font-size: 1.4rem; font-weight: 800; text-align: center; color: var(--text-color);">❓ ¿Cómo lo quieres ver?</h3>
+      <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; text-align: center; line-height: 1.4; color: var(--text-color);">Elige el formato de descarga para la opción seleccionada:</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+        <button type="button" id="format-png" style="background: #10b981; color: #fff; width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">
+          🖼️ Formato Imagen (PNG)
+        </button>
+        
+        <button type="button" id="format-pdf" style="background: #2563eb; color: #fff; width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: all 0.2s ease; outline: none; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);">
+          📄 Formato Documento (PDF)
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+        <button type="button" id="modal-back-btn" style="flex: 1; background: rgba(120, 120, 120, 0.15); color: inherit; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none;">
+          ⬅️ Atrás
+        </button>
+        <button type="button" id="modal-download-cancel" style="flex: 1; background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 10px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.85rem; transition: all 0.2s ease; outline: none;">
+          ${dict.form_cancel || 'Cancelar'}
+        </button>
+      </div>
+    `;
+
+    card.querySelector('#modal-back-btn').addEventListener('click', renderStep1);
+    card.querySelector('#modal-download-cancel').addEventListener('click', closeModal);
+
+    // PNG Download Action
+    card.querySelector('#format-png').addEventListener('click', () => {
+      closeModal();
+      handleAction(option, 'png');
+    });
+
+    // PDF Download Action
+    card.querySelector('#format-pdf').addEventListener('click', () => {
+      closeModal();
+      handleAction(option, 'pdf');
+    });
+  };
+
+  // Action dispatcher
+  const handleAction = (option, format) => {
+    try {
+      const isBoardPage = document.querySelector('.columns') !== null && !window.location.pathname.includes('/compartir/');
+      const isStatsPage = window.location.pathname.includes('/estadisticasymejoras/');
+
+      if (option === 'tablero') {
+        if (format === 'png') {
+          if (isBoardPage) {
+            setTimeout(() => {
+              if (window.triggerPngExport) {
+                window.triggerPngExport();
+              } else {
+                showError();
+              }
+            }, 300);
+          } else {
+            window.location.href = getAbsoluteBoardUrl('png=true');
+          }
+        } else { // pdf
+          if (isBoardPage) {
+            setTimeout(() => {
+              window.print();
+            }, 300);
+          } else {
+            window.location.href = getAbsoluteBoardUrl('print=true');
+          }
+        }
+      } 
+      
+      else if (option === 'stats') {
+        if (format === 'png') {
+          if (isStatsPage) {
+            setTimeout(() => {
+              if (window.triggerStatsPngExport) {
+                window.triggerStatsPngExport();
+              } else {
+                showError();
+              }
+            }, 300);
+          } else {
+            window.location.href = getAbsoluteStatsUrl('png=true');
+          }
+        } else { // pdf
+          if (isStatsPage) {
+            setTimeout(() => {
+              window.print();
+            }, 300);
+          } else {
+            window.location.href = getAbsoluteStatsUrl('print=true');
+          }
+        }
+      } 
+      
+      else if (option === 'braille') {
+        const canvas = generateBrailleCanvas();
+        const dataUrl = canvas.toDataURL('image/png');
+        if (format === 'png') {
+          const link = document.createElement('a');
+          link.download = 'miiacttodo-braille.png';
+          link.href = dataUrl;
+          link.click();
+        } else { // pdf
+          downloadAsPdf(dataUrl, 'miiacttodo-braille.pdf');
+        }
+      } 
+      
+      else if (option === 'lse') {
+        const canvas = generateLseCanvas();
+        const dataUrl = canvas.toDataURL('image/png');
+        if (format === 'png') {
+          const link = document.createElement('a');
+          link.download = 'miiacttodo-lse.png';
+          link.href = dataUrl;
+          link.click();
+        } else { // pdf
+          downloadAsPdf(dataUrl, 'miiacttodo-lse.pdf');
+        }
+      } 
+      
+      else if (option === 'picto') {
+        const canvas = generatePictoCanvas();
+        const dataUrl = canvas.toDataURL('image/png');
+        if (format === 'png') {
+          const link = document.createElement('a');
+          link.download = 'miiacttodo-pictogramas.png';
+          link.href = dataUrl;
+          link.click();
+        } else { // pdf
+          downloadAsPdf(dataUrl, 'miiacttodo-pictogramas.pdf');
+        }
+      }
+    } catch (err) {
+      console.error('Error handling download option:', err);
+      setTimeout(() => {
+        document.body.appendChild(overlay);
+        showError();
+      }, 300);
+    }
+  };
+
+  const downloadAsPdf = (dataUrl, filename) => {
+    try {
+      const win = window.open('', '_blank');
+      if (!win) {
+        throw new Error('Popup blocked');
+      }
+      win.document.write(`
+        <html>
+          <head>
+            <title>${filename}</title>
+            <style>
+              @page { margin: 0; }
+              body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; background: #ffffff; }
+              img { max-width: 100%; max-height: 100vh; object-fit: contain; }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}">
+            <script>
+              window.onload = () => {
+                setTimeout(() => {
+                  window.print();
+                  window.close();
+                }, 500);
+              };
+            </script>
+          </body>
+        </html>
+      `);
+      win.document.close();
+    } catch (err) {
+      console.error('Error writing PDF document:', err);
+      document.body.appendChild(overlay);
+      showError();
+    }
+  };
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  // Trigger modal animations
+  setTimeout(() => {
+    overlay.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  }, 10);
+
+  const closeModal = () => {
+    overlay.style.opacity = '0';
+    card.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+      overlay.remove();
+    }, 250);
+  };
+
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeModal();
   });
+
+  // Start with step 1
+  renderStep1();
 };
 
 // Global Download Button Setup
 const setupGlobalDownloadListener = () => {
-  const btn = document.querySelector('nav button[data-action="download-board"]');
-  if (btn) {
+  const btns = document.querySelectorAll('button[data-action="download-board"], .nav-btn-download');
+  btns.forEach(btn => {
     if (btn.dataset.bound === 'true') return;
     btn.dataset.bound = 'true';
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       showDownloadModal();
     });
-  }
+  });
 };
 
 // Prepend Language Selector Dropdown dynamically

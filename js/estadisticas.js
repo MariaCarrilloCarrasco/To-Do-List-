@@ -151,4 +151,63 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('languagechanged', () => {
     renderStats();
   });
+
+  // Handle auto-print or auto-download query params
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('print') === 'true') {
+    setTimeout(() => {
+      window.print();
+    }, 1000);
+  } else if (urlParams.get('png') === 'true') {
+    setTimeout(() => {
+      if (window.triggerStatsPngExport) {
+        window.triggerStatsPngExport();
+      }
+    }, 1000);
+  }
+
+  // Expose triggerStatsPngExport globally
+  window.triggerStatsPngExport = () => {
+    // Hide nav actions for export
+    const elementsToHide = document.querySelectorAll('nav, .theme-trigger-btn, .theme-panel, .board-status-footer, a[data-translate="back_to_home"]');
+    elementsToHide.forEach(el => el.style.setProperty('display', 'none', 'important'));
+
+    const targetElement = document.querySelector('main') || document.body;
+    const computedBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() || '#f2f6fb';
+
+    if (typeof html2canvas === 'undefined') {
+      console.error('html2canvas is not loaded yet');
+      elementsToHide.forEach(el => el.style.removeProperty('display'));
+      return;
+    }
+
+    html2canvas(targetElement, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: computedBg,
+      scale: 2
+    }).then(canvas => {
+      elementsToHide.forEach(el => el.style.removeProperty('display'));
+
+      const link = document.createElement('a');
+      link.download = 'miiacttodo-stats.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      // Redirect back if opened from param
+      if (urlParams.get('png') === 'true') {
+        setTimeout(() => {
+          if (document.referrer && !document.referrer.includes('/estadisticasymejoras/')) {
+            window.location.href = document.referrer;
+          } else {
+            const isSubPage = window.location.pathname.includes('/pages/');
+            window.location.href = isSubPage ? '../../index.html' : 'index.html';
+          }
+        }, 1000);
+      }
+    }).catch(err => {
+      console.error('Error exporting stats image:', err);
+      elementsToHide.forEach(el => el.style.removeProperty('display'));
+    });
+  };
 });
