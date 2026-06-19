@@ -6,7 +6,7 @@ Herramienta de gestión del tiempo y organización personal que recopila, de for
 
 ## 🛠️ Tecnologías Utilizadas
 
-*   **Frontend:** SPA (Single Page Application) desarrollada con **React** (o HTML5, CSS3, JS Vanilla con ES Modules y Template Strings, según fase de desarrollo). Diseño *Responsive* (móvil, tablet, desktop y smartwatch) compatible con Chrome, Firefox, Safari y Edge.
+*   **Frontend:** SPA (Single Page Application) desarrollada con **React** (o HTML5, CSS3, JS Vanilla con ES Modules y Template Strings, según fase de desarrollo). Diseño *Responsive* (móvil, tablet y desktop) compatible con Chrome, Firefox, Safari y Edge.
 *   **Backend y Datos:** Autenticación y base de datos con **Firebase** (gestión de usuarios, ámbitos y prioridades), **JSON Server** y persistencia local mediante **LocalStorage**.
 *   **Despliegue y Calidad:** Control de versiones con Git (Git Flow), despliegue en **GitHub Pages** y configuración dinámica de textos mediante JSON.
 *   **Accesibilidad Universal:** Traducción de contenidos, lenguaje de signos, braille, pictogramas e instrucciones para personas mayores.
