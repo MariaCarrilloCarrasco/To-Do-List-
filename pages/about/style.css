@@ -375,3 +375,18 @@ a:hover {
   font-size: 0.65rem;
   font-weight: 700;
 }
+
+@media (max-width: 768px) {
+  .narrator-section {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 1.5rem !important;
+    gap: 0.75rem !important;
+  }
+  
+  .narrator-section div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}

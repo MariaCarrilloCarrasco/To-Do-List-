@@ -1296,8 +1296,8 @@ main {
   }
 }
 
-/* Responsive Navbar and Floating trigger adjustments for Mobile Devices */
-@media (max-width: 768px) {
+/* Responsive Navbar and Floating trigger adjustments for Mobile & Tablet Devices */
+@media (max-width: 1024px) {
   nav {
     padding: 1rem !important;
     flex-direction: column !important;
