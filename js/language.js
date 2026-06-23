@@ -2452,7 +2452,20 @@ window.walkTextNodesAndTransform = (element, transform) => {
       }
     } else if (node.nodeType === 1) { // Element node
       const tagName = node.tagName.toUpperCase();
-      if (node.id === 'lang-selector-container') {
+      if (node.id === 'lang-selector-container' ||
+          node.id === 'progress' ||
+          node.id === 'progressValue' ||
+          node.id === 'bar-chart-container' ||
+          (node.classList && (
+            node.classList.contains('progress-circle') ||
+            node.classList.contains('chart-wrapper') ||
+            node.classList.contains('chart-y-axis') ||
+            node.classList.contains('chart-container') ||
+            node.classList.contains('bar-container') ||
+            node.classList.contains('bar') ||
+            node.classList.contains('bar-tooltip') ||
+            node.classList.contains('bar-label')
+          ))) {
         return;
       }
       if (tagName !== 'SCRIPT' && tagName !== 'STYLE' && tagName !== 'TEXTAREA' && tagName !== 'INPUT' && tagName !== 'SELECT') {
